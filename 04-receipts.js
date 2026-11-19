@@ -242,8 +242,21 @@ function rcptDlg(k) {
       });
       else w ? fb() : hint(SV);
     };
+    // يفتح محادثة العميل مباشرة مع نص الوصل، وتُنسخ صورة الوصل للحافظة لتلصقها (واتساب لا يقبل إرفاق صورة عبر الرابط)
+    const wa = async () => {
+      let ok = false;
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+        ok = true;
+      } catch (e) {
+      }
+      const u = "https://wa.me/" + k.ph + "?text=" + encodeURIComponent(k.msg);
+      hint(ok ? "تم نسخ صورة الوصل. في المحادثة اضغط مطولاً على خانة الكتابة ثم «لصق» لإرفاقها." : "اضغط «حفظ» لحفظ صورة الوصل ثم أرفقها من المحادثة.");
+      const w = window.open(u, "_blank");
+      if (!w) location.href = u;
+    };
     bd.onclick = () => sh(0);
-    bs.onclick = () => sh(1);
+    bs.onclick = () => k.ph && k.msg ? wa() : sh(1);
   }, "image/png")).catch(bad);
 }
 function receipt(id) {
@@ -252,11 +265,11 @@ function receipt(id) {
   const c = S.cust.find((k) => k.id === i.cust) || {}, x = { i, ...late(i) }, ps = S.pays.filter((p) => p.inst === id), pay = ps[ps.length - 1];
   if (!pay) return;
   const no = String(S.pays.indexOf(pay) + 1).padStart(5, "0");
-  rcptDlg({ title: "تم تسديد القسط", sub: E(c.name || "") + " · المتبقي " + F(x.rem) + " د.ع", label: "إرسال وصل تسديد", alt: "وصل تسديد", fn: "receipt-" + no + ".png", ph: normPh(c.phone), draw: (pl) => rcptCanvas(i, c, pay, x, no, pl) });
+  rcptDlg({ title: "تم تسديد القسط", sub: E(c.name || "") + " · المتبقي " + F(x.rem) + " د.ع", label: "إرسال وصل تسديد", alt: "وصل تسديد", fn: "receipt-" + no + ".png", ph: normPh(c.phone), msg: msgRcpt(x), draw: (pl) => rcptCanvas(i, c, pay, x, no, pl) });
 }
 function purchaseDlg(id) {
   const i = S.inst.find((x2) => x2.id === id);
   if (!i) return;
   const c = S.cust.find((k) => k.id === i.cust) || {}, x = { i, ...late(i) }, no = String(S.inst.indexOf(i) + 1).padStart(5, "0");
-  rcptDlg({ title: "تمت إضافة القسط", sub: E(c.name || "") + " · المتبقي " + F(x.rem) + " د.ع", label: "إرسال وصل الشراء", alt: "وصل شراء", fn: "purchase-" + no + ".png", ph: normPh(c.phone), draw: (pl) => purchaseCanvas(i, c, x, no, pl) });
+  rcptDlg({ title: "تمت إضافة القسط", sub: E(c.name || "") + " · المتبقي " + F(x.rem) + " د.ع", label: "إرسال وصل الشراء", alt: "وصل شراء", fn: "purchase-" + no + ".png", ph: normPh(c.phone), msg: msgPurchase(x), draw: (pl) => purchaseCanvas(i, c, x, no, pl) });
 }
