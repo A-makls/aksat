@@ -276,7 +276,9 @@ const EN_RAW = {
   "تمت إضافة معلومات العميل تلقائياً": "Customer info added automatically",
   "مسدد بالكامل": "Fully paid",
   "تاريخ أقدم قسط": "Oldest installment date",
-  "تم نسخ ملخص الأقساط": "Installments summary copied"
+  "تم نسخ ملخص الأقساط": "Installments summary copied",
+  "ابحث عن عميل بالاسم أو الهاتف": "Search customer by name or phone",
+  "تم تسديد الدين": "Debt paid"
 };
 const EN = Object.entries(EN_RAW).sort((a, b) => b[0].length - a[0].length);
 const trS = (t) => {

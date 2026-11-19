@@ -3329,3 +3329,6 @@ body.hm .dh {
   body, body.hm { background: #fff !important; position: static !important; overflow: visible !important; }
   main { padding: 0 !important; height: auto !important; }
 }
+
+/* ===== الديون المكتملة: إطار رمادي ===== */
+.card.dn { border: 1.5px solid #9aa0a6; }

@@ -273,3 +273,23 @@ function purchaseDlg(id) {
   const c = S.cust.find((k) => k.id === i.cust) || {}, x = { i, ...late(i) }, no = String(S.inst.indexOf(i) + 1).padStart(5, "0");
   rcptDlg({ title: "تمت إضافة القسط", sub: E(c.name || "") + " · المتبقي " + F(x.rem) + " د.ع", label: "إرسال وصل الشراء", alt: "وصل شراء", fn: "purchase-" + no + ".png", ph: normPh(c.phone), msg: msgPurchase(x), draw: (pl) => purchaseCanvas(i, c, x, no, pl) });
 }
+
+// ===== وصل تسديد الدين =====
+function debtRcptCanvas(x, name, pay, before, rem, no, pl) {
+  const dt = String(pay.date || today()).replace(/-/g, "/");
+  const rows = [["التاريخ:", dt], ["رقم الوصل:", no], [x.type === "in" ? "وصل إلى:" : "مدفوع إلى:", name || "—", true]];
+  if (x.prod) rows.push(["عن:", x.prod]);
+  return rcptRender({ title: "وصل تسديد", no, dt, rows, tbl: [["إجمالي الدين", x.amount], ["المسدد سابقاً", before], ["المسدد الآن", pay.amt, true], ["المتبقي", rem]], boxL: "المبلغ المسدد", boxV: pay.amt, stamp: rem <= 0 ? "تم تسديد الدين بالكامل" : "" }, pl);
+}
+function debtReceipt(id, k) {
+  const x = S.debts.find((d) => d.id === id);
+  if (!x || !x.pl || !x.pl[k]) return;
+  const pay = x.pl[k], c = S.cust.find((q) => q.id === x.cust), name = c ? c.name : x.name, phone = c ? c.phone : x.phone;
+  const sumPl = (a) => a.reduce((s, p) => s + (+p.amt || 0), 0);
+  const before = Math.max(0, x.paid - sumPl(x.pl)) + sumPl(x.pl.slice(0, k));
+  const rem = Math.max(0, x.amount - before - pay.amt);
+  const no = "D" + String(S.debts.indexOf(x) + 1).padStart(3, "0") + "-" + String(k + 1).padStart(2, "0");
+  const dt = String(pay.date || today()).replace(/-/g, "/");
+  const msg = "السلام عليكم\n\nتحية طيبة *" + (name || "") + "*\n" + (x.prod ? "(" + x.prod + ")\n" : "") + "▫️ مبلغ الدين: " + F(x.amount) + " د.ع\n▫️ المسدد الآن: " + F(pay.amt) + " د.ع\n▫️ المتبقي: " + F(rem) + " د.ع\n\nوصل تسديد ✅ (" + dt + ")";
+  rcptDlg({ title: "تم تسديد الدين", sub: E(name || "") + " · المتبقي " + F(rem) + " د.ع", label: "إرسال وصل تسديد", alt: "وصل تسديد دين", fn: "debt-receipt-" + no + ".png", ph: normPh(phone), msg, draw: (pl) => debtRcptCanvas(x, name, pay, before, rem, no, pl) });
+}

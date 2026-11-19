@@ -8,7 +8,7 @@ function debtForm(pre) {
   o.className = "fs";
   const n = (v) => +String(v || "").replace(/,/g, "") || 0, fm = (v) => Math.round(v).toLocaleString("en-US");
   o.innerHTML = `<div class='fh'><button type='button' id='bk'>➡️</button><div class='seg'><button type='button' data-f='out'>دين عليّ</button><button type='button' data-f='in' class='on'>✓ دين لي</button></div></div><form autocomplete='off'>
-<div class='fc'><h4><span>👤</span>معلومات الزبون</h4><div class='tr'><label class='ff' id='nmw'><i>👤</i><input name='cname' placeholder='اسم الزبون'></label><label class='ff' id='slw' style='display:none'><i>👥</i><select name='cust'>${S.cust.map((c) => `<option value='${c.id}'>${E(c.name)}</option>`).join("")}</select></label>${S.cust.length ? `<input type='checkbox' class='sw' id='regT'>` : ""}</div><label class='ff' id='phw'><i>📞</i><input name='cphone' inputmode='tel' placeholder='رقم الهاتف'></label>${S.cust.length ? `<div class='mut'>فعّل المفتاح لاختيار عميل مسجّل</div>` : ""}</div>
+<div class='fc'><h4><span>👤</span>معلومات الزبون</h4><div class='tr'><label class='ff' id='nmw'><i>👤</i><input name='cname' placeholder='اسم الزبون'></label><div id='slw' style='display:none;position:relative;flex:1;min-width:0;margin-bottom:12px'><label class='ff' style='margin:0'><i>🔍</i><input id='cq' autocomplete='off' placeholder='ابحث عن عميل بالاسم أو الهاتف'><button type='button' id='cx' class='cxb' style='display:none'>✕</button></label><input type='hidden' name='cust'><div id='cr' class='csr' style='display:none'></div></div>${S.cust.length ? `<input type='checkbox' class='sw' id='regT'>` : ""}</div><label class='ff' id='phw'><i>📞</i><input name='cphone' inputmode='tel' placeholder='رقم الهاتف'></label>${S.cust.length ? `<div class='mut'>فعّل المفتاح لاختيار عميل مسجّل</div>` : ""}</div>
 <div class='fc'><h4><span>📦</span>معلومات الدين</h4><label class='ff'><i>🧩</i><input name='prod' placeholder='اسم المنتج أو سبب الدين (اختياري)'></label><label class='ff'><i>#</i><input name='qty' type='number' value='1' placeholder='الكمية'></label><label class='ff'><i>💲</i><input name='amount' type='number' placeholder='المبلغ الكلي'></label></div>
 <div class='fc'><h4><span>💳</span>معلومات التسديد</h4><label class='ff'><i>💵</i><input name='paid' type='number' placeholder='المبلغ المسدد مسبقاً (اختياري)'></label></div>
 <div class='fc rs'><h4><span>✨</span>النتائج التلقائية</h4><div class='kv'><span>المبلغ الكلي</span><b id='r1'>0 د.ع</b></div><div class='kv'><span>المسدد</span><b id='r2'>0 د.ع</b></div><div class='kv'><span>الباقي</span><b id='r3'>0 د.ع</b></div><div class='kv'><span>سعر الوحدة</span><b id='r4'>0 د.ع</b></div></div>
@@ -23,10 +23,61 @@ function debtForm(pre) {
     $("#r3").textContent = fm(a - p) + " د.ع";
     $("#r4").textContent = fm(a / q) + " د.ع";
   };
-  const showReg = (on) => {
+  // بحث عن عميل مسجّل (نفس أسلوب نموذج القسط)
+  const nrm = (s) => String(s == null ? "" : s).toLowerCase().trim(), cq = $("#cq"), cr = $("#cr"), cx = $("#cx");
+  const cdraw = () => {
+    const q = nrm(cq.value);
+    const a = S.cust.filter((c) => !q || nrm(c.name + " " + (c.phone || "")).includes(q)).sort((x, y) => (nrm(x.name).startsWith(q) ? 0 : 1) - (nrm(y.name).startsWith(q) ? 0 : 1)).slice(0, 40);
+    cr.innerHTML = a.length ? a.map((c) => "<button type='button' data-id='" + c.id + "'><span class='ca'>" + E((c.name || "?").trim().charAt(0)) + "</span><span style='flex:1;min-width:0'><div class='cn'>" + E(c.name) + "</div><div class='cs'>" + (c.phone ? "📞 " + E(c.phone) : "") + "</div></span></button>").join("") : "<div class='ce'>لا يوجد عميل مطابق</div>";
+    cr.style.display = "";
+  };
+  const cunset = () => {
+    f.cust.value = "";
+    cx.style.display = cq.value ? "" : "none";
+  };
+  const cpick = (id) => {
+    const c = S.cust.find((x) => x.id === id);
+    if (!c) return;
+    f.cust.value = id;
+    cq.value = c.name;
+    cr.style.display = "none";
+    cx.style.display = "";
+  };
+  cq.onfocus = cdraw;
+  cq.oninput = () => {
+    if (f.cust.value) cunset();
+    cx.style.display = cq.value ? "" : "none";
+    cdraw();
+  };
+  cq.onkeydown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const b = cr.querySelector("button");
+      if (b) cpick(b.dataset.id);
+    }
+  };
+  cx.onclick = () => {
+    cq.value = "";
+    cunset();
+    cdraw();
+    cq.focus();
+  };
+  cr.onclick = (e) => {
+    const b = e.target.closest("button[data-id]");
+    if (b) cpick(b.dataset.id);
+  };
+  o.addEventListener("click", (e) => {
+    if (!e.target.closest("#slw")) cr.style.display = "none";
+  });
+  const showReg = (on, focus) => {
     $("#nmw").style.display = on ? "none" : "";
     $("#phw").style.display = on ? "none" : "";
     $("#slw").style.display = on ? "" : "none";
+    if (!on) {
+      cq.value = "";
+      cunset();
+      cr.style.display = "none";
+    } else if (focus) setTimeout(() => cq.focus(), 50);
   };
   $("#bk").onclick = () => o.remove();
   o.querySelectorAll(".seg button").forEach((b) => b.onclick = () => {
@@ -36,12 +87,12 @@ function debtForm(pre) {
       x.textContent = (x === b ? "✓ " : "") + x.textContent.replace("✓ ", "");
     });
   });
-  if (rg) rg.onchange = () => showReg(rg.checked);
+  if (rg) rg.onchange = () => showReg(rg.checked, 1);
   if (pre) {
     if (pre.cust && rg) {
       rg.checked = true;
       showReg(true);
-      f.cust.value = pre.cust;
+      cpick(pre.cust);
     } else {
       f.cname.value = pre.name || "";
       f.cphone.value = pre.phone || "";
@@ -57,6 +108,10 @@ function debtForm(pre) {
     }
     let cid, name, phone;
     if (rg && rg.checked) {
+      if (!d.cust) {
+        alert("اختر عميلاً من القائمة");
+        return;
+      }
       cid = d.cust;
       const c = S.cust.find((x2) => x2.id === cid) || {};
       name = c.name;
