@@ -65,6 +65,7 @@ const go = (t) => {
     return;
   }
   if (t !== "bak") _pinOK = false;
+  window.__animGo = true;
   if (t !== tab) PREV = tab;
   NAV.length = 0;
   tab = t;

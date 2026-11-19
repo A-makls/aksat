@@ -278,7 +278,11 @@ const EN_RAW = {
   "تاريخ أقدم قسط": "Oldest installment date",
   "تم نسخ ملخص الأقساط": "Installments summary copied",
   "ابحث عن عميل بالاسم أو الهاتف": "Search customer by name or phone",
-  "تم تسديد الدين": "Debt paid"
+  "تم تسديد الدين": "Debt paid",
+  "حركة البطاقات": "Card animation",
+  "حركة تظهر بها بطاقات الأقساط والديون عند فتح القسم وعند التمرير للأعلى والأسفل": "How installment and debt cards appear when opening a section and when scrolling up and down",
+  "اضغط على البطاقة لإعادة الحركة": "Tap the card to replay the animation",
+  "معاينة الحركة": "Animation preview"
 };
 const EN = Object.entries(EN_RAW).sort((a, b) => b[0].length - a[0].length);
 const trS = (t) => {

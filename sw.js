@@ -29,6 +29,7 @@ const SHELL = [
   "16-tiles.js",
   "17-i18n.js",
   "18-backup-text.js",
+  "animations.js",
   "19-app.js",
   "pwa.js",
   "icon-180.png",

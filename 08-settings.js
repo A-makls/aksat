@@ -37,7 +37,7 @@ function aboutCard() {
 }
 V.settings = function() {
   const h = oldS2().replace("</h2>", "</h2>" + officeCard()), i = h.indexOf('<div class="tg">');
-  return h.slice(0, i) + langCard() + pinCard() + aboutCard() + stiles();
+  return h.slice(0, i) + langCard() + animCard() + pinCard() + aboutCard() + stiles();
 };
 function setIg() {
   openForm("حساب إنستقرام", [{ k: "u", l: "اسم المستخدم أو الرابط", r: 0, v: S.ig || "" }], (d) => {

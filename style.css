@@ -3330,5 +3330,11 @@ body.hm .dh {
   main { padding: 0 !important; height: auto !important; }
 }
 
+/* ===== حركة البطاقات عند التمرير ===== */
+/* منع اتساع الصفحة أفقياً أثناء حركة البطاقات (التأرجح/القلب) */
+main { overflow-x: clip; }
+.card.an-pre, .iw.an-pre { opacity: 0; }
+@media print { .card.an-pre, .iw.an-pre { opacity: 1 !important; } }
+
 /* ===== الديون المكتملة: إطار رمادي ===== */
 .card.dn { border: 1.5px solid #9aa0a6; }
