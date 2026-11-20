@@ -4,34 +4,11 @@
  *  - الخط (Google Fonts) ومكتبة Excel (cdnjs): تُحفظ عند أول استخدام.
  *  - غيّر VERSION عند نشر تحديث لإجبار المتصفحات على تنزيل الملفات الجديدة.
  */
-const VERSION = 'aqsati-v1.1';
+const VERSION = 'aqsati-v1.2';
 const SHELL = [
   "./",
   "index.html",
   "manifest.webmanifest",
-  "style.css",
-  "logo.js",
-  "01-core.js",
-  "02-ui.js",
-  "03-pages.js",
-  "04-receipts.js",
-  "05-payments.js",
-  "06-home.js",
-  "07-installments.js",
-  "08-settings.js",
-  "09-debts-form.js",
-  "10-backup.js",
-  "11-lists.js",
-  "12-backup-io.js",
-  "13-search.js",
-  "14-pin.js",
-  "15-filters.js",
-  "16-tiles.js",
-  "17-i18n.js",
-  "18-backup-text.js",
-  "animations.js",
-  "19-app.js",
-  "pwa.js",
   "icon-180.png",
   "icon-192.png",
   "icon-512.png"
