@@ -76,18 +76,20 @@
   async function check(code) {
     try {
       if (!window.crypto || !crypto.subtle) return { ok: false, msg: 'يجب فتح التطبيق عبر رابط https' };
-      var p = String(code || '').replace(/\s+/g, '').split('.');
-      if (p.length !== 2) return { ok: false, msg: 'الرمز غير صحيح' };
+      var re = /[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{40,}/, raw = String(code || '');
+      var mt = raw.match(re) || raw.replace(/\s+/g, '').match(re);
+      if (!mt) return { ok: false, msg: 'تعذّر قراءة الرمز، انسخه كاملاً كما وصلك' };
+      var tok = mt[0], p = tok.split('.');
       var k = await crypto.subtle.importKey('jwk', C.publicKey, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']);
-      var data = u8(p[0]);
-      if (!await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, k, u8(p[1]), data)) return { ok: false, msg: 'الرمز غير صحيح' };
+      var data = u8(p[0]), good = await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, k, u8(p[1]), data);
+      if (!good) return { ok: false, msg: 'الرمز غير صحيح، أو صدر بمفتاح مختلف عن مفتاح التطبيق' };
       var o = JSON.parse(new TextDecoder().decode(data)), t = ymd(new Date()), seen = g(K.seen) || t;
       if (o.d !== '*' && o.d !== dev()) return { ok: false, msg: 'هذا الرمز مخصص لجهاز آخر' };
       if (days(seen, t) > 1) return { ok: false, msg: 'تاريخ الجهاز غير صحيح، صحّحه ثم أعد المحاولة' };
       if (o.e !== '0' && days(t, o.e) > 0) return { ok: false, msg: 'انتهت صلاحية الرمز بتاريخ ' + o.e };
       if (t > seen) s(K.seen, t);
-      return { ok: true, exp: o.e, left: o.e === '0' ? null : days(o.e, t) };
-    } catch (e) { return { ok: false, msg: 'الرمز غير صحيح' }; }
+      return { ok: true, tok: tok, exp: o.e, left: o.e === '0' ? null : days(o.e, t) };
+    } catch (e) { return { ok: false, msg: 'تعذّر التحقق من الرمز، تأكد أنك نسخته كاملاً' }; }
   }
 
   var LOGO_SVG = "<svg viewBox=\"0 0 300 540\" xmlns=\"http://www.w3.org/2000/svg\" style=\"--d:0s\" aria-hidden=\"true\"><defs><linearGradient id=\"lkg1\" gradientUnits=\"userSpaceOnUse\" x1=\"30\" y1=\"20\" x2=\"260\" y2=\"440\"><stop offset=\"0\" stop-color=\"#fff3c4\"/><stop offset=\".22\" stop-color=\"#f0c95f\"/><stop offset=\".5\" stop-color=\"#d89a2c\"/><stop offset=\".78\" stop-color=\"#eec65c\"/><stop offset=\"1\" stop-color=\"#b8821f\"/></linearGradient><linearGradient id=\"lkg2\" gradientUnits=\"userSpaceOnUse\" x1=\"30\" y1=\"20\" x2=\"260\" y2=\"440\"><stop offset=\"0\" stop-color=\"#9a6a14\"/><stop offset=\"1\" stop-color=\"#5a3705\"/></linearGradient><radialGradient id=\"lkcoin\" cx=\".38\" cy=\".32\" r=\".8\"><stop offset=\"0\" stop-color=\"#fff0b8\"/><stop offset=\".4\" stop-color=\"#e8b94c\"/><stop offset=\"1\" stop-color=\"#9a6516\"/></radialGradient><linearGradient id=\"lkred\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#e0453f\"/><stop offset=\".5\" stop-color=\"#a51b1b\"/><stop offset=\"1\" stop-color=\"#5a0b0b\"/></linearGradient><linearGradient id=\"lkshg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#fff\" stop-opacity=\"0\"/><stop offset=\".5\" stop-color=\"#fff\" stop-opacity=\".95\"/><stop offset=\"1\" stop-color=\"#fff\" stop-opacity=\"0\"/></linearGradient><mask id=\"lkm\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"300\" height=\"540\"><g fill=\"none\" stroke=\"#fff\" stroke-width=\"11\" stroke-linecap=\"round\"><path d=\"M205,97 L150,76 L264,20 L252,146 L219,110\"/><path d=\"M205.0,97.0 L61.6,256.1 A88,88 0 1 0 168.3,237.3\"/><path d=\"M219.0,110.0 L74.2,266.0 A72,72 0 1 0 190.6,281.2\"/><path d=\"M104.5,272.6 A48,48 0 0 1 174.0,325.0\"/><path d=\"M72.1,214.5 A53,62 0 1 1 141.1,133.8\"/><path d=\"M81.5,198.8 A34,44 0 1 1 118.8,129.9\"/><path d=\"M166,315 A39,39 0 1 1 165.99,314.8\"/></g><circle cx=\"127\" cy=\"315\" r=\"31\" fill=\"#fff\"/><path d=\"M116,425 H140 V470 H163 L128,512 L93,470 H116 Z\" fill=\"#fff\"/></mask></defs><g fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"miter\" stroke-miterlimit=\"6\"><g stroke=\"url(#lkg2)\" stroke-width=\"14\" transform=\"translate(1.5,2.5)\"><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.0s)\" d=\"M205,97 L150,76 L264,20 L252,146 L219,110\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.25s)\" d=\"M205.0,97.0 L61.6,256.1 A88,88 0 1 0 168.3,237.3\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.4s)\" d=\"M219.0,110.0 L74.2,266.0 A72,72 0 1 0 190.6,281.2\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.8s)\" d=\"M104.5,272.6 A48,48 0 0 1 174.0,325.0\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.6s)\" d=\"M72.1,214.5 A53,62 0 1 1 141.1,133.8\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.75s)\" d=\"M81.5,198.8 A34,44 0 1 1 118.8,129.9\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.95s)\" d=\"M166,315 A39,39 0 1 1 165.99,314.8\"/></g><g stroke=\"url(#lkg1)\" stroke-width=\"10\"><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.0s)\" d=\"M205,97 L150,76 L264,20 L252,146 L219,110\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.25s)\" d=\"M205.0,97.0 L61.6,256.1 A88,88 0 1 0 168.3,237.3\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.4s)\" d=\"M219.0,110.0 L74.2,266.0 A72,72 0 1 0 190.6,281.2\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.8s)\" d=\"M104.5,272.6 A48,48 0 0 1 174.0,325.0\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.6s)\" d=\"M72.1,214.5 A53,62 0 1 1 141.1,133.8\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.75s)\" d=\"M81.5,198.8 A34,44 0 1 1 118.8,129.9\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.95s)\" d=\"M166,315 A39,39 0 1 1 165.99,314.8\"/></g><g stroke=\"#fff6d2\" stroke-width=\"2.2\" transform=\"translate(-1.8,-2)\" opacity=\".85\"><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.0s)\" d=\"M205,97 L150,76 L264,20 L252,146 L219,110\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.25s)\" d=\"M205.0,97.0 L61.6,256.1 A88,88 0 1 0 168.3,237.3\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.4s)\" d=\"M219.0,110.0 L74.2,266.0 A72,72 0 1 0 190.6,281.2\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.8s)\" d=\"M104.5,272.6 A48,48 0 0 1 174.0,325.0\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.6s)\" d=\"M72.1,214.5 A53,62 0 1 1 141.1,133.8\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.75s)\" d=\"M81.5,198.8 A34,44 0 1 1 118.8,129.9\"/><path class=\"lkd\" pathLength=\"1\" style=\"animation-delay:calc(var(--d) + 0.95s)\" d=\"M166,315 A39,39 0 1 1 165.99,314.8\"/></g></g><g class=\"lkc\"><circle cx=\"127\" cy=\"319\" r=\"31\" fill=\"#5a3705\" opacity=\".45\"/><circle cx=\"127\" cy=\"315\" r=\"30\" fill=\"url(#lkcoin)\" stroke=\"#f5dc92\" stroke-width=\"1.5\"/></g><g class=\"lkr\"><path d=\"M116,425 H140 V470 H163 L128,512 L93,470 H116 Z\" fill=\"#2c0505\" transform=\"translate(2,3)\"/><path d=\"M116,425 H140 V470 H163 L128,512 L93,470 H116 Z\" fill=\"url(#lkred)\" stroke=\"#e8645c\" stroke-width=\"2\"/></g><g mask=\"url(#lkm)\"><rect class=\"lks\" x=\"0\" y=\"-20\" width=\"90\" height=\"580\" fill=\"url(#lkshg)\"/></g></svg>";
@@ -144,9 +146,9 @@
       + '<p class="lk-p">أرسل رقم جهازك إلى المسؤول، ثم الصق رمز التفعيل الذي يصلك.</p>'
       + '<div class="lk-l">رقم جهازك</div><div class="lk-id"><button class="lk-cp" id="lcp">نسخ</button><b id="lid"></b></div>'
       + (C.whatsapp ? '<a class="lk-b lk-wa" id="lwa" target="_blank" rel="noopener">💬 طلب التفعيل عبر واتساب</a>' : '')
-      + '<textarea class="lk-t" id="lcode" rows="3" placeholder="الصق رمز التفعيل هنا"></textarea>'
+      + '<textarea class="lk-t" id="lcode" rows="3" placeholder="الصق رمز التفعيل هنا" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></textarea>'
       + '<button class="lk-b lk-go" id="lgo">تفعيل التطبيق</button><div class="lk-m" id="lmsg"></div></div>'
-      + '<div class="lk-f">أقساطي وديوني • جميع الحقوق محفوظة</div></div>';
+      + '<div class="lk-f">أقساطي وديوني • جميع الحقوق محفوظة</div><div class="lk-f" style="direction:ltr;font-size:11px;opacity:.5;margin-top:4px">key ' + ((C.publicKey && C.publicKey.x) ? C.publicKey.x.slice(0, 6) : '-') + '</div></div>';
     var q = function (x) { return ov.querySelector(x); };
     q('#lid').textContent = f;
     q('#lmsg').textContent = msg || '';
@@ -154,7 +156,7 @@
     if (C.whatsapp) q('#lwa').href = 'https://wa.me/' + C.whatsapp + '?text=' + encodeURIComponent('أرغب بتفعيل تطبيق الأقساط. رقم جهازي: ' + f);
     q('#lgo').onclick = async function () {
       var c = q('#lcode').value, r = await check(c);
-      if (r.ok) { s(K.code, c.replace(/\s+/g, '')); done(r); } else q('#lmsg').textContent = r.msg;
+      if (r.ok) { s(K.code, r.tok); done(r); } else q('#lmsg').textContent = r.msg;
     };
   }
 

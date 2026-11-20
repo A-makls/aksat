@@ -186,6 +186,7 @@ input,select,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
     <div class="card"><h2 class="h3">💬 واتساب التفعيل</h2><p class="mut">الرقم الذي يظهر للعميل في شاشة التفعيل.</p>
       <input id="wa" inputmode="numeric" class="ltr" value="9647737043441" style="margin:0"></div>
     <div class="card"><h2 class="h3">🧩 ملف الإعداد والنسخ الاحتياطي</h2><p class="mut">انسخ نص الإعداد وضعه في license-config.js، واحفظ نسخة احتياطية مشفّرة من مفاتيحك.</p>
+      <p class="mut">بصمة مفتاحك: <b class="ltr" id="fp">-</b> (يجب أن تطابق «key» في شاشة التفعيل)</p>
       <div class="row"><button id="sc">نص license-config.js</button><button class="g" id="bk">نسخة احتياطية</button></div>
       <textarea id="cfg" rows="8" readonly hidden class="ltr" style="margin:9px 0 0"></textarea></div>
     <div class="card"><h2 class="h3">🔒 الحساب</h2>
@@ -250,7 +251,7 @@ $('lb').onclick=async function(){
     start();
   }catch(e){msg('كلمة المرور أو النسخة غير صحيحة')}
 };
-function start(){$('lock').hidden=true;$('app').hidden=false;render()}
+function start(){$('fp').textContent=S.priv.x.slice(0,6);$('lock').hidden=true;$('app').hidden=false;render()}
 
 function status(c){
   if(c.e==='0')return['دائم','ok'];

@@ -4,7 +4,7 @@
  *  - الخط (Google Fonts) ومكتبة Excel (cdnjs): تُحفظ عند أول استخدام.
  *  - غيّر VERSION عند نشر تحديث لإجبار المتصفحات على تنزيل الملفات الجديدة.
  */
-const VERSION = 'aqsati-v1.4';
+const VERSION = 'aqsati-v1.5';
 const SHELL = [
   "./",
   "index.html",
@@ -40,14 +40,23 @@ self.addEventListener('fetch', (e) => {
   const same = url.origin === location.origin;
   if (!same && !CDN_HOSTS.includes(url.hostname)) return;
 
+  if (same && /\/(license-config\.js|license\.js|admin\.html)$/.test(url.pathname)) {
+    e.respondWith(fetch(req)
+      .then((r) => { if (r && r.ok) { const c = r.clone(); caches.open(VERSION).then((ch) => ch.put(req, c)); } return r; })
+      .catch(async () => (await caches.match(req)) || new Response('', { status: 504, statusText: 'Offline' })));
+    return;
+  }
+
   e.respondWith((async () => {
     const cache = await caches.open(VERSION);
     const nav = req.mode === 'navigate';
-    const hit = (await cache.match(req, { ignoreSearch: nav })) || (nav ? await cache.match('index.html') : undefined);
+    const hit = await cache.match(req, { ignoreSearch: nav });
     const net = fetch(req)
       .then((r) => { if (r && (r.ok || r.type === 'opaque')) cache.put(req, r.clone()); return r; })
       .catch(() => null);
     if (hit) { e.waitUntil(net); return hit; }
-    return (await net) || new Response('', { status: 504, statusText: 'Offline' });
+    const r = await net;
+    if (r) return r;
+    return (nav ? await cache.match('index.html') : null) || new Response('', { status: 504, statusText: 'Offline' });
   })());
 });
