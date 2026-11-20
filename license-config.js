@@ -2,8 +2,8 @@ window.AQSATI_LICENSE = {
   "publicKey": {
     "kty": "EC",
     "crv": "P-256",
-    "x": "GW5l4ebM7YQS3cX3xYJhxsMSlFbTT3IKjVnwB1r6R0U",
-    "y": "Yx9dTfjVDi_Nq_XMgX2iBTBIfJAimYKBOhahUArmyaM"
+    "x": "OS6gxktmmoC2J-gu-RxlJdLhz6YM2f8rdlAD9g08e5I",
+    "y": "IYtsf3XgG4Ph1gcZ-FBSuvS4bWp0eKqswpDjO7Cyoo8"
   },
   "whatsapp": "9647737043441"
 };
