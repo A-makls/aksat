@@ -46,8 +46,9 @@
     setInterval(tick, 1000);
   })();
 
-  var C = window.AQSATI_LICENSE;
-  if (!C || !C.publicKey) return;
+  var C = window.AQSATI_LICENSE, demo = /lock-demo/.test(location.hash);
+  if ((!C || !C.publicKey) && !demo) return;
+  C = C || {};
   var K = { id: 'aqsati_device_id', code: 'aqsati_license_code', seen: 'aqsati_license_seen' };
   var A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   function g(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -74,15 +75,38 @@
     } catch (e) { return { ok: false, msg: 'الرمز غير صحيح' }; }
   }
 
+  var LOGO = 'icon-192.png';
+  var ks = document.createElement('style');
+  ks.textContent = '.lk{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom));overflow:auto;direction:rtl;font-family:Cairo,system-ui,-apple-system,sans-serif;color:#0f172a;background:radial-gradient(circle at 85% 8%,rgba(250,204,21,.18),transparent 38%),radial-gradient(circle at 10% 92%,rgba(56,189,248,.32),transparent 46%),linear-gradient(165deg,#0b1f4d 0%,#0c3a7a 48%,#0284c7 100%)}'
+    + '.lk-w{width:100%;max-width:400px;text-align:center;margin:auto}'
+    + '.lk-logo{width:92px;height:92px;border-radius:24px;display:block;margin:0 auto 12px;box-shadow:0 0 0 3px rgba(245,196,81,.55),0 14px 34px rgba(0,0,0,.35)}'
+    + '.lk-pulse{animation:lkpl 1.3s ease-in-out infinite}'
+    + '.lk-n{color:#fff;font-size:27px;font-weight:800;margin:0;letter-spacing:.2px}.lk-s{color:rgba(255,255,255,.78);font-size:13.5px;margin:4px 0 16px}'
+    + '.lk-c{background:#fff;border-radius:24px;padding:20px 18px 18px;box-shadow:0 22px 50px rgba(2,6,23,.38);animation:lkup .5s cubic-bezier(.2,.8,.2,1)}'
+    + '.lk-h{display:flex;align-items:center;justify-content:center;gap:8px;font-size:18px;font-weight:800;color:#0b1f4d;margin:0 0 4px}'
+    + '.lk-p{color:#64748b;font-size:13.5px;margin:0 0 14px;line-height:1.7}.lk-l{font-size:12.5px;color:#64748b;text-align:right;margin-bottom:6px}'
+    + '.lk-id{display:flex;align-items:center;gap:8px;background:#f1f5f9;border:1px dashed #94a3b8;border-radius:14px;padding:10px 12px;direction:ltr}'
+    + '.lk-id b{flex:1;font:800 25px ui-monospace,Menlo,monospace;letter-spacing:3px;color:#0b1f4d;text-align:center}'
+    + '.lk-cp{border:0;border-radius:10px;background:#e0f2fe;color:#0369a1;font-family:inherit;font-size:12.5px;font-weight:700;padding:8px 11px;cursor:pointer;white-space:nowrap}'
+    + '.lk-t{width:100%;margin-top:14px;padding:12px;border:1.5px solid #cbd5e1;border-radius:14px;font:13px ui-monospace,Menlo,monospace;direction:ltr;resize:none;background:#f8fafc;color:#0f172a;outline:none}'
+    + '.lk-t:focus{border-color:#0284c7;box-shadow:0 0 0 4px rgba(2,132,199,.15)}'
+    + '.lk-b{display:block;width:100%;margin-top:10px;border:0;border-radius:14px;padding:13px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:transform .15s;text-align:center;text-decoration:none}.lk-b:active{transform:scale(.98)}'
+    + '.lk-go{background:linear-gradient(135deg,#f7d56b,#d9a02e);color:#3b2a05;box-shadow:0 8px 18px rgba(217,160,46,.42)}.lk-wa{background:#16a34a;color:#fff;margin-top:12px}'
+    + '.lk-m{min-height:22px;margin-top:10px;color:#dc2626;font-size:13.5px;font-weight:700}.lk-f{margin-top:14px;color:rgba(255,255,255,.62);font-size:12px}'
+    + '@keyframes lkup{from{opacity:0;transform:translateY(18px)}}@keyframes lkpl{50%{transform:scale(1.06);opacity:.85}}'
+    + '@media(prefers-reduced-motion:reduce){.lk-c,.lk-pulse{animation:none}}';
+  document.head.appendChild(ks);
   var ov = document.createElement('div');
-  ov.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#0f172a;display:flex;align-items:center;justify-content:center;padding:16px;font-family:Cairo,system-ui,sans-serif;direction:rtl;color:#0f172a;overflow:auto';
+  ov.className = 'lk';
+  ov.innerHTML = '<div class="lk-w"><img class="lk-logo lk-pulse" alt="" src="' + LOGO + '"></div>';
   document.documentElement.appendChild(ov);
-  var B = 'border:0;border-radius:10px;padding:11px;font:700 15px Cairo,system-ui,sans-serif;width:100%;margin-top:8px;cursor:pointer;';
 
   function done(r) {
-    ov.remove();
     window.AQSATI_SUB = { exp: r.exp };
     window.__subTick();
+    ov.style.transition = 'opacity .3s';
+    ov.style.opacity = '0';
+    setTimeout(function () { ov.remove(); }, 300);
     if (r.left !== null && r.left <= 7) {
       var b = document.createElement('div');
       b.textContent = r.left <= 0 ? 'ينتهي الاشتراك اليوم' : 'ينتهي الاشتراك بعد ' + r.left + ' يوم';
@@ -94,19 +118,19 @@
 
   function lock(msg) {
     var id = dev(), f = id.slice(0, 4) + '-' + id.slice(4);
-    ov.innerHTML = '<div style="background:#fff;border-radius:16px;padding:22px;width:100%;max-width:380px;text-align:center">'
-      + '<h2 style="margin:0 0 6px;font-size:20px">التطبيق يحتاج إلى تفعيل</h2>'
-      + '<p style="margin:0 0 14px;color:#64748b;font-size:14px">أرسل رقم جهازك للمسؤول ليرسل لك رمز التفعيل.</p>'
-      + '<div id="lid" style="font:700 26px monospace;letter-spacing:2px;background:#f1f5f9;border-radius:10px;padding:12px;direction:ltr"></div>'
-      + '<button id="lcp" style="' + B + 'background:#e2e8f0;color:#0f172a">نسخ رقم الجهاز</button>'
-      + (C.whatsapp ? '<a id="lwa" target="_blank" rel="noopener" style="' + B + 'display:block;background:#16a34a;color:#fff;text-decoration:none;text-align:center">طلب التفعيل عبر واتساب</a>' : '')
-      + '<textarea id="lcode" rows="3" placeholder="الصق رمز التفعيل هنا" style="width:100%;margin-top:14px;padding:10px;border:1px solid #e2e8f0;border-radius:10px;font:13px monospace;direction:ltr"></textarea>'
-      + '<button id="lgo" style="' + B + 'background:#0f766e;color:#fff">تفعيل</button>'
-      + '<div id="lmsg" style="color:#dc2626;font-size:14px;margin-top:8px;min-height:20px"></div></div>';
+    ov.innerHTML = '<div class="lk-w"><img class="lk-logo" alt="" src="' + LOGO + '">'
+      + '<h1 class="lk-n">أقساطي وديوني</h1><div class="lk-s">إدارة الأقساط والديون والعملاء</div>'
+      + '<div class="lk-c"><h2 class="lk-h"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c9922a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>تفعيل التطبيق</h2>'
+      + '<p class="lk-p">أرسل رقم جهازك إلى المسؤول، ثم الصق رمز التفعيل الذي يصلك.</p>'
+      + '<div class="lk-l">رقم جهازك</div><div class="lk-id"><button class="lk-cp" id="lcp">نسخ</button><b id="lid"></b></div>'
+      + (C.whatsapp ? '<a class="lk-b lk-wa" id="lwa" target="_blank" rel="noopener">💬 طلب التفعيل عبر واتساب</a>' : '')
+      + '<textarea class="lk-t" id="lcode" rows="3" placeholder="الصق رمز التفعيل هنا"></textarea>'
+      + '<button class="lk-b lk-go" id="lgo">تفعيل التطبيق</button><div class="lk-m" id="lmsg"></div></div>'
+      + '<div class="lk-f">أقساطي وديوني • جميع الحقوق محفوظة</div></div>';
     var q = function (x) { return ov.querySelector(x); };
     q('#lid').textContent = f;
     q('#lmsg').textContent = msg || '';
-    q('#lcp').onclick = function () { try { navigator.clipboard.writeText(f); } catch (e) {} this.textContent = 'تم النسخ'; };
+    q('#lcp').onclick = function () { try { navigator.clipboard.writeText(f); } catch (e) {} this.textContent = 'تم النسخ ✓'; };
     if (C.whatsapp) q('#lwa').href = 'https://wa.me/' + C.whatsapp + '?text=' + encodeURIComponent('أرغب بتفعيل تطبيق الأقساط. رقم جهازي: ' + f);
     q('#lgo').onclick = async function () {
       var c = q('#lcode').value, r = await check(c);
@@ -115,6 +139,7 @@
   }
 
   var saved = g(K.code);
-  if (!saved) lock('');
+  if (demo) lock('');
+  else if (!saved) lock('');
   else check(saved).then(function (r) { r.ok ? done(r) : lock(r.msg); });
 })();
