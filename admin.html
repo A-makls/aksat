@@ -5,62 +5,99 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>إدارة التفعيل</title>
+<meta name="theme-color" content="#0b1f4d">
+<link rel="manifest" href="admin.webmanifest">
+<link rel="icon" type="image/png" href="icon-admin-192.png">
+<link rel="apple-touch-icon" href="icon-admin-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="إدارة التفعيل">
 <style>
-:root{--p:#0f766e;--bg:#f1f5f9;--c:#fff;--t:#0f172a;--m:#64748b;--b:#e2e8f0;--ok:#16a34a;--w:#d97706;--bad:#dc2626}
-@media(prefers-color-scheme:dark){:root{--bg:#0b1220;--c:#162033;--t:#e5edf8;--m:#94a3b8;--b:#25324a;--p:#14b8a6}}
+:root{--navy:#0b1f4d;--blue:#0284c7;--gold:#d9a02e;--bg:#eef3f9;--c:#fff;--t:#0f172a;--m:#64748b;--b:#e2e8f0;--in:#f6f9fc}
+@media(prefers-color-scheme:dark){:root{--bg:#07101f;--c:#10203a;--t:#e5edf8;--m:#94a3b8;--b:#22365a;--in:#0b1830}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--t);font:15px/1.6 Cairo,system-ui,sans-serif;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom))}
-main{max-width:560px;margin:auto}h1{font-size:20px;margin:6px 0 14px}h2{font-size:16px;margin:0 0 10px}
-.card{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:14px;margin-bottom:12px}
-input,select,textarea{width:100%;padding:10px;border:1px solid var(--b);border-radius:10px;font:inherit;margin-bottom:8px;background:var(--bg);color:var(--t)}
-button{padding:10px 14px;border:0;border-radius:10px;background:var(--p);color:#fff;font:inherit;font-weight:700;cursor:pointer}
-button.g{background:var(--b);color:var(--t)}button.r{background:#fee2e2;color:var(--bad)}
+body{margin:0;background:var(--bg);color:var(--t);font:15px/1.6 Cairo,system-ui,-apple-system,sans-serif}
+.grad{background:radial-gradient(circle at 88% 6%,rgba(250,204,21,.18),transparent 36%),linear-gradient(165deg,#0b1f4d 0%,#0c3a7a 55%,#0284c7 100%)}
+.lkp{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:max(18px,env(safe-area-inset-top)) 18px max(18px,env(safe-area-inset-bottom));background:radial-gradient(circle at 88% 6%,rgba(250,204,21,.18),transparent 36%),radial-gradient(circle at 8% 94%,rgba(56,189,248,.3),transparent 44%),linear-gradient(165deg,#0b1f4d 0%,#0c3a7a 48%,#0284c7 100%)}
+.lw{width:100%;max-width:400px;text-align:center}
+.logo{width:96px;height:96px;border-radius:26px;display:block;margin:0 auto 12px;box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.lw h1{color:#fff;font-size:27px;margin:0}.sub{color:rgba(255,255,255,.8);font-size:13.5px;margin:4px 0 16px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:22px;padding:16px;margin-bottom:12px;box-shadow:0 8px 24px rgba(2,6,23,.06)}
+.lw .card{padding:20px 18px;box-shadow:0 22px 50px rgba(2,6,23,.38);text-align:right}
+h2{font-size:16.5px;margin:0 0 12px;color:var(--navy)}@media(prefers-color-scheme:dark){h2{color:#cfe3ff}}
+input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid var(--b);border-radius:13px;font:inherit;margin-bottom:9px;background:var(--in);color:var(--t);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(2,132,199,.14)}
+button{padding:11px 14px;border:0;border-radius:13px;background:var(--blue);color:#fff;font:inherit;font-weight:800;cursor:pointer;transition:transform .15s}button:active{transform:scale(.98)}
+button.gold{width:100%;background:linear-gradient(135deg,#f7d56b,#d9a02e);color:#3b2a05;box-shadow:0 8px 18px rgba(217,160,46,.38);font-size:16px;padding:13px}
+button.g{background:var(--b);color:var(--t)}button.r{background:#fee2e2;color:#b91c1c}button.sm{padding:7px 14px;font-size:13px;background:rgba(255,255,255,.18);color:#fff}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}
-.it{border-top:1px solid var(--b);padding:10px 0}.it:first-of-type{border:0}
-.ok{color:var(--ok)}.warn{color:var(--w)}.bad{color:var(--bad)}.mut{color:var(--m);font-size:13px}
-.ltr{direction:ltr;unicode-bidi:plaintext;font-family:monospace;word-break:break-all}
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:8px 16px;border-radius:99px;display:none}
+.top{padding:max(14px,env(safe-area-inset-top)) 16px 40px;border-radius:0 0 28px 28px;color:#fff}
+.bar{display:flex;align-items:center;gap:11px;max-width:560px;margin:0 auto 14px}.bar>div{flex:1}.bar b{display:block;font-size:18px;line-height:1.3}.bar small{opacity:.8;font-size:12.5px}
+.mini{width:46px;height:46px;border-radius:14px;box-shadow:0 0 0 2px rgba(245,196,81,.6)}
+.st{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:560px;margin:auto}
+.st>div{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:14px;padding:8px 2px;text-align:center;backdrop-filter:blur(6px)}
+.st b{display:block;font-size:22px;line-height:1.2}.st small{font-size:11.5px;opacity:.85}
+main{max-width:560px;margin:-22px auto 0;padding:0 14px max(24px,env(safe-area-inset-bottom))}
+.mut{color:var(--m);font-size:13px}.ltr{direction:ltr;unicode-bidi:plaintext;font-family:ui-monospace,Menlo,monospace;word-break:break-all}
+.cu{border-top:1px solid var(--b);padding:12px 0}.cu:first-child{border:0}
+.cr{display:flex;align-items:center;gap:10px;margin-bottom:8px}.ci{flex:1;min-width:0}.ci b{display:block}
+.av{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#0c3a7a,#0284c7);color:#fff;display:grid;place-items:center;font-weight:800;font-size:17px}
+.pl{font-size:12.5px;font-weight:800;border-radius:99px;padding:3px 11px;white-space:nowrap}
+.pl.ok{background:#dcfce7;color:#15803d}.pl.warn{background:#fef3c7;color:#b45309}.pl.bad{background:#fee2e2;color:#b91c1c}
+.cu button{padding:8px 4px;font-size:13px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:9px 18px;border-radius:99px;display:none;z-index:9}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
-<main>
-<div id="lock" class="card">
-  <h1>إدارة التفعيل</h1>
-  <p class="mut" id="lt"></p>
-  <input id="pw" type="password" placeholder="كلمة المرور" autocomplete="off">
-  <textarea id="rs" rows="3" hidden placeholder="الصق النسخة الاحتياطية هنا" class="ltr"></textarea>
-  <div class="row"><button id="lb">دخول</button><button class="g" id="lr">استعادة نسخة</button></div>
-</div>
+<div id="lock" class="lkp"><div class="lw">
+  <img class="logo" src="icon-admin-192.png" alt="">
+  <h1>أقساطي وديوني</h1><div class="sub">لوحة إدارة التفعيل</div>
+  <div class="card">
+    <h2>🔐 الدخول</h2>
+    <p class="mut" id="lt"></p>
+    <input id="pw" type="password" placeholder="كلمة المرور" autocomplete="off">
+    <textarea id="rs" rows="3" hidden placeholder="الصق النسخة الاحتياطية هنا" class="ltr"></textarea>
+    <button class="gold" id="lb">دخول</button>
+    <button class="g" id="lr" style="width:100%;margin-top:8px">استعادة نسخة احتياطية</button>
+  </div>
+</div></div>
 
 <div id="app" hidden>
-  <h1>إدارة التفعيل</h1>
-  <div class="card">
-    <h2>إصدار رمز</h2>
-    <input id="nm" placeholder="اسم العميل">
-    <input id="ph" inputmode="numeric" placeholder="واتساب العميل مع المفتاح، مثال 9647701234567">
-    <input id="dev" class="ltr" placeholder="رقم جهاز العميل XXXX-XXXX" autocapitalize="characters">
-    <label class="mut"><input id="any" type="checkbox" style="width:auto"> يعمل على أي جهاز</label>
-    <select id="dur"><option value="30">شهر</option><option value="90">3 أشهر</option><option value="180">6 أشهر</option><option value="365">سنة</option><option value="0">دائم</option></select>
-    <button id="go" style="width:100%">إصدار الرمز</button>
-    <div id="res" hidden style="margin-top:10px">
-      <textarea id="out" rows="4" readonly class="ltr"></textarea>
-      <div class="row"><button id="cc">نسخ الرمز</button><button id="cw" class="g">إرسال بواتساب</button></div>
+  <header class="top grad">
+    <div class="bar"><img class="mini" src="icon-admin-192.png" alt=""><div><b>أقساطي وديوني</b><small>لوحة إدارة التفعيل</small></div><button class="sm" id="lo">خروج</button></div>
+    <div class="st"><div><b id="s1">0</b><small>العملاء</small></div><div><b id="s2">0</b><small>فعّال</small></div><div><b id="s3">0</b><small>ينتهي قريباً</small></div><div><b id="s4">0</b><small>منتهٍ</small></div></div>
+  </header>
+  <main>
+    <div class="card">
+      <h2>🔑 إصدار رمز تفعيل</h2>
+      <input id="nm" placeholder="اسم العميل">
+      <input id="ph" inputmode="numeric" class="ltr" placeholder="واتساب العميل مع المفتاح 9647701234567">
+      <input id="dev" class="ltr" placeholder="رقم جهاز العميل XXXX-XXXX" autocapitalize="characters">
+      <label class="mut"><input id="any" type="checkbox" style="width:auto;margin-left:6px"> يعمل على أي جهاز</label>
+      <select id="dur"><option value="30">شهر</option><option value="90">3 أشهر</option><option value="180">6 أشهر</option><option value="365">سنة</option><option value="0">دائم</option></select>
+      <button class="gold" id="go">إصدار الرمز</button>
+      <div id="res" hidden style="margin-top:12px">
+        <textarea id="out" rows="4" readonly class="ltr"></textarea>
+        <div class="row"><button id="cc">نسخ الرمز</button><button id="cw" class="g">💬 إرسال بواتساب</button></div>
+      </div>
     </div>
-  </div>
-  <div class="card"><h2>العملاء</h2><input id="q" placeholder="بحث بالاسم أو الرقم"><div id="ls"></div></div>
-  <div class="card">
-    <h2>الإعدادات</h2>
-    <p class="mut">رقم واتساب الذي يظهر للعميل في شاشة التفعيل:</p>
-    <input id="wa" inputmode="numeric" class="ltr" value="9647737043441">
-    <div class="row"><button id="sc">نص ملف license-config.js</button><button class="g" id="bk">نسخة احتياطية</button><button class="g" id="lo">خروج</button></div>
-    <textarea id="cfg" rows="8" readonly hidden class="ltr" style="margin-top:8px"></textarea>
-  </div>
+    <div class="card"><h2>👥 العملاء</h2><input id="q" placeholder="🔍 بحث بالاسم أو الرقم"><div id="ls"></div></div>
+    <div class="card">
+      <h2>⚙️ الإعدادات</h2>
+      <p class="mut">رقم واتساب الذي يظهر للعميل في شاشة التفعيل:</p>
+      <input id="wa" inputmode="numeric" class="ltr" value="9647737043441">
+      <div class="row"><button id="sc">نص license-config.js</button><button class="g" id="bk">نسخة احتياطية</button></div>
+      <textarea id="cfg" rows="8" readonly hidden class="ltr" style="margin-top:9px"></textarea>
+    </div>
+  </main>
 </div>
-</main>
 <div id="toast"></div>
 <script>
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(function(){});
 var $=function(i){return document.getElementById(i)};
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 var enc=new TextEncoder(),dec=new TextDecoder(),S=null,AK=null,SK=null,salt=null,cur=null;
 var ECD={name:'ECDSA',namedCurve:'P-256'};
 function b64(u){u=new Uint8Array(u);var s='';for(var i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s)}
@@ -74,19 +111,19 @@ function cp(t){navigator.clipboard.writeText(t).then(function(){msg('تم الن
 function el(tag,text,cls){var e=document.createElement(tag);if(text)e.textContent=text;if(cls)e.className=cls;return e}
 
 async function derive(pw,sl){var m=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:sl,iterations:200000,hash:'SHA-256'},m,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
-async function save(){var iv=crypto.getRandomValues(new Uint8Array(12));var ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},AK,enc.encode(JSON.stringify(S)));localStorage.setItem('aqsati_vault',JSON.stringify({s:b64(salt),i:b64(iv),c:b64(ct)}))}
+async function save(){var iv=crypto.getRandomValues(new Uint8Array(12));var ct=await crypto.subtle.encrypt({name:'AES-GCM',iv:iv},AK,enc.encode(JSON.stringify(S)));lsSet('aqsati_vault',JSON.stringify({s:b64(salt),i:b64(iv),c:b64(ct)}))}
 async function openVault(text,pw){var v=JSON.parse(text);salt=ub64(v.s);AK=await derive(pw,salt);var pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:ub64(v.i)},AK,ub64(v.c));S=JSON.parse(dec.decode(pt));SK=await crypto.subtle.importKey('jwk',S.priv,ECD,false,['sign'])}
 async function setup(pw){salt=crypto.getRandomValues(new Uint8Array(16));AK=await derive(pw,salt);var kp=await crypto.subtle.generateKey(ECD,true,['sign','verify']);S={priv:await crypto.subtle.exportKey('jwk',kp.privateKey),customers:[]};SK=kp.privateKey;await save()}
 async function mk(dev,exp){var data=enc.encode(JSON.stringify({d:dev,e:exp}));var sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},SK,data);return b64u(data)+'.'+b64u(sig)}
 
-var V=localStorage.getItem('aqsati_vault');
+var V=lsGet('aqsati_vault');
 $('lt').textContent=V?'أدخل كلمة المرور.':'أول استخدام: اختر كلمة مرور (6 أحرف على الأقل) لحماية مفاتيح التفعيل. لا يمكن استرجاعها إن نسيتها.';
 $('lr').onclick=function(){$('rs').hidden=false};
 $('lb').onclick=async function(){
   var pw=$('pw').value,rs=$('rs').value.trim();
   if(pw.length<6)return msg('كلمة المرور 6 أحرف على الأقل');
   try{
-    if(rs){await openVault(rs,pw);localStorage.setItem('aqsati_vault',rs)}
+    if(rs){await openVault(rs,pw);lsSet('aqsati_vault',rs)}
     else if(V)await openVault(V,pw);
     else await setup(pw);
     start();
@@ -102,20 +139,23 @@ function status(c){
 function wa(c){window.open('https://wa.me/'+(c.p||'')+'?text='+encodeURIComponent('رمز تفعيل تطبيق الأقساط:\n'+c.c),'_blank')}
 function show(c){cur=c;$('out').value=c.c;$('res').hidden=false}
 function render(){
-  var q=($('q').value||'').toLowerCase(),L=$('ls');L.textContent='';
-  var a=S.customers.filter(function(c){return(c.n+c.p+c.d).toLowerCase().indexOf(q)>-1});
+  var q=($('q').value||'').toLowerCase(),L=$('ls'),n=S.customers,c={ok:0,warn:0,bad:0};
+  n.forEach(function(x){c[status(x)[1]]++});
+  $('s1').textContent=n.length;$('s2').textContent=c.ok+c.warn;$('s3').textContent=c.warn;$('s4').textContent=c.bad;
+  L.textContent='';
+  var a=n.filter(function(x){return(x.n+x.p+x.d).toLowerCase().indexOf(q)>-1});
   if(!a.length){L.appendChild(el('p','لا يوجد عملاء بعد. أصدر أول رمز من الأعلى.','mut'));return}
-  a.forEach(function(c){
-    var st=status(c),d=el('div','','it');
-    d.appendChild(el('b',c.n));
-    d.appendChild(el('div',(c.p?c.p+'  •  ':'')+fmt(c.d),'mut ltr'));
-    d.appendChild(el('div',st[0],st[1]));
-    var r=el('div','','row');r.style.marginTop='6px';
-    var b1=el('button','تجديد','g');b1.onclick=function(){$('nm').value=c.n;$('ph').value=c.p;$('any').checked=c.d==='*';$('dev').value=c.d==='*'?'':fmt(c.d);scrollTo(0,0);msg('اختر المدة واضغط إصدار')};
-    var b2=el('button','نسخ الرمز','g');b2.onclick=function(){cp(c.c)};
-    var b3=el('button','واتساب','g');b3.onclick=function(){wa(c)};
-    var b4=el('button','حذف','r');b4.onclick=async function(){if(confirm('حذف '+c.n+'؟')){S.customers=S.customers.filter(function(x){return x!==c});await save();render()}};
-    [b1,b2,b3,b4].forEach(function(b){r.appendChild(b)});d.appendChild(r);L.appendChild(d);
+  a.forEach(function(x){
+    var st=status(x),w=el('div','','cu'),t=el('div','','cr'),i=el('div','','ci');
+    t.appendChild(el('div',(x.n||'؟').trim().charAt(0),'av'));
+    i.appendChild(el('b',x.n));i.appendChild(el('span',(x.p?x.p+'  •  ':'')+fmt(x.d),'mut ltr'));
+    t.appendChild(i);t.appendChild(el('span',st[0],'pl '+st[1]));w.appendChild(t);
+    var r=el('div','','row');
+    [['تجديد','g',function(){$('nm').value=x.n;$('ph').value=x.p;$('any').checked=x.d==='*';$('dev').value=x.d==='*'?'':fmt(x.d);scrollTo(0,0);msg('اختر المدة واضغط إصدار')}],
+     ['نسخ الرمز','g',function(){cp(x.c)}],['واتساب','g',function(){wa(x)}],
+     ['حذف','r',async function(){if(confirm('حذف '+x.n+'؟')){S.customers=S.customers.filter(function(y){return y!==x});await save();render()}}]
+    ].forEach(function(d){var bt=el('button',d[0],d[1]);bt.onclick=d[2];r.appendChild(bt)});
+    w.appendChild(r);L.appendChild(w);
   });
 }
 $('q').oninput=render;
@@ -136,7 +176,7 @@ $('sc').onclick=function(){
   var t='window.AQSATI_LICENSE = '+JSON.stringify({publicKey:pub,whatsapp:$('wa').value.replace(/\D/g,'')},null,2)+';\n';
   $('cfg').value=t;$('cfg').hidden=false;cp(t);
 };
-$('bk').onclick=function(){cp(localStorage.getItem('aqsati_vault'))};
+$('bk').onclick=function(){cp(lsGet('aqsati_vault'))};
 $('lo').onclick=function(){location.reload()};
 </script>
 </body>

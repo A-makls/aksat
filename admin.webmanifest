@@ -1,0 +1,28 @@
+{
+  "id": "./admin.html",
+  "name": "إدارة أقساطي وديوني",
+  "short_name": "إدارة التفعيل",
+  "description": "لوحة إصدار رموز التفعيل وإدارة العملاء",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./admin.html",
+  "scope": "./admin.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1f4d",
+  "theme_color": "#0b1f4d",
+  "icons": [
+    {
+      "src": "icon-admin-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-admin-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
