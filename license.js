@@ -1,4 +1,51 @@
 (function () {
+
+  // ===== بطاقة حالة الاشتراك في الواجهة الرئيسية =====
+  (function () {
+    var st = document.createElement('style');
+    st.textContent = '.subc{margin:12px 2px 2px;padding:12px 12px 10px;border-radius:18px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.32);color:#fff;text-align:center;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 6px 18px rgba(0,0,0,.12)}'
+      + '.subc[hidden]{display:none}.sc-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}'
+      + '.sc-t{font-size:13px;opacity:.9;font-weight:700}'
+      + '.sc-p{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.22);border:1px solid rgba(134,239,172,.6);color:#dcfce7;border-radius:99px;padding:3px 11px;font-size:12.5px;font-weight:800}'
+      + '.sc-p i{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:scp 1.8s infinite}'
+      + '.sc-w .sc-p{background:rgba(251,191,36,.25);border-color:rgba(253,224,71,.7);color:#fef3c7}.sc-w .sc-p i{background:#fbbf24}'
+      + '.sc-g{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;direction:rtl}'
+      + '.sc-g>div{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);border-radius:12px;padding:8px 2px}'
+      + '.sc-g .n{display:block;font-size:21px;font-weight:800;line-height:1.25;font-variant-numeric:tabular-nums}.sc-g small{display:block;font-size:11.5px;opacity:.85}'
+      + '.sc-f{margin-top:9px;font-size:12.5px;opacity:.92}.sc-l{font-size:20px;font-weight:800;padding:6px 0}'
+      + '@keyframes scp{0%{box-shadow:0 0 0 0 rgba(74,222,128,.6)}70%,100%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}'
+      + '@media(prefers-reduced-motion:reduce){.sc-p i{animation:none}}';
+    document.head.appendChild(st);
+    function p2(n) { return (n < 10 ? '0' : '') + n; }
+    function ymd0(d) { return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); }
+    if (/sub-demo/.test(location.hash) && !window.AQSATI_SUB) { var dd0 = new Date(); dd0.setDate(dd0.getDate() + 27); window.AQSATI_SUB = { exp: ymd0(dd0) }; }
+    function build(el, S) {
+      var life = S.exp === '0';
+      el.innerHTML = '<div class="sc-h"><span class="sc-t">حالة الاشتراك</span><span class="sc-p"><i></i><span data-k="p">نشط</span></span></div>'
+        + (life ? '<div class="sc-l">اشتراك دائم</div>'
+          : '<div class="sc-g"><div><span class="n" data-k="d">00</span><small>يوم</small></div><div><span class="n" data-k="h">00</span><small>ساعة</small></div><div><span class="n" data-k="m">00</span><small>دقيقة</small></div><div><span class="n" data-k="s">00</span><small>ثانية</small></div></div>'
+            + '<div class="sc-f">ينتهي: <span dir="ltr" data-k="e"></span></div>');
+      var e = el.querySelector('[data-k="e"]'); if (e) e.textContent = S.exp.split('-').reverse().join('/');
+      el.setAttribute('data-b', '1');
+    }
+    function put(el, k, v) { var n = el.querySelector('[data-k="' + k + '"]'); if (n && n.textContent !== v) n.textContent = v; }
+    function tick() {
+      var el = document.getElementById('subc'), S = window.AQSATI_SUB;
+      if (!el) return;
+      if (!S) { el.hidden = true; return; }
+      el.hidden = false;
+      if (!el.getAttribute('data-b')) build(el, S);
+      if (S.exp === '0') return;
+      var t = new Date(S.exp + 'T23:59:59') - Date.now();
+      if (t <= 0) { if (!window.__subr) { window.__subr = 1; location.reload(); } return; }
+      var s = Math.floor(t / 1e3), d = Math.floor(s / 86400);
+      put(el, 'd', p2(d)); put(el, 'h', p2(Math.floor(s % 86400 / 3600))); put(el, 'm', p2(Math.floor(s % 3600 / 60))); put(el, 's', p2(s % 60));
+      var w = d < 7; el.classList.toggle('sc-w', w); put(el, 'p', w ? 'ينتهي قريباً' : 'نشط');
+    }
+    window.__subTick = tick;
+    setInterval(tick, 1000);
+  })();
+
   var C = window.AQSATI_LICENSE;
   if (!C || !C.publicKey) return;
   var K = { id: 'aqsati_device_id', code: 'aqsati_license_code', seen: 'aqsati_license_seen' };
@@ -23,7 +70,7 @@
       if (days(seen, t) > 1) return { ok: false, msg: 'تاريخ الجهاز غير صحيح، صحّحه ثم أعد المحاولة' };
       if (o.e !== '0' && days(t, o.e) > 0) return { ok: false, msg: 'انتهت صلاحية الرمز بتاريخ ' + o.e };
       if (t > seen) s(K.seen, t);
-      return { ok: true, left: o.e === '0' ? null : days(o.e, t) };
+      return { ok: true, exp: o.e, left: o.e === '0' ? null : days(o.e, t) };
     } catch (e) { return { ok: false, msg: 'الرمز غير صحيح' }; }
   }
 
@@ -34,6 +81,8 @@
 
   function done(r) {
     ov.remove();
+    window.AQSATI_SUB = { exp: r.exp };
+    window.__subTick();
     if (r.left !== null && r.left <= 7) {
       var b = document.createElement('div');
       b.textContent = r.left <= 0 ? 'ينتهي الاشتراك اليوم' : 'ينتهي الاشتراك بعد ' + r.left + ' يوم';
