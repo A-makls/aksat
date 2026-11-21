@@ -3492,7 +3492,11 @@ body.hm .subc { flex-shrink: 0; }
   .scard, .scard::before, .sshield, .sshield .pr1, .sshield .pr2, .sbadge i, .scard .tho, .scard .tho.on::after, .sbtn::after { animation: none !important; }
 }
 
-.shl { display: flex; align-items: center; justify-content: center; padding: 12px; margin-bottom: 12px; border-radius: 14px; border: 1px dashed var(--bd); background: rgba(148, 163, 184, .08); font-family: ui-monospace, Menlo, monospace; font-size: 13px; word-break: break-all; text-align: center; color: var(--tx); }
+.sap { display: flex; align-items: center; gap: 14px; padding: 14px; margin-bottom: 12px; border-radius: 18px; border: 1px solid var(--bd); background: rgba(148, 163, 184, .08); }
+.sap img { width: 64px; height: 64px; flex: none; border-radius: 16px; box-shadow: 0 8px 18px rgba(0, 0, 0, .2); animation: pinFloat 3.4s ease-in-out infinite; }
+.sap b { display: block; font-size: 17px; }
+.sap small { display: block; margin-top: 3px; color: var(--mut); line-height: 1.6; }
+@media (prefers-reduced-motion: reduce) { .sap img { animation: none !important; } }
 .scard .acts { display: flex; gap: 8px; margin-top: 8px; }
 .scard .acts .btn { flex: 1; }
 </style>
@@ -4950,7 +4954,7 @@ const APP_URL = "https://A-makls.github.io/aksat/", APP_MSG = "جرّب تطبي
 function shareCard() {
   SI.share = SI.share || '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/>';
   SHC.share = SHC.share || ["#f472b6", "#db2777"];
-  return scd("share", 6) + shd2("share", "مشاركة التطبيق", "انشر رابط التطبيق مع أصدقائك وزبائنك للترويج له") + '<div class="shl" dir="ltr">' + APP_URL + '</div><button class="btn sbtn" onclick="shareApp()">مشاركة الرابط</button><div class="acts"><button class="btn sm ghost" onclick="shareWa()">واتساب</button><button class="btn sm ghost" onclick="copyApp()">نسخ الرابط</button></div></div>';
+  return scd("share", 6) + shd2("share", "مشاركة التطبيق", "انشر رابط التطبيق مع أصدقائك وزبائنك للترويج له") + '<div class="sap"><img src="icon-192.png" alt="" width="64" height="64"><div><b>أقساطي وديوني</b><small>إدارة الأقساط والديون والعملاء</small></div></div><button class="btn sbtn" onclick="shareApp()">مشاركة الرابط</button><div class="acts"><button class="btn sm ghost" onclick="shareWa()">واتساب</button><button class="btn sm ghost" onclick="copyApp()">نسخ الرابط</button></div></div>';
 }
 function copyApp() {
   try {
