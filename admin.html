@@ -138,6 +138,28 @@ input,select,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
 .pin{max-width:560px;margin:auto}.pg.on .pin .card{animation:rise .5s both}.pg.on .pin .card:nth-child(2){animation-delay:.08s}.pg.on .pin .card:nth-child(3){animation-delay:.16s}
 .navw{transition:transform .4s cubic-bezier(.2,.8,.2,1)}body.pgo .navw{transform:translateY(125%)}
 @media(prefers-reduced-motion:reduce){.pg,.navw{transition:none}.pgr svg{animation:none}}
+
+.bkst{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;margin:10px 0 12px;font-weight:800;animation:bkIn .5s cubic-bezier(.2,.9,.3,1) both}
+.bkst i{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-style:normal;font-size:19px;background:rgba(255,255,255,.55)}
+.bkst small{display:block;font-weight:600;opacity:.85;font-size:12px;margin-top:2px;line-height:1.6}
+.bkst.ok{background:#dcfce7;color:#15803d}.bkst.warn{background:#fef3c7;color:#b45309}.bkst.bad{background:#fee2e2;color:#b91c1c}
+.bkst.ok i{animation:bkPulse 2.4s ease-in-out infinite}
+.bkst.warn i,.bkst.bad i{animation:bkShake 3s ease-in-out infinite}
+.bkr{display:flex;justify-content:space-between;gap:10px;padding:9px 2px;border-bottom:1px dashed var(--b);font-size:14px}
+.bkr span{color:var(--m)}
+.bkx{display:flex;justify-content:center;align-items:center;gap:8px;padding:13px;border-radius:14px;background:#16a34a;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 8px 18px rgba(22,163,74,.3);transition:transform .15s}
+.bkx:active{transform:scale(.97)}
+.bkx input{display:none}
+.bkx[hidden]{display:none}
+.bkrs{margin-top:12px;padding:12px;border-radius:16px;background:var(--in);border:1px solid var(--b);animation:bkIn .35s ease both}
+.bkri{font-size:13px;line-height:1.8;margin-bottom:10px}
+.bkd{margin-top:12px}.bkd summary{cursor:pointer;margin-bottom:8px}
+.bkl{display:flex;gap:8px;font-size:13px;color:var(--m);padding:4px 0;line-height:1.7}
+.bkl span:first-child{color:#16a34a;font-weight:800}
+@keyframes bkIn{from{opacity:0;transform:translateY(8px)}}
+@keyframes bkPulse{50%{transform:scale(1.12)}}
+@keyframes bkShake{0%,88%,100%{transform:rotate(0)}91%{transform:rotate(-12deg)}94%{transform:rotate(10deg)}97%{transform:rotate(-6deg)}}
+@media(prefers-reduced-motion:reduce){.bkst,.bkst i,.bkrs{animation:none!important}}
 </style>
 </head>
 <body>
@@ -150,6 +172,7 @@ input,select,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
     <p class="mut" id="lt"></p>
     <input id="pw" type="password" placeholder="كلمة المرور" autocomplete="off">
     <textarea id="rs" rows="3" hidden placeholder="الصق النسخة الاحتياطية هنا" class="ltr"></textarea>
+    <label class="bkx" id="rfl" hidden style="margin-bottom:9px">📂 اختيار ملف النسخة<input type="file" id="rf" accept=".json,.txt,application/json,text/plain"></label>
     <button class="gold" id="lb">دخول</button>
     <button class="g" id="lr" style="width:100%;margin-top:8px">استعادة نسخة احتياطية</button>
   </div>
@@ -187,8 +210,30 @@ input,select,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
       <input id="wa" inputmode="numeric" class="ltr" value="9647737043441" style="margin:0"></div>
     <div class="card"><h2 class="h3">🧩 ملف الإعداد والنسخ الاحتياطي</h2><p class="mut">انسخ نص الإعداد وضعه في license-config.js، واحفظ نسخة احتياطية مشفّرة من مفاتيحك.</p>
       <p class="mut">بصمة مفتاحك: <b class="ltr" id="fp">-</b> (يجب أن تطابق «key» في شاشة التفعيل)</p>
-      <div class="row"><button id="sc">نص license-config.js</button><button class="g" id="bk">نسخة احتياطية</button></div>
+      <div class="row"><button id="sc">نص license-config.js</button></div>
       <textarea id="cfg" rows="8" readonly hidden class="ltr" style="margin:9px 0 0"></textarea></div>
+    <div class="card bkc" id="bkCard"><h2 class="h3">☁️ النسخة الاحتياطية</h2>
+      <p class="mut">نسخة مشفّرة بكلمة مرور اللوحة تحمي مفاتيحك وعملاءك من الضياع.</p>
+      <div class="bkst" id="bkSt"></div>
+      <div class="bkr"><span>🗓️ آخر نسخة</span><b id="bkTs">—</b></div>
+      <div class="bkr"><span>👥 العملاء في النسخة</span><b id="bkN">—</b></div>
+      <div class="bkr"><span>🔖 النوع</span><b id="bkTy">—</b></div>
+      <button class="gold" id="bkNow" style="margin-top:12px">⬇️ إنشاء نسخة احتياطية الآن</button>
+      <button class="g" id="bkCp" style="width:100%;margin-top:8px">📋 نسخ النص بدل الملف</button>
+    </div>
+    <div class="card"><h2 class="h3">📥 استعادة نسخة احتياطية</h2>
+      <p class="mut">اختر ملف النسخة (‎.json). تحل محل الخزنة الحالية بعد إدخال كلمة مرور تلك النسخة.</p>
+      <label class="bkx">📂 اختيار ملف<input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain"></label>
+      <div id="bkRs" class="bkrs" hidden><div class="bkri" id="bkRi"></div><input id="bkRp" type="password" placeholder="كلمة مرور النسخة" autocomplete="off"><div class="row"><button class="gold" id="bkGo" style="flex:1;width:auto">استعادة</button><button class="g" id="bkNo">إلغاء</button></div></div>
+      <details class="bkd"><summary class="mut">طريقة بديلة: لصق النص</summary><textarea id="bkTx" rows="3" class="ltr" placeholder="الصق نص النسخة هنا"></textarea><button class="g" id="bkPs" style="width:100%">قراءة النص</button></details>
+    </div>
+    <div class="card"><h2 class="h3">ℹ️ معلومات مهمة</h2>
+      <div class="bkl"><span>✔</span><span>الملف مشفّر، ولا يُقرأ بدون كلمة مرور اللوحة.</span></div>
+      <div class="bkl"><span>✔</span><span>احفظ الملف خارج المتصفح: ملفات آيفون، أو واتساب لنفسك، أو إيميل.</span></div>
+      <div class="bkl"><span>✔</span><span>خذ نسخة جديدة بعد كل إصدار أو تجديد أو حذف.</span></div>
+      <div class="bkl"><span>✔</span><span>بعد الاستعادة تصبح كلمة مرور اللوحة هي كلمة مرور تلك النسخة.</span></div>
+      <div class="bkl"><span>✔</span><span>تُحفظ الخزنة السابقة تلقائياً قبل أي استعادة كإجراء أمان.</span></div>
+    </div>
     <div class="card"><h2 class="h3">🔒 الحساب</h2>
       <button class="xt" id="xt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H9"/><path d="M16 8l4 4-4 4M20 12H9"/></svg><span><b>تسجيل الخروج</b><small>يُقفل التطبيق وتحتاج كلمة المرور للدخول مجدداً</small></span></button></div>
   </div></div>
@@ -240,18 +285,19 @@ async function mk(dev,exp){var data=enc.encode(JSON.stringify({d:dev,e:exp}));va
 
 var V=lsGet('aqsati_vault');
 $('lt').textContent=V?'أدخل كلمة المرور.':'أول استخدام: اختر كلمة مرور (6 أحرف على الأقل) لحماية مفاتيح التفعيل. لا يمكن استرجاعها إن نسيتها.';
-$('lr').onclick=function(){$('rs').hidden=false};
+$('lr').onclick=function(){$('rs').hidden=false;$('rfl').hidden=false};
 $('lb').onclick=async function(){
-  var pw=$('pw').value,rs=$('rs').value.trim();
+  var pw=$('pw').value,rs=$('rs').value.trim(),u0=null;
+  if(rs){u0=unwrap(rs);if(u0)rs=u0.vault}
   if(pw.length<6)return msg('كلمة المرور 6 أحرف على الأقل');
   try{
-    if(rs){await openVault(rs,pw);lsSet('aqsati_vault',rs)}
+    if(rs){await openVault(rs,pw);lsSet('aqsati_vault',rs);lsSet(BM,JSON.stringify({ts:(u0&&u0.ts)||new Date().toISOString(),n:S.customers.length,fp:vfp(rs),ty:'مستعادة'}))}
     else if(V)await openVault(V,pw);
     else await setup(pw);
     start();
   }catch(e){msg('كلمة المرور أو النسخة غير صحيحة')}
 };
-function start(){$('fp').textContent=S.priv.x.slice(0,6);$('lock').hidden=true;$('app').hidden=false;render()}
+function start(){$('fp').textContent=S.priv.x.slice(0,6);$('lock').hidden=true;$('app').hidden=false;render();bkRefresh();setTimeout(bkWarn,1200)}
 
 function status(c){
   if(c.e==='0')return['دائم','ok'];
@@ -314,7 +360,88 @@ $('sc').onclick=function(){
   var t='window.AQSATI_LICENSE = '+JSON.stringify({publicKey:pub,whatsapp:$('wa').value.replace(/\D/g,'')},null,2)+';\n';
   $('cfg').value=t;$('cfg').hidden=false;cp(t);
 };
-$('bk').onclick=function(){cp(lsGet('aqsati_vault'))};
+/* ===== النسخة الاحتياطية الخاصة باللوحة ===== */
+var BM='aqsati_bak_meta',PEND=null;
+function pad2(n){return('0'+n).slice(-2)}
+function fts(t){var d=new Date(t);if(isNaN(d))return'—';return d.getFullYear()+'/'+pad2(d.getMonth()+1)+'/'+pad2(d.getDate())+'  '+pad2(d.getHours())+':'+pad2(d.getMinutes())}
+function vfp(t){try{return JSON.parse(t).i||''}catch(e){return''}}
+function bkMeta(){try{return JSON.parse(lsGet(BM)||'null')}catch(e){return null}}
+function unwrap(t){
+  t=(t||'').trim();
+  try{
+    var o=JSON.parse(t);
+    if(o&&o.s&&o.i&&o.c)return{vault:t};
+    if(o&&o.vault){var v=typeof o.vault==='string'?o.vault:JSON.stringify(o.vault),p=JSON.parse(v);if(p&&p.s&&p.i&&p.c)return{vault:v,ts:o.ts,n:o.n}}
+  }catch(e){}
+  return null;
+}
+function bkMark(ty,v){lsSet(BM,JSON.stringify({ts:new Date().toISOString(),n:S.customers.length,fp:vfp(v),ty:ty}));bkRefresh()}
+function bkRefresh(){
+  if(!S||!$('bkSt'))return;
+  var m=bkMeta(),v=lsGet('aqsati_vault'),cls,ic,t,sub;
+  if(!m){cls='bad';ic='⚠️';t='لا توجد نسخة احتياطية بعد';sub='إذا ضاعت بيانات المتصفح تضيع مفاتيحك وكل رموز عملائك'}
+  else if(m.fp&&m.fp===vfp(v)){cls='ok';ic='🛡️';t='نسختك الاحتياطية محدّثة';sub='لا توجد تغييرات بعد آخر نسخة'}
+  else{cls='warn';ic='⏳';var d=S.customers.length-(m.n||0);t='توجد تغييرات بعد آخر نسخة';sub=(d>0?'عملاء جدد: '+d+' — ':'')+'أنشئ نسخة جديدة للحفاظ على أحدث البيانات'}
+  var st=$('bkSt'),dv=el('div');
+  st.className='bkst '+cls;st.textContent='';
+  dv.appendChild(el('div',t));dv.appendChild(el('small',sub));
+  st.appendChild(el('i',ic));st.appendChild(dv);
+  $('bkTs').textContent=m?fts(m.ts):'—';$('bkN').textContent=m?String(m.n):'—';$('bkTy').textContent=m?m.ty:'—';
+}
+function bkWarn(){
+  var m=bkMeta(),v=lsGet('aqsati_vault');
+  if(!m)return msg('تنبيه: لم تأخذ نسخة احتياطية بعد (الإعدادات ← النسخة الاحتياطية)');
+  if(m.fp!==vfp(v)&&Date.now()-new Date(m.ts)>864e5)msg('توجد تغييرات بعد آخر نسخة احتياطية');
+}
+function bkPack(){
+  var v=lsGet('aqsati_vault');if(!v)return null;
+  var now=new Date();
+  return{v:v,now:now,txt:JSON.stringify({app:'aqsati-admin',v:1,ts:now.toISOString(),n:S.customers.length,fp:vfp(v),vault:v},null,2)};
+}
+$('bkNow').onclick=async function(){
+  var k=bkPack();if(!k)return msg('لا توجد بيانات للنسخ');
+  var name='aqsati-admin-backup-'+ymd(k.now)+'-'+pad2(k.now.getHours())+pad2(k.now.getMinutes())+'.json',f=null;
+  try{f=new File([k.txt],name,{type:'application/json'})}catch(e){}
+  if(f&&navigator.canShare&&navigator.canShare({files:[f]})){
+    try{await navigator.share({files:[f],title:'نسخة احتياطية - أقساطي وديوني'});bkMark('يدوية (ملف)',k.v);return msg('تم إنشاء النسخة الاحتياطية')}
+    catch(e){if(e&&e.name==='AbortError')return}
+  }
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([k.txt],{type:'application/json'}));a.download=name;
+  document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1500);
+  bkMark('يدوية (ملف)',k.v);msg('تم إنشاء النسخة الاحتياطية');
+};
+$('bkCp').onclick=function(){var k=bkPack();if(!k)return;cp(k.txt);bkMark('نص منسوخ',k.v)};
+function bkLoad(t){
+  var u=unwrap(t);if(!u)return msg('الملف غير صالح');
+  PEND=u;
+  $('bkRi').textContent='نسخة بتاريخ: '+(u.ts?fts(u.ts):'غير معروف')+(u.n!=null?' — '+u.n+' عميل':'')+'. ستحل محل الخزنة الحالية.';
+  $('bkRp').value='';$('bkRs').hidden=false;$('bkRp').focus();
+}
+function readFile(inp,cb){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(){cb(String(r.result))};r.readAsText(f);inp.value=''}
+$('bkFile').onchange=function(){readFile(this,bkLoad)};
+$('bkPs').onclick=function(){bkLoad($('bkTx').value)};
+$('bkNo').onclick=function(){PEND=null;$('bkRs').hidden=true};
+$('rf').onchange=function(){readFile(this,function(t){var u=unwrap(t);if(!u)return msg('الملف غير صالح');$('rs').value=u.vault;$('rs').hidden=false;msg('تم تحميل النسخة — أدخل كلمة المرور')})};
+$('bkGo').onclick=async function(){
+  var pw=$('bkRp').value;
+  if(!PEND)return;
+  if(pw.length<6)return msg('كلمة المرور 6 أحرف على الأقل');
+  if(!confirm('سيتم استبدال الخزنة الحالية بهذه النسخة. متابعة؟'))return;
+  var b0={S:S,AK:AK,SK:SK,salt:salt},prev=lsGet('aqsati_vault');
+  try{
+    await openVault(PEND.vault,pw);
+    if(prev)lsSet('aqsati_vault_prev',prev);
+    lsSet('aqsati_vault',PEND.vault);V=PEND.vault;
+    lsSet(BM,JSON.stringify({ts:PEND.ts||new Date().toISOString(),n:S.customers.length,fp:vfp(PEND.vault),ty:'مستعادة'}));
+    PEND=null;$('bkRs').hidden=true;$('bkTx').value='';
+    $('fp').textContent=S.priv.x.slice(0,6);render();bkRefresh();msg('تمت الاستعادة بنجاح');
+  }catch(e){
+    S=b0.S;AK=b0.AK;SK=b0.SK;salt=b0.salt;
+    msg('كلمة المرور غير صحيحة أو النسخة تالفة');
+  }
+};
 </script>
 </body>
 </html>
