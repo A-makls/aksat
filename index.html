@@ -3360,6 +3360,59 @@ main { overflow-x: clip; }
 /* ===== الديون المكتملة: إطار رمادي ===== */
 .card.dn { border: 1.5px solid #9aa0a6; }
 
+
+/* ===== رؤوس بطاقات الإعدادات (نفس نمط أيقونات الأقسام) ===== */
+.sh2 { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.sico.sm { width: 46px; height: 46px; border-radius: 15px; box-shadow: 0 6px 12px rgba(0, 0, 0, .16), inset 0 1px 0 rgba(255, 255, 255, .35); }
+.sico.sm svg { width: 23px; height: 23px; }
+.sh2 .stx b { font-size: 16px; }
+.sh2 .stx small { display: block; margin-top: 2px; line-height: 1.6; }
+
+/* ===== بطاقة رمز الحماية ===== */
+.pinc { position: relative; overflow: hidden; animation: pinIn .55s cubic-bezier(.2, .9, .3, 1) both; }
+.pinc::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #94a3b8, #cbd5e1, #94a3b8); }
+.pinc.on::before { background: linear-gradient(90deg, #10b981, #34d399, #0ea5e9, #10b981); background-size: 200% 100%; animation: pinBar 3.2s linear infinite; }
+.pinh { display: flex; align-items: center; gap: 12px; margin: 4px 0 16px; }
+.pshield { position: relative; width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; flex: none; color: #fff; background: linear-gradient(135deg, #94a3b8, #64748b); box-shadow: 0 8px 16px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255, 255, 255, .35); animation: pinFloat 3.4s ease-in-out infinite; }
+.pshield.on { background: linear-gradient(135deg, #34d399, #059669); }
+.pshield svg { position: relative; width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.pshield .pr1, .pshield .pr2 { position: absolute; inset: 0; border-radius: 18px; border: 2px solid rgba(52, 211, 153, .55); opacity: 0; pointer-events: none; }
+.pshield.on .pr1 { animation: pinRing 2.6s ease-out infinite; }
+.pshield.on .pr2 { animation: pinRing 2.6s ease-out 1.3s infinite; }
+.pchk { stroke-dasharray: 1; stroke-dashoffset: 1; animation: pinDraw .7s .35s ease forwards; }
+.pst { display: inline-flex; align-items: center; gap: 6px; flex: none; font-size: 12px; font-weight: 800; padding: 5px 11px; border-radius: 99px; color: #64748b; background: rgba(148, 163, 184, .16); }
+.pst i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pst.on { color: #059669; background: rgba(16, 185, 129, .15); }
+.pst.on i { animation: pinBlink 1.6s ease-in-out infinite; }
+.pdots { display: flex; justify-content: center; gap: 14px; padding: 14px 0; margin-bottom: 14px; border-radius: 16px; background: rgba(148, 163, 184, .1); border: 1px dashed var(--bd); }
+.pdots i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #94a3b8; opacity: .7; }
+.pdots.on i { border-color: #10b981; background: linear-gradient(135deg, #34d399, #059669); opacity: 1; animation: pinWave 1.8s ease-in-out infinite; }
+.pdots.on i:nth-child(2) { animation-delay: .15s; }
+.pdots.on i:nth-child(3) { animation-delay: .3s; }
+.pdots.on i:nth-child(4) { animation-delay: .45s; }
+.pchs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.pch { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; padding: 7px 12px; border-radius: 12px; color: var(--mut); background: rgba(148, 163, 184, .13); }
+.pch.on { color: #047857; background: rgba(16, 185, 129, .13); }
+.pch.on svg { animation: pinPop .5s cubic-bezier(.3, 1.6, .5, 1) both; }
+.pinc .acts { display: flex; gap: 8px; }
+.pinc .acts .btn { flex: 1; }
+.pbtn { position: relative; overflow: hidden; width: 100%; background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 18px rgba(5, 150, 105, .32); }
+.pbtn::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent); animation: pinShine 3s ease-in-out infinite; }
+@keyframes pinIn { from { opacity: 0; transform: translateY(14px) scale(.97); } }
+@keyframes pinFloat { 50% { transform: translateY(-3px); } }
+@keyframes pinRing { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.55); } }
+@keyframes pinDraw { to { stroke-dashoffset: 0; } }
+@keyframes pinBlink { 50% { opacity: .25; transform: scale(.7); } }
+@keyframes pinWave { 0%, 60%, 100% { transform: scale(1); } 30% { transform: scale(1.35); } }
+@keyframes pinBar { to { background-position: 200% 0; } }
+@keyframes pinPop { from { transform: scale(0); } }
+@keyframes pinShine { 0%, 55% { left: -60%; } 100% { left: 130%; } }
+@media (prefers-reduced-motion: reduce) {
+  .pinc, .pinc::before, .pshield, .pshield .pr1, .pshield .pr2, .pchk, .pst i, .pdots i, .pch svg, .pbtn::after { animation: none !important; }
+  .pchk { stroke-dashoffset: 0; }
+}
+.sico.xs { width: 42px; height: 42px; border-radius: 14px; box-shadow: 0 6px 12px rgba(0, 0, 0, .16), inset 0 1px 0 rgba(255, 255, 255, .35); }
+.sico.xs svg { width: 22px; height: 22px; }
 </style>
 </head>
 <body>
@@ -3782,7 +3835,7 @@ V.ddetail = function() {
     const rr = x.amount - x.paid;
     return card(E(x.prod || x.note || "دين") + ' <span class="tag">' + (x.type === "in" ? "لي" : "عليّ") + "</span>", x.date.split("-").reverse().join("/") + " · الكلي " + F(x.amount) + " · المسدد " + F(x.paid), (x.note ? `<button class="nt" onclick="event.stopPropagation();showNote('` + x.id + `')" aria-label="ملاحظة">!</button>` : "") + '<span class="' + (x.type === "in" ? "ok" : "bad") + '">' + F(rr) + "</span>", (rr > 0 ? `<button class="btn sm grn" onclick="payDebt('` + x.id + `')">تسديد</button>` : '<span class="tag g">مسدد</span>') + `<button class="btn sm" onclick="editDebt('` + x.id + `')">✏️ تعديل</button><button class="btn sm" style="background:#0d9488" onclick="debtPays('` + x.id + `',1)">🕘 التسديدات</button>` + dbtn("debts", x.id, "الدين"), bar(x.amount ? x.paid / x.amount * 100 : 0), "", rr <= 0 ? "dn" : "");
   }).join("");
-  return `<div class="tb" style="align-items:center"><button onclick="navBack('debts')">➡️</button><b style="flex:1;padding:0 8px">` + E(name) + '</b><button onclick="print()">🖨️</button>' + (rIn > 0 ? waDebt(d0.id, 1) : "") + `<button onclick="copyPerson('` + d0.id + `')">📋</button><button onclick="debtPays('` + d0.id + `')" aria-label="التسديدات">🕘</button></div>` + bn + '<div class="sm3"><div class="c"><span>👛</span><div class="mut">الدين الكلي</div><b style="color:#2563eb">' + F(t) + '</b></div><div class="c"><span>💵</span><div class="mut">المسدد</div><b class="ok">' + F(p) + '</b></div><div class="c"><span>💲</span><div class="mut">الباقي</div><b style="color:#f59e0b">' + F(r) + '</b></div></div><div class="dcard">' + kv("الاسم", E(name)) + kv("رقم الهاتف", phone ? `<a onclick="callPh('` + normPh(phone) + `')" style="cursor:pointer">` + E(phone) + " 📞</a>" : "—") + kv("عدد الديون", arr.length) + kv("مدة أقدم دين", dy + " أيام و " + hr + " ساعة و " + mn + " دقيقة") + '</div><div style="display:flex;gap:8px;margin:12px 0">' + `<button class="btn sm" style="background:#0ea5e9;flex:1" onclick="editGrp('` + d0.id + `')">✏️ تعديل</button><button class="btn sm red" style="flex:1" onclick="delPerson('` + d0.id + `')">🗑️ حذف</button>` + '</div><h2 style="margin-top:16px">قائمة ديون ' + E(name) + "</h2>" + list + `<div class="bt"><button style="background:#f0931b" onclick="addDebtFor('` + d0.id + `')">➕<br>إضافة دين</button><button style="background:#5cb85c" onclick="payPerson('` + d0.id + `')">🧾<br>تسديد</button></div>`;
+  return `<div class="tb" style="align-items:center"><button onclick="navBack('debts')">➡️</button><b style="flex:1;padding:0 8px">` + E(name) + `</b><button onclick="print()">🖨️</button><button onclick="editGrp('` + d0.id + `')" aria-label="تعديل">✏️</button><button onclick="delPerson('` + d0.id + `')" aria-label="حذف">🗑️</button>` + (rIn > 0 ? waDebt(d0.id, 1) : "") + `<button onclick="copyPerson('` + d0.id + `')">📋</button><button onclick="debtPays('` + d0.id + `')" aria-label="التسديدات">🕘</button></div>` + bn + '<div class="sm3"><div class="c"><span>👛</span><div class="mut">الدين الكلي</div><b style="color:#2563eb">' + F(t) + '</b></div><div class="c"><span>💵</span><div class="mut">المسدد</div><b class="ok">' + F(p) + '</b></div><div class="c"><span>💲</span><div class="mut">الباقي</div><b style="color:#f59e0b">' + F(r) + '</b></div></div><div class="dcard">' + kv("الاسم", E(name)) + kv("رقم الهاتف", phone ? `<a onclick="callPh('` + normPh(phone) + `')" style="cursor:pointer">` + E(phone) + " 📞</a>" : "—") + kv("عدد الديون", arr.length) + kv("مدة أقدم دين", dy + " أيام و " + hr + " ساعة و " + mn + " دقيقة") + '</div><h2 style="margin-top:16px">قائمة ديون ' + E(name) + "</h2>" + list + `<div class="bt"><button style="background:#f0931b" onclick="addDebtFor('` + d0.id + `')">➕<br>إضافة دين</button><button style="background:#5cb85c" onclick="payPerson('` + d0.id + `')">🧾<br>تسديد</button></div>`;
 };
 function addDebtFor(id) {
   const a0 = S.debts.find((x) => x.id === id), a = grp(gk(a0)), rem = a.reduce((s, x) => s + x.amount - x.paid, 0), ip = "background:#fff;color:#0f172a;margin:0 0 12px";
@@ -4344,7 +4397,7 @@ V.settings = function() {
 V.home = function() {
   const L = lateList(), d = /* @__PURE__ */ new Date(), ds = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear(), rec = S.inst.reduce((a, i) => a + late(i).rem, 0), dc = new Set(S.debts.map(gk)).size, dRem = S.debts.reduce((a, x) => a + (x.type === "in" ? x.amount - x.paid : 0), 0);
   const big = (k, ic, t, l1, l2, c, b) => '<div class="bigc" style="--c:' + c + `" onclick="go('` + k + `')">` + (b ? '<em class="bg">' + b + "</em>" : "") + ico(k, "l") + "<div><b>" + t + "</b><div>" + l1 + "</div><small>" + l2 + "</small></div></div>";
-  return adBar() + '<div class="db"><div class="dh"><div style="display:flex;gap:10px;align-items:center"><span class="hlogo' + (window.__hlp ? "" : " f") + '" style="--d:' + (document.getElementById("spl") ? "4.4s" : "0s") + '">' + HLOGO + "</span><div><b>" + E(S.office || "اكتب اسم مكتبك من الإعدادات") + '</b><div style="font-size:12px;opacity:.85">' + ds + ' 📅</div></div></div></div><div id="subc" class="subc" hidden></div><div class="tg1">' + big("inst", "👥", "الأقساط", S.inst.length + " قسط", "المتبقي " + F(rec) + " د.ع", "#0284c7", L.length ? "متأخر " + L.length : "") + big("debts", "🤝", "الديون", dc + " عميل", "المتبقي لك " + F(dRem) + " د.ع", "#0e7490", "") + big("late", "⚠️", "الأقساط المتأخرة", L.length + " قسط", "المبلغ المتأخر " + F(L.reduce((a, x) => a + x.L, 0)) + " د.ع", "#f43f5e", L.length ? "تنبيه" : "") + "</div></div>";
+  return adBar() + '<div class="db"><div class="dh"><div style="display:flex;gap:10px;align-items:center"><span class="hlogo' + (window.__hlp ? "" : " f") + '" style="--d:' + (document.getElementById("spl") ? "4.4s" : "0s") + '">' + HLOGO + "</span><div><b>" + E(S.office || "اكتب اسم مكتبك من الإعدادات") + '</b><div style="font-size:12px;opacity:.85">' + ds + ' 📅</div></div></div><span class="live" dir="ltr">v' + APP_VER + '</span></div><div id="subc" class="subc" hidden></div><div class="tg1">' + big("inst", "👥", "الأقساط", S.inst.length + " قسط", "المتبقي " + F(rec) + " د.ع", "#0284c7", L.length ? "متأخر " + L.length : "") + big("debts", "🤝", "الديون", dc + " عميل", "المتبقي لك " + F(dRem) + " د.ع", "#0e7490", "") + big("late", "⚠️", "الأقساط المتأخرة", L.length + " قسط", "المبلغ المتأخر " + F(L.reduce((a, x) => a + x.L, 0)) + " د.ع", "#f43f5e", L.length ? "تنبيه" : "") + "</div></div>";
 };
 let qI = "", qD = "";
 const oldInst = () => '<h2 class="hx"></h2>' + instList(), oldDebts = V.debts;
@@ -4739,12 +4792,12 @@ applyTheme();
 const oldSettings = V.settings;
 V.settings = function() {
   const h = oldSettings(), k = h.indexOf("</h2>") + 5, cur = S.theme || "auto", o = [["light", "☀️ نهاري"], ["dark", "🌙 ليلي"], ["auto", "🌓 تلقائي"]];
-  return h.slice(0, k) + '<div class="card"><div style="font-weight:700;font-size:16px">🎨 المظهر</div><div class="mut" style="margin:4px 0 12px">اختر الوضع النهاري أو الليلي، أو اتبع إعداد جهازك تلقائياً</div><div class="thg">' + o.map((x) => '<button class="tho' + (cur === x[0] ? " on" : "") + `" onclick="setTheme('` + x[0] + `')"><div class="thp ` + x[0] + '"><i></i><i></i></div><span>' + x[1] + "</span></button>").join("") + "</div></div>" + h.slice(k);
+  return h.slice(0, k) + '<div class="card">' + shd("theme", "المظهر", "اختر الوضع النهاري أو الليلي، أو اتبع إعداد جهازك تلقائياً") + '<div class="thg">' + o.map((x) => '<button class="tho' + (cur === x[0] ? " on" : "") + `" onclick="setTheme('` + x[0] + `')"><div class="thp ` + x[0] + '"><i></i><i></i></div><span>' + x[1] + "</span></button>").join("") + "</div></div>" + h.slice(k);
 };
 const IG_URL = "https://share.google/tzw4EuZFfJPABSP7A", oldS2 = V.settings, SVG_FB = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.8c0-.9.3-1.5 1.6-1.5h1.7V3.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V13h2.7v8h3.1z"/></svg>', SVG_IG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>';
 function aboutCard() {
   const ig = S.ig ? /^https?:/.test(S.ig) ? S.ig : "https://instagram.com/" + S.ig.replace(/^@/, "") : IG_URL;
-  return '<div class="card"><div style="font-weight:700;font-size:16px">ℹ️ من نحن</div><div class="mut" style="margin:4px 0 12px">أحمد المخلص · حساباتي على الفيسبوك والإنستقرام</div><div class="thg"><a class="tho" target="_blank" rel="noopener" href="https://share.google/gYVOy9hWrUoo5dllq" style="text-decoration:none"><span class="soc fbk">' + SVG_FB + "</span><span>فيسبوك</span></a>" + (ig ? '<a class="tho" target="_blank" rel="noopener" href="' + E(ig) + '" style="text-decoration:none"><span class="soc igk">' + SVG_IG + "</span><span>إنستقرام</span></a>" : '<button class="tho" onclick="setIg()"><span class="soc igk">' + SVG_IG + "</span><span>إنستقرام</span></button>") + '<a class="tho" target="_blank" rel="noopener" href="https://wa.me/9647737043441" style="text-decoration:none"><span class="soc wak">' + WA + '</span><span style="text-align:center">واتساب<small dir="ltr" style="display:block;text-align:center;font-weight:400;color:var(--mut);font-size:11px">07737043441</small></span></a></div></div>';
+  return '<div class="card">' + shd("about", "من نحن", "أحمد المخلص · حساباتي على الفيسبوك والإنستقرام") + '<div class="thg"><a class="tho" target="_blank" rel="noopener" href="https://share.google/gYVOy9hWrUoo5dllq" style="text-decoration:none"><span class="soc fbk">' + SVG_FB + "</span><span>فيسبوك</span></a>" + (ig ? '<a class="tho" target="_blank" rel="noopener" href="' + E(ig) + '" style="text-decoration:none"><span class="soc igk">' + SVG_IG + "</span><span>إنستقرام</span></a>" : '<button class="tho" onclick="setIg()"><span class="soc igk">' + SVG_IG + "</span><span>إنستقرام</span></button>") + '<a class="tho" target="_blank" rel="noopener" href="https://wa.me/9647737043441" style="text-decoration:none"><span class="soc wak">' + WA + '</span><span style="text-align:center">واتساب<small dir="ltr" style="display:block;text-align:center;font-weight:400;color:var(--mut);font-size:11px">07737043441</small></span></a></div></div>';
 }
 V.settings = function() {
   const h = oldS2().replace("</h2>", "</h2>" + officeCard()), i = h.indexOf('<div class="tg">');
@@ -5198,9 +5251,9 @@ function msgPurchase(x) {
   const c = S.cust.find((k) => k.id === x.i.cust) || {};
   return "السلام عليكم\n\nتحية طيبة  " + (c.name || "") + "\nتذكير بخصوص القسط\n\n▫️ المبلغ الإجمالي: " + F(x.i.total) + " د.ع\n▫️ المبلغ المدفوع: " + F(x.p) + " د.ع\n▫️ المبلغ المتبقي: " + F(x.rem) + " د.ع\n\nوصل شراء (" + x.i.desc + ") (" + (x.i.start || "").replace(/-/g, "/") + ")";
 }
-const APP_VER = "1.2";
+const APP_VER = "1.3";
 function officeCard() {
-  return '<div class="card"><div style="font-weight:700;font-size:16px">🏢 اسم المكتب</div><div class="mut" style="margin:4px 0 12px">يظهر في الواجهة الرئيسية، وإذا تركته فارغاً تظهر عبارة «اكتب اسم مكتبك من الإعدادات»</div><div style="display:flex;gap:8px"><input id="ofn" placeholder="مثال: مكتب النور للأقساط" value="' + E(S.office || "") + '" style="margin:0"><button class="btn" onclick="saveOffice()">حفظ</button></div></div>';
+  return '<div class="card">' + shd("office", "اسم المكتب", "يظهر في الواجهة الرئيسية، وإذا تركته فارغاً تظهر عبارة «اكتب اسم مكتبك من الإعدادات»") + '<div style="display:flex;gap:8px"><input id="ofn" placeholder="مثال: مكتب النور للأقساط" value="' + E(S.office || "") + '" style="margin:0"><button class="btn" onclick="saveOffice()">حفظ</button></div></div>';
 }
 function saveOffice() {
   S.office = document.getElementById("ofn").value.trim();
@@ -5490,7 +5543,12 @@ function pinRemove() {
   });
 }
 function pinCard() {
-  return '<div class="card"><div class="bkh"><span>🔒</span>رمز الحماية</div><div class="mut" style="font-size:13px;margin-bottom:12px">' + (S.pin ? "مفعّل — يُطلب الرمز عند فتح النسخة الاحتياطية وعند حذف أي بطاقة قسط أو دين" : "غير مفعّل — فعّل رمزاً من 4 أرقام لحماية النسخ الاحتياطية وخيارات الحذف") + "</div>" + (S.pin ? '<div class="acts"><button class="btn sm" onclick="pinChange()">تغيير الرمز</button><button class="btn sm red" onclick="pinRemove()">إلغاء الرمز</button></div>' : '<button class="btn" style="width:100%" onclick="pinSet()">تفعيل رمز الحماية</button>') + "</div>";
+  const on = !!S.pin;
+  const ck = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const lk = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg>';
+  const shield = on ? '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path class="pchk" pathLength="1" d="M8.5 12.2l2.5 2.5 4.6-4.9"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><rect x="9" y="11" width="6" height="5" rx="1"/><path d="M10 11V9.5a2 2 0 0 1 4 0V11"/></svg>';
+  const chips = ["فتح النسخة الاحتياطية", "حذف بطاقة قسط أو دين"].map((c) => '<span class="pch' + (on ? " on" : "") + '">' + (on ? ck : lk) + c + "</span>").join("");
+  return '<div class="card pinc' + (on ? " on" : "") + '"><div class="pinh"><span class="pshield' + (on ? " on" : "") + '"><b class="pr1"></b><b class="pr2"></b>' + shield + '</span><div class="stx"><b>رمز الحماية</b><small>' + (on ? "مفعّل — يُطلب الرمز عند فتح النسخة الاحتياطية وعند حذف أي بطاقة قسط أو دين" : "غير مفعّل — فعّل رمزاً من 4 أرقام لحماية النسخ الاحتياطية وخيارات الحذف") + '</small></div><span class="pst' + (on ? " on" : "") + '"><i></i>' + (on ? "مفعّل" : "غير مفعّل") + '</span></div><div class="pdots' + (on ? " on" : "") + '"><i></i><i></i><i></i><i></i></div><div class="pchs">' + chips + "</div>" + (on ? '<div class="acts"><button class="btn sm" onclick="pinChange()">تغيير الرمز</button><button class="btn sm red" onclick="pinRemove()">إلغاء الرمز</button></div>' : '<button class="btn pbtn" onclick="pinSet()">تفعيل رمز الحماية</button>') + "</div>";
 }
 function pinDel(need, fn) {
   if (need && S.pin) pinPad("أدخل رمز الحماية لتأكيد الحذف", async (v) => {
@@ -5591,8 +5649,21 @@ function editGrp(id) {
   const a0 = S.debts.find((x) => x.id === id);
   if (!a0) return;
   const arr = grp(gk(a0));
-  if (arr.length === 1) editDebt(arr[0].id);
-  else openDebt(id);
+  if (a0.cust && S.cust.some((c) => c.id === a0.cust)) {
+    editCust(a0.cust);
+    return;
+  }
+  openForm("تعديل معلومات صاحب الدين", [{ k: "name", l: "الاسم", v: a0.name }, { k: "phone", l: "رقم الهاتف", t: "tel", v: a0.phone || "", r: 0 }], (d) => {
+    const nm = (d.name || "").trim();
+    if (!nm) return false;
+    const ph = (d.phone || "").trim();
+    arr.forEach((x) => {
+      x.name = nm;
+      x.phone = ph;
+    });
+    if (!a0.cust) curD = "n:" + nm;
+    LOG("تعديل معلومات: " + nm);
+  });
 }
 
 </script>
@@ -5602,6 +5673,15 @@ function editGrp(id) {
  * سكربت كلاسيكي يشترك في النطاق العام مع بقية الملفات؛ الترتيب مهم (انظر index.html).
  */
 const SI = { stock: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/>', exp: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>', pays: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/>', late: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>', stats: '<path d="M18 20V10M12 20V4M6 20v-6"/>', profit: '<path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/>', cash: '<path d="M3 21h18M5 21V10M9 21V10M15 21V10M19 21V10M12 3L2 9h20z"/>', cust: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>', emp: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>', log: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>', bak: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>' };
+Object.assign(SI, {
+  office: '<path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>',
+  lang: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  theme: '<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>',
+  anim: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/>',
+  about: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>'
+});
+const SHC = { office: ["#06b6d4", "#0e7490"], lang: ["#38bdf8", "#0284c7"], theme: ["#818cf8", "#4f46e5"], anim: ["#60a5fa", "#2563eb"], about: ["#94a3b8", "#475569"] };
+const shd = (k, t, d) => '<div class="sh2"><span class="sico sm" style="background:linear-gradient(135deg,' + SHC[k][0] + "," + SHC[k][1] + ')"><svg viewBox="0 0 24 24">' + SI[k] + '</svg></span><div class="stx"><b>' + t + "</b>" + (d ? "<small>" + d + "</small>" : "") + "</div></div>";
 function stiles() {
   const L = lateList(), T = [["stock", "المخزن", "#06b6d4", "#0e7490", S.items.length + " صنف"], ["exp", "المصروفات", "#14b8a6", "#0f766e", S.exps.length + " مصروف"], ["pays", "التسديدات", "#0ea5e9", "#0369a1", S.pays.length + " دفعة"], ["late", "الأقساط المتأخرة", "#fb7185", "#e11d48", L.length + " قسط متأخر"], ["stats", "الإحصائيات", "#60a5fa", "#2563eb", "ملخص وتحليلات"], ["profit", "الأرباح", "#34d399", "#059669", "الأرباح المحققة"], ["cash", "الصندوق", "#818cf8", "#4f46e5", "الرصيد " + F(cash()) + " د.ع"], ["cust", "العملاء", "#38bdf8", "#0284c7", S.cust.length + " عميل"], ["emp", "الموظفون", "#94a3b8", "#475569", S.emp.length + " موظف"], ["log", "سجل العمليات", "#fbbf24", "#d97706", "آخر العمليات"], ["bak", "النسخة الاحتياطية", "#2dd4bf", "#0d9488", "تصدير واستعادة البيانات"]];
   return '<div class="mut" style="margin:6px 4px 10px;font-weight:700">الأقسام</div>' + T.map((t) => `<div class="rv srow" data-d="d" onclick="go('` + t[0] + `')"><div class="sico" style="background:linear-gradient(135deg,` + t[2] + "," + t[3] + ')"><svg viewBox="0 0 24 24">' + SI[t[0]] + '</svg></div><div class="stx"><b>' + t[1] + "</b><small>" + t[4] + '</small></div><span class="chv">‹</span></div>').join("");
@@ -5827,6 +5907,10 @@ const EN_RAW = {
   "معلومات مهمة": "Important info",
   "مسح كل البيانات": "Erase all data",
   "رمز الحماية": "Security PIN",
+  "فتح النسخة الاحتياطية": "Open backups",
+  "حذف بطاقة قسط أو دين": "Delete installment or debt card",
+  "غير مفعّل": "Disabled",
+  "مفعّل": "Enabled",
   "مفعّل — يُطلب الرمز عند فتح النسخة الاحتياطية وعند حذف أي بطاقة قسط أو دين": "Enabled — PIN required to open backups and to delete any installment or debt card",
   "غير مفعّل — فعّل رمزاً من 4 أرقام لحماية النسخ الاحتياطية وخيارات الحذف": "Disabled — set a 4-digit PIN to protect backups and deletions",
   "تغيير الرمز": "Change PIN",
@@ -6014,7 +6098,7 @@ new MutationObserver((ms) => {
 }).observe(document.body, { childList: true, subtree: true });
 function langCard() {
   const c = S.lang === "en" ? "en" : "ar";
-  return '<div class="card"><div style="font-weight:700;font-size:16px">🌐 اللغة</div><div class="mut" style="margin:4px 0 12px">اختر لغة التطبيق</div><div class="thg" style="grid-template-columns:1fr 1fr"><button class="tho' + (c === "ar" ? " on" : "") + `" onclick="setLang('ar')"><span class="soc" style="background:linear-gradient(135deg,#16a34a,#0d9488);font-weight:800;font-size:20px">ع</span><span>العربية</span></button><button class="tho` + (c === "en" ? " on" : "") + `" onclick="setLang('en')"><span class="soc" style="background:linear-gradient(135deg,#2563eb,#4f46e5);font-weight:800;font-size:18px">En</span><span translate="no">English</span></button></div></div>`;
+  return '<div class="card">' + shd("lang", "اللغة", "اختر لغة التطبيق") + '<div class="thg" style="grid-template-columns:1fr 1fr"><button class="tho' + (c === "ar" ? " on" : "") + `" onclick="setLang('ar')"><span class="soc" style="background:linear-gradient(135deg,#16a34a,#0d9488);font-weight:800;font-size:20px">ع</span><span>العربية</span></button><button class="tho` + (c === "en" ? " on" : "") + `" onclick="setLang('en')"><span class="soc" style="background:linear-gradient(135deg,#2563eb,#4f46e5);font-weight:800;font-size:18px">En</span><span translate="no">English</span></button></div></div>`;
 }
 
 </script>
@@ -6427,6 +6511,16 @@ const ANIMS = [
   ["swing", "تأرجح", "🎢"],
   ["stretch", "تمدد", "↕️"]
 ];
+const ANIC = {
+  none: ['<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>', "#94a3b8", "#475569"],
+  fade: ['<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16v4M17 18h4"/>', "#fbbf24", "#d97706"],
+  slide: ['<path d="M12 19V5M6 11l6-6 6 6"/><path d="M5 21h14"/>', "#06b6d4", "#0e7490"],
+  zoom: ['<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/>', "#0ea5e9", "#0369a1"],
+  flip: ['<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/>', "#818cf8", "#4f46e5"],
+  bounce: ['<circle cx="12" cy="7" r="3.5"/><path d="M4 21c2-5 5-7 8-7s6 2 8 7"/>', "#fb7185", "#e11d48"],
+  swing: ['<path d="M12 3v7"/><circle cx="12" cy="15" r="4"/><path d="M5 5c-1 3-1 6 0 9M19 5c1 3 1 6 0 9"/>', "#34d399", "#059669"],
+  stretch: ['<path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/>', "#60a5fa", "#2563eb"]
+};
 const ANIM_SEL = ".card, .iw";
 const ANIM_TABS = ["inst", "late", "pays", "debts", "gdetail", "ddetail"];
 let _animDir = 1, _animHint = 1, _animHintT = 0, _animLastY = window.scrollY || 0, _animNavUntil = 0, _animLastTab = null, _animSeen = new WeakSet(), _animSweepT = 0;
@@ -6592,11 +6686,11 @@ function animTrack(cards, skip) {
 // ===== الإعدادات =====
 // معاينة بتصميم بطاقة قسط حقيقية (نفس الأصناف والتركيب في iCard)
 function animSample() {
-  return '<div id="animPrevBox" onclick="animReplay()" style="cursor:pointer"><div class="iw" id="animPrev" style="margin:14px 0 6px;pointer-events:none"><div class="ic2"><div class="ih"><div class="av2">' + IC_P + '</div><div class="it2"><b>عميل تجريبي (12)</b><span>' + IC_B + 'ثلاجة سامسونج</span></div><span class="pl">نشط</span></div><div class="ib"><div class="bx"><small>المبلغ الكلي</small><b>' + F(1500000) + ' د.ع</b></div><div class="bx"><small>المتبقي</small><b>' + F(562500) + ' د.ع</b></div></div><div class="ip"><span>نسبة السداد</span><b>62.5%</b></div><div class="pb"><i style="width:62.5%;background-size:160% 100%"></i></div><div class="ia"><span class="ab pay">💳 تسديد</span><span class="ab wa">' + WA + ' تذكير</span><span class="ab cl">📞 اتصال</span></div></div></div><div class="mut" style="text-align:center;font-size:12px">اضغط على البطاقة لإعادة الحركة</div></div>';
+  return '<div id="animPrevBox" onclick="animReplay()" style="cursor:pointer"><div class="iw" id="animPrev" style="margin:0 0 6px;pointer-events:none"><div class="ic2"><div class="ih"><div class="av2">' + IC_P + '</div><div class="it2"><b>عميل تجريبي (12)</b><span>' + IC_B + 'ثلاجة سامسونج</span></div><span class="pl">نشط</span></div><div class="ib"><div class="bx"><small>المبلغ الكلي</small><b>' + F(1500000) + ' د.ع</b></div><div class="bx"><small>المتبقي</small><b>' + F(562500) + ' د.ع</b></div></div><div class="ip"><span>نسبة السداد</span><b>62.5%</b></div><div class="pb"><i style="width:62.5%;background-size:160% 100%"></i></div><div class="ia"><span class="ab pay">💳 تسديد</span><span class="ab wa">' + WA + ' تذكير</span><span class="ab cl">📞 اتصال</span></div></div></div><div class="mut" style="text-align:center;font-size:12px;margin-bottom:14px">اضغط على البطاقة لإعادة الحركة</div></div>';
 }
 function animCard() {
   const c = S.anim || "none";
-  return '<div class="card"><div style="font-weight:700;font-size:16px">🎞️ حركة البطاقات</div><div class="mut" style="margin:4px 0 12px">حركة تظهر بها بطاقات الأقساط والديون عند فتح القسم وعند التمرير للأعلى والأسفل</div><div class="thg" id="animOpts" style="grid-template-columns:repeat(4,1fr)">' + ANIMS.map((a) => '<button class="tho' + (c === a[0] ? " on" : "") + '" data-a="' + a[0] + `" onclick="setAnim('` + a[0] + `')"><span class="soc" style="width:38px;height:38px;font-size:18px;background:linear-gradient(135deg,#0ea5e9,#6366f1)">` + a[2] + "</span><span>" + a[1] + "</span></button>").join("") + "</div>" + animSample() + "</div>";
+  return '<div class="card">' + shd("anim", "حركة البطاقات", "حركة تظهر بها بطاقات الأقساط والديون عند فتح القسم وعند التمرير للأعلى والأسفل") + animSample() + '<div class="thg" id="animOpts" style="grid-template-columns:repeat(4,1fr)">' + ANIMS.map((a) => '<button class="tho' + (c === a[0] ? " on" : "") + '" data-a="' + a[0] + `" onclick="setAnim('` + a[0] + `')"><span class="sico xs" style="background:linear-gradient(135deg,` + ANIC[a[0]][1] + "," + ANIC[a[0]][2] + `)"><svg viewBox="0 0 24 24">` + ANIC[a[0]][0] + "</svg></span><span>" + a[1] + "</span></button>").join("") + "</div></div>";
 }
 function animReplay() {
   const el = document.getElementById("animPrev"), name = animName();
