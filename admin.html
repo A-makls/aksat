@@ -160,6 +160,20 @@ input,select,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
 @keyframes bkPulse{50%{transform:scale(1.12)}}
 @keyframes bkShake{0%,88%,100%{transform:rotate(0)}91%{transform:rotate(-12deg)}94%{transform:rotate(10deg)}97%{transform:rotate(-6deg)}}
 @media(prefers-reduced-motion:reduce){.bkst,.bkst i,.bkrs{animation:none!important}}
+
+.cbt{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 2px;border-bottom:1px dashed var(--b)}
+.cbt b{font-size:14px}.cbt small{display:block;color:var(--m);font-size:12px;margin-top:2px;line-height:1.6}
+.sw{-webkit-appearance:none;appearance:none;flex:none;width:46px;height:28px;border-radius:99px;background:#cbd5e1;position:relative;transition:background .2s;border:0;margin:0;padding:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .2s}
+.sw:checked{background:#16a34a}.sw:checked::after{transform:translateX(18px)}
+select.cbs{width:auto;padding:7px 10px}
+.cbh{font-weight:800;margin:14px 0 4px}
+.cbi{display:flex;align-items:center;gap:8px;padding:10px 2px;border-bottom:1px dashed var(--b);animation:bkIn .35s ease both}
+.cbi .cbd{flex:1;min-width:0}.cbi .cbd b{display:block;font-size:14px}.cbi .cbd small{color:var(--m);font-size:12px}
+.cbi button{width:auto;flex:none;padding:7px 12px;font-size:13px}
+button.grn{background:#dcfce7;color:#15803d}
+button:disabled{opacity:.6}
+@media(prefers-reduced-motion:reduce){.cbi{animation:none!important}.sw,.sw::after{transition:none}}
 </style>
 </head>
 <body>
@@ -221,6 +235,11 @@ input,select,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
       <button class="gold" id="bkNow" style="margin-top:12px">⬇️ إنشاء نسخة احتياطية الآن</button>
       <button class="g" id="bkCp" style="width:100%;margin-top:8px">📋 نسخ النص بدل الملف</button>
     </div>
+    <div class="card cbk" id="cbCard"><h2 class="h3">🌐 النسخ الأونلاين (Google Drive)</h2>
+      <p class="mut">ارفع نسخة مشفّرة إلى حسابك في Google Drive داخل مجلد مخفي خاص بالتطبيق، لا يصل التطبيق لباقي ملفاتك.</p>
+      <div class="bkst" id="cbSt"></div>
+      <div id="cbBody"></div>
+    </div>
     <div class="card"><h2 class="h3">📥 استعادة نسخة احتياطية</h2>
       <p class="mut">اختر ملف النسخة (‎.json). تحل محل الخزنة الحالية بعد إدخال كلمة مرور تلك النسخة.</p>
       <label class="bkx">📂 اختيار ملف<input type="file" id="bkFile" accept=".json,.txt,application/json,text/plain"></label>
@@ -233,6 +252,8 @@ input,select,textarea{-webkit-user-select:text;user-select:text;font-size:16px}
       <div class="bkl"><span>✔</span><span>خذ نسخة جديدة بعد كل إصدار أو تجديد أو حذف.</span></div>
       <div class="bkl"><span>✔</span><span>بعد الاستعادة تصبح كلمة مرور اللوحة هي كلمة مرور تلك النسخة.</span></div>
       <div class="bkl"><span>✔</span><span>تُحفظ الخزنة السابقة تلقائياً قبل أي استعادة كإجراء أمان.</span></div>
+      <div class="bkl"><span>✔</span><span>النسخة على Google Drive تحمل نفس التشفير، وتُحفظ في مجلد مخفي لا يختلط بنسخ تطبيق الأقساط.</span></div>
+      <div class="bkl"><span>✔</span><span>الاستعادة من السحابة تمرّ بنفس خطوة كلمة المرور في قسم «استعادة نسخة».</span></div>
     </div>
     <div class="card"><h2 class="h3">🔒 الحساب</h2>
       <button class="xt" id="xt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H9"/><path d="M16 8l4 4-4 4M20 12H9"/></svg><span><b>تسجيل الخروج</b><small>يُقفل التطبيق وتحتاج كلمة المرور للدخول مجدداً</small></span></button></div>
@@ -297,7 +318,7 @@ $('lb').onclick=async function(){
     start();
   }catch(e){msg('كلمة المرور أو النسخة غير صحيحة')}
 };
-function start(){$('fp').textContent=S.priv.x.slice(0,6);$('lock').hidden=true;$('app').hidden=false;render();bkRefresh();setTimeout(bkWarn,1200)}
+function start(){$('fp').textContent=S.priv.x.slice(0,6);$('lock').hidden=true;$('app').hidden=false;render();bkRefresh();cbPaint();if(location.protocol==='https:')cbLoadGis();setTimeout(bkWarn,1200);setTimeout(cloudAuto,2600)}
 
 function status(c){
   if(c.e==='0')return['دائم','ok'];
@@ -442,6 +463,185 @@ $('bkGo').onclick=async function(){
     msg('كلمة المرور غير صحيحة أو النسخة تالفة');
   }
 };
+/* ===== النسخ الأونلاين (Google Drive) للوحة ===== */
+/* نفس معرّف العميل المستخدم في تطبيق الأقساط (يعمل لأن الأصل github.io نفسه). الحفظ في appDataFolder المخفي، وملفات اللوحة تبدأ بـ aqadmin- */
+var CLOUD_ID='50206985580-6v4qbhfb84up1fqsvlitn006tl8142eu.apps.googleusercontent.com';
+var DRIVE='https://www.googleapis.com/drive/v3/files',UPLOAD='https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,size';
+var CB={tok:null,exp:0,busy:false,list:null,gis:null,warned:false},CT=null;
+var CFG=(function(){var d={auto:false,keep:10,linked:false,last:null};try{var o=JSON.parse(lsGet('aqsati_cloud')||'{}');for(var k in o)d[k]=o[k]}catch(e){}return d})();
+function cfgSave(){lsSet('aqsati_cloud',JSON.stringify(CFG))}
+async function sha256(t){var h=new Uint8Array(await crypto.subtle.digest('SHA-256',enc.encode(t)));return Array.prototype.map.call(h,function(x){return('0'+x.toString(16)).slice(-2)}).join('')}
+function cbSize(n){n=+n||0;return n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB'}
+function cbLoadGis(){
+  if(window.google&&google.accounts&&google.accounts.oauth2)return Promise.resolve(true);
+  if(CB.gis)return CB.gis;
+  CB.gis=new Promise(function(res){
+    var s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;
+    s.onload=function(){res(!!(window.google&&google.accounts&&google.accounts.oauth2))};
+    s.onerror=function(){res(false)};
+    document.head.appendChild(s);
+  }).then(function(ok){if(!ok)CB.gis=null;return ok});
+  return CB.gis;
+}
+function cbToken(interactive){
+  if(CB.tok&&Date.now()<CB.exp-60000)return Promise.resolve(CB.tok);
+  var go=function(){return new Promise(function(res,rej){
+    try{
+      var c=google.accounts.oauth2.initTokenClient({
+        client_id:CLOUD_ID,scope:'https://www.googleapis.com/auth/drive.appdata',
+        callback:function(r){
+          if(r&&r.access_token){CB.tok=r.access_token;CB.exp=Date.now()+(+r.expires_in||3600)*1000;if(!CFG.linked){CFG.linked=true;cfgSave()}res(CB.tok)}
+          else rej(new Error((r&&r.error)||'auth'));
+        },
+        error_callback:function(e){rej(new Error((e&&e.type)||'auth'))}
+      });
+      c.requestAccessToken({prompt:interactive&&!CFG.linked?'consent':''});
+    }catch(e){rej(e)}
+  })};
+  if(window.google&&google.accounts&&google.accounts.oauth2)return go();
+  return cbLoadGis().then(function(ok){if(!ok)throw new Error('gis');return go()});
+}
+async function cbFetch(url,opt,inter){
+  for(var k=0;k<2;k++){
+    var t=await cbToken(inter!==false);
+    var r=await fetch(url,Object.assign({},opt,{headers:Object.assign({},(opt&&opt.headers)||{},{Authorization:'Bearer '+t})}));
+    if(r.status===401&&k===0){CB.tok=null;continue}
+    if(!r.ok){var e=new Error('http'+r.status);e.status=r.status;throw e}
+    return r;
+  }
+}
+function cbErr(e){
+  var m=String((e&&e.message)||e||'');
+  if(m==='gis')return'تعذّر الوصول إلى خدمة Google (تحقق من الإنترنت)';
+  if(/popup_closed|access_denied|popup_failed/.test(m))return'لم يكتمل تسجيل الدخول إلى Google';
+  if(e&&e.status===403)return'رفض Google الطلب: تأكد من تفعيل Drive API وصلاحية الحساب';
+  if(e&&e.status===401)return'انتهت صلاحية الدخول، أعد الربط';
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m))return'تعذّر الاتصال بالإنترنت';
+  return'تعذّرت العملية: '+m;
+}
+function cbRow(a,b){var r=el('div',null,'bkr');r.appendChild(el('span',a));r.appendChild(el('b',b));return r}
+function cbPaint(){
+  var st=$('cbSt'),bd=$('cbBody');if(!st||!bd)return;
+  var secure=location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1';
+  var v=lsGet('aqsati_vault'),cls,ic,t,sub;
+  if(!CFG.linked){cls='warn';ic='☁️';t='غير مرتبط بـ Google Drive';sub='اربط حسابك لحفظ نسخة خارج هذا الجهاز'}
+  else if(!CFG.last){cls='bad';ic='⚠️';t='لم تُرفع أي نسخة بعد';sub='ارفع نسخة الآن لحماية مفاتيحك'}
+  else if(CFG.last.fp&&CFG.last.fp===vfp(v)){cls='ok';ic='✅';t='نسختك السحابية محدّثة';sub='لا توجد تغييرات بعد آخر رفع'}
+  else{cls='warn';ic='⏳';var d=S?S.customers.length-(CFG.last.n||0):0;t='توجد تغييرات لم تُرفع';sub=(d>0?'عملاء جدد: '+d+' — ':'')+'ارفع نسخة جديدة'}
+  var dv=el('div');st.className='bkst '+cls;st.textContent='';
+  dv.appendChild(el('div',t));dv.appendChild(el('small',sub));st.appendChild(el('i',ic));st.appendChild(dv);
+  bd.textContent='';
+  if(!secure){bd.appendChild(el('p','يتطلب هذا الخيار فتح اللوحة من رابط https (لا يعمل من ملف محلي).','mut'));return}
+  if(!CFG.linked){var cb=el('button','🔗 ربط Google Drive','gold');cb.onclick=cloudConnect;bd.appendChild(cb);return}
+  bd.appendChild(cbRow('🟢 حالة الربط','متصل بـ Google'));
+  bd.appendChild(cbRow('📅 آخر رفع',CFG.last?fts(CFG.last.ts):'—'));
+  var up=el('button',CB.busy?'⏳ جارٍ العمل...':'⬆️ رفع نسخة الآن','gold');
+  up.style.marginTop='12px';up.disabled=CB.busy;up.onclick=function(){cloudUpload(false)};bd.appendChild(up);
+  var t1=el('div',null,'cbt'),l1=el('div'),c1=el('input');
+  l1.appendChild(el('b','رفع تلقائي'));l1.appendChild(el('small','يرفع نسخة بعد كل إصدار أو تجديد أو حذف أثناء الجلسة، وعند فتح اللوحة إن تغيّرت البيانات'));
+  c1.type='checkbox';c1.className='sw';c1.checked=!!CFG.auto;
+  c1.onchange=function(){CFG.auto=c1.checked;cfgSave();if(CFG.auto)cloudAuto()};
+  t1.appendChild(l1);t1.appendChild(c1);bd.appendChild(t1);
+  var t2=el('div',null,'cbt'),l2=el('div'),sel=el('select',null,'cbs');
+  l2.appendChild(el('b','عدد النسخ المحفوظة'));
+  [5,10,20,30].forEach(function(n){var o=el('option',String(n));o.value=n;if(+CFG.keep===n)o.selected=true;sel.appendChild(o)});
+  sel.onchange=function(){CFG.keep=+sel.value;cfgSave()};
+  t2.appendChild(l2);t2.appendChild(sel);bd.appendChild(t2);
+  bd.appendChild(el('div','🗂️ النسخ على السحابة','cbh'));
+  if(CB.list===null){var sb=el('button','عرض النسخ','g');sb.style.width='100%';sb.onclick=function(){cloudList(false)};bd.appendChild(sb)}
+  else{
+    if(!CB.list.length)bd.appendChild(el('p','لا توجد نسخ على السحابة','mut'));
+    CB.list.forEach(function(f){
+      var m={};try{m=JSON.parse(f.description||'{}')}catch(e){}
+      var r=el('div',null,'cbi'),d2=el('div',null,'cbd'),rb=el('button','استعادة','grn'),db=el('button','حذف','r');
+      d2.appendChild(el('b',fts(m.ts||Date.parse(f.createdTime))));d2.appendChild(el('small',(m.n!=null?m.n+' عميل · ':'')+cbSize(f.size)));
+      rb.onclick=function(){cloudRestore(f.id)};db.onclick=function(){cloudDelete(f.id)};
+      r.appendChild(d2);r.appendChild(rb);r.appendChild(db);bd.appendChild(r);
+    });
+    var rf=el('button','تحديث القائمة','g');rf.style.cssText='width:100%;margin-top:8px';rf.onclick=function(){cloudList(false)};bd.appendChild(rf);
+  }
+  var dc=el('button','فصل الحساب','r');dc.style.cssText='width:100%;margin-top:12px';dc.onclick=cloudDisconnect;bd.appendChild(dc);
+}
+async function cloudList(quiet){
+  try{
+    var r=await cbFetch(DRIVE+'?spaces=appDataFolder&orderBy=createdTime%20desc&pageSize=100&fields=files(id,name,size,createdTime,description)',{},!quiet);
+    CB.list=((await r.json()).files||[]).filter(function(f){return /^aqadmin-/.test(f.name||'')});
+  }catch(e){if(!quiet)msg(cbErr(e))}
+  cbPaint();
+}
+async function cloudUpload(auto){
+  if(CB.busy)return;
+  if(!navigator.onLine){if(!auto)msg('لا يوجد اتصال بالإنترنت');return}
+  var k=bkPack();if(!k)return;
+  if(!auto){try{await cbToken(true)}catch(e){msg(cbErr(e));return}}
+  CB.busy=true;cbPaint();
+  try{
+    var ts=Date.now(),d=new Date(ts),n=S.customers.length,fp=vfp(k.v),sha=await sha256(k.v);
+    var env=JSON.stringify({app:'aqsati-admin',v:1,ts:d.toISOString(),n:n,fp:fp,sha:sha,vault:k.v});
+    var name='aqadmin-'+ymd(d)+'_'+pad2(d.getHours())+pad2(d.getMinutes())+'.json';
+    var meta={name:name,parents:['appDataFolder'],mimeType:'application/json',description:JSON.stringify({app:'admin',ts:ts,n:n})};
+    var bd='aqadm'+Math.random().toString(36).slice(2);
+    var body='--'+bd+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(meta)+'\r\n--'+bd+'\r\nContent-Type: application/json\r\n\r\n'+env+'\r\n--'+bd+'--';
+    var r=await cbFetch(UPLOAD,{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+bd},body:body},!auto);
+    var f=await r.json();
+    CFG.last={ts:ts,id:f.id,name:name,fp:fp,n:n};cfgSave();
+    msg('☁️ تم رفع النسخة إلى Google Drive');
+    try{
+      var l=await(await cbFetch(DRIVE+'?spaces=appDataFolder&orderBy=createdTime%20desc&pageSize=100&fields=files(id,name)',{},false)).json();
+      var old=(l.files||[]).filter(function(x){return /^aqadmin-/.test(x.name||'')}).slice(Math.max(1,+CFG.keep||10));
+      for(var i=0;i<old.length;i++)await cbFetch(DRIVE+'/'+old[i].id,{method:'DELETE'},false).catch(function(){});
+    }catch(e){}
+    CB.busy=false;await cloudList(true);
+  }catch(e){
+    if(!auto)msg(cbErr(e));
+    else if(!CB.warned){CB.warned=true;msg('تعذّر الرفع التلقائي، افتح الإعدادات واضغط رفع الآن')}
+  }finally{CB.busy=false;cbPaint()}
+}
+async function cloudRestore(id){
+  if(CB.busy)return;
+  CB.busy=true;cbPaint();
+  try{
+    var txt=await(await cbFetch(DRIVE+'/'+encodeURIComponent(id)+'?alt=media')).text(),o=null;
+    try{o=JSON.parse(txt)}catch(e){}
+    if(!o||o.app!=='aqsati-admin'||!o.vault)throw new Error('bad');
+    if(o.sha&&await sha256(o.vault)!==o.sha){msg('فشل التحقق من سلامة النسخة (الملف تالف)');return}
+    bkLoad(txt);
+    var bx=$('bkRs');if(bx&&!bx.hidden){bx.scrollIntoView({behavior:'smooth',block:'center'});msg('أدخل كلمة مرور النسخة ثم اضغط «استعادة»')}
+  }catch(e){msg(e&&e.message==='bad'?'النسخة غير صالحة':cbErr(e))}
+  finally{CB.busy=false;cbPaint()}
+}
+async function cloudDelete(id){
+  if(!confirm('حذف هذه النسخة من السحابة نهائياً؟'))return;
+  try{await cbFetch(DRIVE+'/'+encodeURIComponent(id),{method:'DELETE'});msg('تم حذف النسخة');await cloudList(true)}
+  catch(e){msg(cbErr(e))}
+}
+async function cloudConnect(){
+  try{await cbToken(true);msg('تم ربط Google Drive');cbPaint();cloudList(true)}
+  catch(e){msg(cbErr(e))}
+}
+function cloudDisconnect(){
+  if(!confirm('فصل Google Drive؟ تبقى النسخ المرفوعة في حسابك.'))return;
+  try{if(CB.tok&&window.google&&google.accounts)google.accounts.oauth2.revoke(CB.tok,function(){})}catch(e){}
+  CB.tok=null;CB.list=null;CFG.linked=false;CFG.auto=false;cfgSave();cbPaint();
+}
+function cloudAuto(){
+  if(!CFG.auto||!CFG.linked||!navigator.onLine||CB.busy||!S)return;
+  var v=lsGet('aqsati_vault');
+  if(CFG.last&&CFG.last.fp===vfp(v))return;
+  cloudUpload(true);
+}
+/* بعد كل حفظ للخزنة: حدّث الحالات، وارفع تلقائياً إن كان الرمز صالحاً في الجلسة */
+var _saveBase=save;
+save=async function(){
+  var r=await _saveBase.apply(this,arguments);
+  try{
+    bkRefresh();cbPaint();
+    if(CFG.auto&&CFG.linked&&CB.tok&&Date.now()<CB.exp-60000){clearTimeout(CT);CT=setTimeout(function(){cloudUpload(true)},4000)}
+  }catch(e){}
+  return r;
+};
+window.addEventListener('online',function(){setTimeout(cloudAuto,1500)});
+
 </script>
 </body>
 </html>

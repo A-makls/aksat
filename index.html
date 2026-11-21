@@ -6493,7 +6493,7 @@ const DRIVE = "https://www.googleapis.com/drive/v3/files";
 async function cloudList(quiet) {
   try {
     const r = await cbFetch(DRIVE + "?spaces=appDataFolder&orderBy=createdTime%20desc&pageSize=50&fields=files(id,name,size,createdTime,description)", {}, !quiet);
-    CB.list = (await r.json()).files || [];
+    CB.list = ((await r.json()).files || []).filter((f) => /^aqsat-/.test(f.name || ""));
   } catch (e) { if (!quiet) toast(cbErr(e)); }
   cbPaint();
 }
@@ -6530,8 +6530,8 @@ async function cloudUpload(auto) {
     save();
     toast("☁️ تم رفع النسخة إلى Google Drive");
     try { // الاحتفاظ بآخر N نسخة
-      const l = await (await cbFetch(DRIVE + "?spaces=appDataFolder&orderBy=createdTime%20desc&pageSize=100&fields=files(id)", {}, false)).json();
-      const old = (l.files || []).slice(Math.max(1, +cfg.keep || 10));
+      const l = await (await cbFetch(DRIVE + "?spaces=appDataFolder&orderBy=createdTime%20desc&pageSize=100&fields=files(id,name)", {}, false)).json();
+      const old = (l.files || []).filter((x) => /^aqsat-/.test(x.name || "")).slice(Math.max(1, +cfg.keep || 10));
       for (const x of old) await cbFetch(DRIVE + "/" + x.id, { method: "DELETE" }, false).catch(() => {});
     } catch (e) {}
     CB.busy = false;
