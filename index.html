@@ -3413,6 +3413,30 @@ main { overflow-x: clip; }
 }
 .sico.xs { width: 42px; height: 42px; border-radius: 14px; box-shadow: 0 6px 12px rgba(0, 0, 0, .16), inset 0 1px 0 rgba(255, 255, 255, .35); }
 .sico.xs svg { width: 22px; height: 22px; }
+
+/* ===== ثبات الواجهة الرئيسية على الشاشات القصيرة والمتصفحات القديمة =====
+   الواجهة الرئيسية مبنية لتملأ الشاشة بلا تمرير، فعندما تكون المساحة أقل من المحتاج
+   (صندوق الاشتراك + شريط المتصفح + شاشة قصيرة) كانت البطاقات تنضغط والنص يخرج منها.
+   الآن: لا تنكمش البطاقات عن حجم محتواها، وتتمدد كما كانت عند توفر مساحة، وتتمرر الصفحة عند الحاجة. */
+body.hm { top: 0; right: 0; bottom: 0; left: 0; }
+body.hm main { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+body.hm .ads { flex-shrink: 0; }
+body.hm .db { flex: 1 0 auto; min-height: 0; }
+body.hm .tg1 { flex: 1 0 auto; min-height: 0; }
+body.hm .bigc { flex: 1 0 auto; min-height: 96px; }
+body.hm .subc { flex-shrink: 0; }
+/* متصفحات بلا دعم وحدة dvh (تسقط قيم clamp فتتغير الأحجام): نفس القيم بوحدة vh */
+@supports not (height: 1dvh) {
+  body.hm .ads { flex-basis: clamp(90px, 17vh, 140px); }
+  body.hm .ae { font-size: clamp(30px, 5vh, 44px); }
+  body.hm .at { font-size: clamp(14px, 2.4vh, 19px); }
+  body.hm .bigc .ic { width: clamp(48px, 8.5vh, 78px); height: clamp(48px, 8.5vh, 78px); }
+  body.hm .bigc .ic i { font-size: clamp(22px, 3.8vh, 34px); }
+  body.hm .bigc b { font-size: clamp(17px, 2.7vh, 24px); }
+  body.hm .bigc > div:last-child { font-size: clamp(13px, 2.1vh, 16px); }
+  body.hm .bigc small { font-size: clamp(11px, 1.9vh, 14px); }
+  .bigc .sico.l { width: clamp(52px, 9vh, 84px); height: clamp(52px, 9vh, 84px); }
+}
 </style>
 </head>
 <body>
