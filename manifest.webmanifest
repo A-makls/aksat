@@ -1,39 +1,18 @@
 {
-  "name": "أقساطي وديوني",
-  "short_name": "أقساطي وديوني",
-  "description": "إدارة الأقساط والديون والعملاء والمخزن",
-  "lang": "ar",
-  "dir": "rtl",
-  "start_url": "./index.html",
+  "name": "درع | حماية من الابتزاز بالصور",
+  "short_name": "درع",
+  "description": "تطبيق عربي للحماية من الابتزاز بالصور وحفظ الأدلة",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f1f5f9",
-  "theme_color": "#2563eb",
+  "background_color": "#f1f5fb",
+  "theme_color": "#4a9cc4",
+  "lang": "ar",
+  "dir": "rtl",
   "icons": [
-    {
-      "src": "icon-180.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "id": "./"
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
 }
