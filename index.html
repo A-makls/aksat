@@ -3803,8 +3803,66 @@ html[data-eff=dark] .ar small{color:#ffd58a}
 .alch button.on{background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border-color:transparent}
 .tmprev{display:flex;align-items:center;gap:12px;margin-top:14px;padding:10px 12px;border-radius:14px;background:rgba(148,163,184,.1);font-size:13px;color:var(--mut);transition:opacity .3s,filter .3s}
 .tmprev.off{opacity:.45;filter:grayscale(1)}
+.actb.in{position:relative;top:auto;left:auto;width:30px;height:30px;flex:none;margin-inline-start:2px;box-shadow:0 3px 8px rgba(240,147,27,.35),0 0 0 2px #fff;animation:actIn .55s cubic-bezier(.34,1.56,.64,1) both}
+.actb.in circle{stroke-width:5.5}
+.actb.in b{font-size:11.5px}
+html[data-eff=dark] .actb.in{box-shadow:0 3px 8px rgba(0,0,0,.5),0 0 0 2px #262b45}
+.amt.amtw{display:flex;align-items:center;gap:8px}
 .actb.demo{position:relative;top:auto;left:auto;flex:none;animation:none;cursor:default}
 @media (prefers-reduced-motion:reduce){#secb,.secs,.bks2,.sect,.alst,.alst b{animation:none;opacity:1;transform:none}}
+
+/* ===== تحسينات: معاينة الحركة والنسخ الاحتياطي ===== */
+.apbtn{display:flex;align-items:center;gap:12px;width:100%;padding:11px 14px;margin-bottom:12px;border-radius:16px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-weight:700;cursor:pointer;transition:transform .15s,border-color .2s,box-shadow .2s}
+.apbtn:active{transform:scale(.98)}
+.apbtn.on{border-color:var(--a1);box-shadow:0 0 0 3px rgba(96,165,250,.2)}
+.apic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;flex:none;background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 6px 14px -4px var(--a2)}
+.apic svg{width:16px;height:16px;fill:#fff;transition:transform .3s}
+.apbtn.on .apic svg{transform:scale(.85)}
+.aplb{flex:1;text-align:start}
+.apch{font-size:22px;color:var(--mut);transition:transform .3s}
+.apbtn.on .apch{transform:rotate(-90deg)}
+.apw{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .4s cubic-bezier(.22,1,.36,1),opacity .3s}
+.apw.open{grid-template-rows:1fr;opacity:1}
+.apw-in{overflow:hidden;min-height:0}
+.apw.open .apw-in{padding:2px 2px 4px;overflow:visible}
+.gbtn{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;margin-bottom:12px;border:0;border-radius:18px;color:#fff;font:inherit;cursor:pointer;background:linear-gradient(135deg,#4285f4,#1a56d6);box-shadow:0 10px 22px -8px rgba(66,133,244,.75);transition:transform .15s}
+.gbtn:active{transform:scale(.98)}
+.gbtn:disabled{opacity:.7;cursor:progress}
+.gbtn::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:pinShine 3.2s ease-in-out infinite}
+.glg{width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;flex:none;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+.glg svg{width:26px;height:26px}
+.gtx{flex:1;display:flex;flex-direction:column;text-align:start;gap:2px}
+.gtx b{font-size:16.5px}
+.gtx small{opacity:.88;font-size:12px}
+.gar{font-size:28px;opacity:.85;line-height:1}
+.glgs{display:inline-grid;place-items:center;width:22px;height:22px;flex:none;vertical-align:middle}
+.glgs svg{width:100%;height:100%}
+.bqb{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 8px;border-radius:14px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;transition:transform .15s,border-color .2s}
+.bqb:active{transform:scale(.97)}
+.bqb:disabled{opacity:.6}
+.bqb.wide{width:100%}
+.bkq .bqb{flex-direction:column;gap:4px;text-align:center;line-height:1.4}
+.bkq .bqb i{font-style:normal;font-size:22px}
+.bkq{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bkdv{display:flex;align-items:center;gap:10px;margin:14px 0 10px;color:var(--mut);font-size:12px;font-weight:700}
+.bkdv::before,.bkdv::after{content:"";flex:1;height:1px;background:var(--bd)}
+.bkdt{width:100%;margin-top:10px}
+@media (prefers-reduced-motion:reduce){.gbtn::after{animation:none}.apw{transition:none}}
+.gbtn.ph{background:linear-gradient(135deg,#14b8a6,#0f766e);box-shadow:0 10px 22px -8px rgba(15,118,110,.75)}
+.gbtn .glg{animation:glRing 2.6s ease-out infinite}
+.gbtn.ph .glg{animation-delay:1.1s}
+.gbtn:not(:disabled):hover .gar,.gbtn:not(:disabled):active .gar{transform:translateX(-4px)}
+.gar{transition:transform .25s}
+.glg svg{transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.gbtn:active .glg svg{transform:scale(.85) rotate(-8deg)}
+.gbtn:disabled .glg{animation:glSpin 1s linear infinite}
+.bkset>*{animation:bkUp .55s cubic-bezier(.22,1,.36,1) both}
+.bkset>*:nth-child(2){animation-delay:.07s}.bkset>*:nth-child(3){animation-delay:.14s}.bkset>*:nth-child(4){animation-delay:.21s}.bkset>*:nth-child(5){animation-delay:.28s}
+.bkset .bqb.wide{margin-bottom:2px}
+@keyframes bkUp{from{opacity:0;transform:translateY(14px) scale(.97)}}
+@keyframes glRing{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}70%,100%{box-shadow:0 0 0 12px rgba(255,255,255,0)}}
+@keyframes glSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.gbtn .glg,.bkset>*{animation:none!important}}
 </style>
 </head>
 <body>
@@ -3918,8 +3976,12 @@ const actBadge = (k, key) => {
   return '<button type="button" class="actb" data-t="' + t + '" data-k="' + k + '" data-key="' + E(key) + '" onclick="event.stopPropagation();actShow(this)" aria-label="النشاط الأخير"><svg viewBox="0 0 44 44"><circle class="tr" cx="22" cy="22" r="17"/><circle class="pg" cx="22" cy="22" r="17" stroke-dasharray="' + ACT_C.toFixed(1) + '" stroke-dashoffset="' + (ACT_C * (1 - left / ACT_MS)).toFixed(1) + '"/></svg><b>' + Math.max(1, Math.ceil(left / 6e4)) + "</b></button>";
 };
 const actWrap = (h, k, key) => {
-  const b = actBadge(k, key);
-  return b ? h.replace(/^(<div [^>]*>)/, "$1" + b) : h;
+  let b = actBadge(k, key);
+  if (!b) return h;
+  b = b.replace('class="actb"', 'class="actb in"');
+  if (k === "i" && h.indexOf('<span class="pl">') > -1) return h.replace('<span class="pl">', b + '<span class="pl">');
+  if (k === "d" && h.indexOf('<div class="amt">') > -1) return h.replace('<div class="amt">', '<div class="amt amtw">' + b);
+  return h.replace(/^(<div [^>]*>)/, "$1" + b.replace('class="actb in"', 'class="actb"'));
 };
 function actShow(b) {
   const a = actOf(b.dataset.k, b.dataset.key).sort((x, y) => y.t - x.t);
@@ -4129,7 +4191,7 @@ const V = {
     return head("الأقساط المتأخرة") + (L.length ? L.map((x) => card(E(nm(S.cust, x.i.cust)), E(x.i.desc) + (x.days ? " · متأخر " + x.days + " يوم" : ""), '<span class="bad">' + F(x.L) + "</span>", `<button class="btn sm grn" onclick="payInst('` + x.i.id + `')">تسديد</button>` + remind(x))).join("") : empty("🎉 لا توجد أقساط متأخرة"));
   },
   pays() {
-    const a = S.pays.slice().sort((x, y) => y.date.localeCompare(x.date));
+    const a = S.pays.map((p, k) => [p, k]).sort((x, y) => y[0].date.localeCompare(x[0].date) || y[1] - x[1]).map((x) => x[0]);
     return head("التسديدات") + (a.length ? a.map((p) => {
       const i = S.inst.find((x) => x.id === p.inst) || {};
       return card(E(nm(S.cust, i.cust)), E(i.desc || "—") + " · " + p.date + " · " + E(p.note || ""), '<span class="ok">+' + F(p.amt) + "</span>");
@@ -4225,7 +4287,7 @@ V.detail = function() {
   }
   const l = late(i), x = { i, ...l }, c = S.cust.find((k) => k.id === i.cust) || {}, ph = normPh(c.phone);
   const st = l.rem === 0 ? "مكتمل" : l.L > 0 ? "متأخر" : "قيد التنفيذ";
-  const ps = S.pays.filter((p) => p.inst === i.id).sort((a, b) => b.date.localeCompare(a.date));
+  const ps = S.pays.filter((p) => p.inst === i.id).map((p, k) => [p, k]).sort((a, b) => b[0].date.localeCompare(a[0].date) || b[1] - a[1]).map((x) => x[0]);
   return `<div class="tb"><button onclick="backInst()">➡️</button><button onclick="var d=document.getElementById('pl');d.open=true;d.scrollIntoView()">🕘</button><button onclick="editInst('` + i.id + `')">✏️</button><button onclick="print()">🖨️</button><button onclick="copyInst('` + i.id + `')">📄</button><button style="margin-right:auto" onclick="del('inst','` + i.id + `','القسط')">🗑️</button></div><div class="hd"><div><b style="font-size:17px">` + E(c.name || "—") + " (" + (i.no || "—") + ')</b><div style="font-size:13px;opacity:.75">' + E(i.desc) + '</div></div><span class="pill">' + st + '</span></div><details class="sec s1" open><summary>👤 معلومات الزبون</summary>' + kv("الهاتف", c.phone ? `<a onclick="callPh('` + ph + `')" style="cursor:pointer">` + E(c.phone) + " 📞</a>" : "—") + (i.guar ? kv("الكفيل", E(i.guar)) : "") + kv("تاريخ الإنشاء", (i.created || i.start).replace(/-/g, "/")) + '</details><details class="sec s2" open><summary>📦 معلومات المنتج</summary>' + kv("اسم المنتج", E(i.desc)) + kv("الكمية", i.qty || 1) + '</details><details class="sec s3"><summary>💳 معلومات الدفع</summary>' + kv("السعر الإجمالي", F(i.total)) + kv("المقدمة", F(i.down)) + kv("مبلغ القسط", F(l.m)) + kv("نوع القسط", i.freq === "w" ? "أسبوعي" : i.freq === "d" ? "يومي" : "شهري") + kv("عدد الأقساط", i.months) + kv("المدفوع", F(l.p), "ok") + kv("المتبقي", F(l.rem), l.rem ? "bad" : "ok") + kv("المتأخر", F(l.L), l.L ? "bad" : "") + kv("الربح المحقق", F(profitOf(i))) + '</details><details class="sec s4" id="pl"><summary>🕘 سجل المدفوعات</summary>' + (ps.length ? ps.map((p) => kv(p.date + " · " + E(p.note || ""), F(p.amt) + ` <button class="btn sm red" onclick="del('pays','` + p.id + `','التسديد')">حذف</button>`, "ok")).join("") : '<div class="mut">لا توجد مدفوعات</div>') + '</details><div class="bt"><a style="background:linear-gradient(135deg,#2563eb,#1d4ed8)" target="_blank" rel="noopener" ' + (ph ? 'href="https://wa.me/' + ph + "?text=" + encodeURIComponent(msgOf(x)) + '"' : `onclick="alert('أضف رقم هاتف العميل')"`) + ">" + WA + ` إرسال تذكير</a><button style="background:#16a34a" onclick="payInst('` + i.id + `')">💳 تسديد قسط</button></div>`;
 };
 let curD = null;
@@ -5395,7 +5457,7 @@ function themeCard() {
 const IG_URL = "https://share.google/tzw4EuZFfJPABSP7A", oldS2 = V.settings, SVG_FB = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.2h-3.1V7.8c0-.9.3-1.5 1.6-1.5h1.7V3.4c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v2.4H7.7V13h2.7v8h3.1z"/></svg>', SVG_IG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>';
 function aboutCard() {
   const ig = S.ig ? /^https?:/.test(S.ig) ? S.ig : "https://instagram.com/" + S.ig.replace(/^@/, "") : IG_URL;
-  return scd("about", 7) + shd2("about", "من نحن", "أحمد المخلص · حساباتي على الفيسبوك والإنستقرام", '<span dir="ltr">v' + APP_VER + "</span>") + '<div class="thg"><a class="tho" target="_blank" rel="noopener" href="https://share.google/gYVOy9hWrUoo5dllq" style="text-decoration:none"><span class="soc fbk">' + SVG_FB + "</span><span>فيسبوك</span></a>" + (ig ? '<a class="tho" target="_blank" rel="noopener" href="' + E(ig) + '" style="text-decoration:none"><span class="soc igk">' + SVG_IG + "</span><span>إنستقرام</span></a>" : '<button class="tho" onclick="setIg()"><span class="soc igk">' + SVG_IG + "</span><span>إنستقرام</span></button>") + '<a class="tho" target="_blank" rel="noopener" href="https://wa.me/9647737043441" style="text-decoration:none"><span class="soc wak">' + WA + '</span><span style="text-align:center">واتساب<small dir="ltr" style="display:block;text-align:center;font-weight:400;color:var(--mut);font-size:11px">07737043441</small></span></a></div></div>';
+  return scd("about", 1) + shd2("about", "من نحن", "أحمد المخلص · حساباتي على الفيسبوك والإنستقرام", '<span dir="ltr">v' + APP_VER + "</span>") + '<div class="thg"><a class="tho" target="_blank" rel="noopener" href="https://share.google/gYVOy9hWrUoo5dllq" style="text-decoration:none"><span class="soc fbk">' + SVG_FB + "</span><span>فيسبوك</span></a>" + (ig ? '<a class="tho" target="_blank" rel="noopener" href="' + E(ig) + '" style="text-decoration:none"><span class="soc igk">' + SVG_IG + "</span><span>إنستقرام</span></a>" : '<button class="tho" onclick="setIg()"><span class="soc igk">' + SVG_IG + "</span><span>إنستقرام</span></button>") + '<a class="tho" target="_blank" rel="noopener" href="https://wa.me/9647737043441" style="text-decoration:none"><span class="soc wak">' + WA + '</span><span style="text-align:center">واتساب<small dir="ltr" style="display:block;text-align:center;font-weight:400;color:var(--mut);font-size:11px">07737043441</small></span></a></div></div>';
 }
 const isStandalone = () => {
   try {
@@ -5490,8 +5552,8 @@ function shareWa() {
   window.open("https://wa.me/?text=" + encodeURIComponent(APP_MSG + "\n" + APP_URL), "_blank");
 }
 V.settings = function() {
-  const h = oldS2().replace("</h2>", "</h2>" + officeCard()), i = h.indexOf('<div class="tg">');
-  return h.slice(0, i) + langCard() + animCard() + alertCard() + timerCard() + pinCard() + installCard() + shareCard() + aboutCard() + bakCard() + logoutCard();
+  const h = oldS2().replace("</h2>", "</h2>" + aboutCard() + officeCard()), i = h.indexOf('<div class="tg">');
+  return h.slice(0, i) + langCard() + animCard() + alertCard() + timerCard() + pinCard() + installCard() + shareCard() + bakCard() + logoutCard();
 };
 function logoutCard() {
   const L = window.AQSATI_LICENSE;
@@ -5824,7 +5886,7 @@ V.bak = function() {
   } catch (e) {
   }
   const info = ["النسخة الاحتياطية بصيغة Excel (xlsx) وتحتوي على جميع بيانات التطبيق", "يمكن تصدير البيانات إلى ملف Excel بشيت منفصل لكل قسم", "النسخ التلقائي يعمل مرة واحدة كل يوم عند فتح التطبيق", "يمكنك مشاركة ملف النسخة الاحتياطية مع أي شخص"];
-  return '<div class="card"><div class="bkh"><span style="color:#1e88e5">☁️</span>آخر نسخة احتياطية</div>' + (lb ? '<div class="bkr"><span>📅</span><span>التاريخ والوقت:</span><b>' + fmtTs(lb.ts) + '</b></div><div class="bkr"><span>' + (lb.type === "تلقائية" ? "⏱️" : "👆") + "</span><span>النوع:</span><b>" + lb.type + "</b></div>" : '<div class="mut" style="margin:6px 0 14px">لم تُنشأ أي نسخة احتياطية بعد</div>') + '<button class="bkx" onclick="exportXlsx()">⬇️ تصدير تقرير Excel</button></div><button class="bkb g" onclick="makeBackup()">☁️ إنشاء نسخة احتياطية الآن</button><div class="card"><div class="bkh"><span style="color:#fb8c00">🕛</span>النسخ التلقائي</div><div class="tr2" style="margin:0"><div><b style="font-size:16px">النسخ التلقائي اليومي</b><div class="mut" style="margin-top:4px;font-size:13px">تُؤخذ نسخة احتياطية تلقائياً مرة كل يوم عند فتح التطبيق</div></div><input type="checkbox" class="sw" ' + (S.autoBak ? "checked " : "") + 'onchange="S.autoBak=this.checked;save();if(this.checked)autoBak();render()"></div>' + (hs ? '<button class="btn sm ghost" style="margin-top:12px" onclick="restoreSnap()">↩️ استعادة آخر نسخة تلقائية</button>' : "") + '</div><div class="card"><div class="bkh"><span style="color:#43a047">📥</span>استعادة نسخة احتياطية</div><div class="mut" style="margin-bottom:12px;font-size:13px">اختر ملف النسخة الاحتياطية، أو تقرير Excel المُصدَّر من التطبيق (‎.xlsx)</div><label class="bkx" style="display:flex;justify-content:center;background:#43a047;margin:0;box-shadow:none">📂 اختيار ملف<input type="file" accept=".xlsx,.xls,.json" style="display:none" onchange="pickRestore(this.files[0])"></label><details style="margin-top:14px"><summary class="mut" style="cursor:pointer">طريقة بديلة: نسخ ولصق النص</summary><textarea id="bk" style="margin-top:10px">' + E(textBackup()) + '</textarea><div class="acts"><button class="btn sm" onclick="copyBk()">نسخ</button><button class="btn sm grn" onclick="restoreBk()">استعادة</button></div></details></div><div class="bki"><div class="bkh" style="color:#1e88e5;font-size:17px">ℹ️ معلومات مهمة</div>' + info.map((x) => '<div class="bkc"><span>✔</span><span>' + x + "</span></div>").join("") + '</div><button class="bkb r" onclick="resetAll()">🗑️ مسح كل البيانات</button>';
+  return '<div class="card"><div class="bkh"><span style="color:#1e88e5">☁️</span>آخر نسخة احتياطية</div>' + (lb ? '<div class="bkr"><span>📅</span><span>التاريخ والوقت:</span><b>' + fmtTs(lb.ts) + '</b></div><div class="bkr"><span>' + (lb.type === "تلقائية" ? "⏱️" : "👆") + "</span><span>النوع:</span><b>" + lb.type + "</b></div>" : '<div class="mut" style="margin:6px 0 14px">لم تُنشأ أي نسخة احتياطية بعد</div>') + '<button class="bkx" onclick="exportXlsx()">⬇️ تصدير تقرير Excel</button></div><button class="bkb g" onclick="makeBackup()">💾 إنشاء نسخة على الهاتف</button><div class="card"><div class="bkh"><span style="color:#fb8c00">🕛</span>النسخ التلقائي</div><div class="tr2" style="margin:0"><div><b style="font-size:16px">النسخ التلقائي اليومي</b><div class="mut" style="margin-top:4px;font-size:13px">تُؤخذ نسخة احتياطية تلقائياً مرة كل يوم عند فتح التطبيق</div></div><input type="checkbox" class="sw" ' + (S.autoBak ? "checked " : "") + 'onchange="S.autoBak=this.checked;save();if(this.checked)autoBak();render()"></div>' + (hs ? '<button class="btn sm ghost" style="margin-top:12px" onclick="restoreSnap()">↩️ استعادة آخر نسخة تلقائية</button>' : "") + '</div><div class="card"><div class="bkh"><span style="color:#43a047">📥</span>استرداد النسخة من الهاتف</div><div class="mut" style="margin-bottom:12px;font-size:13px">اختر ملف النسخة الاحتياطية، أو تقرير Excel المُصدَّر من التطبيق (‎.xlsx)</div><label class="bkx" style="display:flex;justify-content:center;background:#43a047;margin:0;box-shadow:none">📂 استرداد النسخة من الهاتف<input type="file" accept=".xlsx,.xls,.json" style="display:none" onchange="pickRestore(this.files[0])"></label><details style="margin-top:14px"><summary class="mut" style="cursor:pointer">طريقة بديلة: نسخ ولصق النص</summary><textarea id="bk" style="margin-top:10px">' + E(textBackup()) + '</textarea><div class="acts"><button class="btn sm" onclick="copyBk()">نسخ</button><button class="btn sm grn" onclick="restoreBk()">استعادة</button></div></details></div><div class="bki"><div class="bkh" style="color:#1e88e5;font-size:17px">ℹ️ معلومات مهمة</div>' + info.map((x) => '<div class="bkc"><span>✔</span><span>' + x + "</span></div>").join("") + '</div><button class="bkb r" onclick="resetAll()">🗑️ مسح كل البيانات</button>';
 };
 autoBak();
 
@@ -5944,7 +6006,8 @@ function debtPays(id, one) {
     pl.forEach((p) => rows.push({ p, x }));
     un += Math.max(0, Math.round(x.paid - pl.reduce((s, p) => s + (+p.amt || 0), 0)));
   });
-  rows.sort((u, v) => String(v.p.date || "").localeCompare(String(u.p.date || "")));
+  rows.forEach((r, k) => { r._k = k; });
+  rows.sort((u, v) => String(v.p.date || "").localeCompare(String(u.p.date || "")) || v._k - u._k);
   const t = sum(a, "amount"), pd = sum(a, "paid"), row = (d, lb, am, cl, extra) => '<div class="kv" style="align-items:center"><div><b>' + d + '</b><div class="mut">' + lb + '</div></div><div style="display:flex;align-items:center;gap:8px"><b class="' + cl + '">' + am + "</b>" + (extra || "") + "</div></div>", list = rows.map(({ p, x }) => row(String(p.date || "—").split("-").reverse().join("/"), E((one ? "" : (x.prod || x.note || "دين") + (mix ? " (" + (x.type === "in" ? "لي" : "عليّ") + ")" : "") + (p.note ? " · " : "")) + (p.note || (one ? "تسديد" : ""))), F(p.amt) + " د.ع", x.type === "in" ? "ok" : "bad", '<button class="btn sm ghost" onclick="debtReceipt(\'' + x.id + '\',' + (x.pl || []).indexOf(p) + ')">🧾 وصل</button>')).join("") + (un ? row("—", "تسديدات سابقة (بدون تفاصيل)", F(un) + " د.ع", "ok") : ""), o = document.createElement("div");
   o.className = "ov";
   o.style.alignItems = "center";
@@ -6912,6 +6975,7 @@ function resetAll() {
  */
 // اختياري: ضع هنا معرّف عميل Google (OAuth Client ID) ليظهر الربط جاهزاً لكل المستخدمين دون إدخاله يدوياً.
 const CLOUD_GOOGLE_CLIENT_ID = "50206985580-6v4qbhfb84up1fqsvlitn006tl8142eu.apps.googleusercontent.com";
+const GLOGO = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
 const CB = { tok: null, exp: 0, busy: false, list: null, pass: null, gis: null, warned: false };
 const cbCfg = () => {
   const d = { auto: false, enc: false, keep: 10, gid: "", linked: false };
@@ -6920,7 +6984,7 @@ const cbCfg = () => {
   return S.cloud;
 };
 const cbGid = () => (CLOUD_GOOGLE_CLIENT_ID || cbCfg().gid || "").trim();
-const cbPaint = () => { if (tab === "bak") render(); };
+const cbPaint = () => { if (tab === "bak" || tab === "settings") render(); };
 // إعدادات السحابة لا تدخل ملفات النسخ المحلية ولا تُستبدل عند الاستعادة
 (function() {
   const base = snapData;
@@ -7079,7 +7143,7 @@ async function cloudUpload(auto) {
     await cloudList(true);
   } catch (e) {
     if (!auto) toast(cbErr(e));
-    else if (!CB.warned) { CB.warned = true; toast("تعذّر الرفع التلقائي، افتح «النسخة الاحتياطية» واضغط رفع الآن"); }
+    else if (!CB.warned) { CB.warned = true; toast("تعذّر الرفع التلقائي، افتح «النسخة الاحتياطية» واضغط إنشاء نسخة سحابية"); }
   } finally {
     CB.busy = false;
     cbPaint();
@@ -7117,6 +7181,13 @@ async function cloudRestore(id) {
     render();
     toast("تمت الاستعادة بنجاح");
   });
+}
+async function cloudRestoreLatest() {
+  if (CB.busy) return;
+  try { await cbToken(true); } catch (e) { toast(cbErr(e)); return; }
+  await cloudList(true);
+  if (!CB.list || !CB.list.length) { toast("لا توجد نسخ على السحابة"); return; }
+  cloudRestore(CB.list[0].id);
 }
 function cloudDelete(id) {
   ask("حذف هذه النسخة من السحابة نهائياً؟", async () => {
@@ -7171,26 +7242,26 @@ function cloudAuto() {
 
 function cloudCard() {
   const c = cbCfg(), id = cbGid(), secure = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
-  let h = '<div class="card"><div class="bkh"><span style="color:#1e88e5">☁️</span>النسخ الأونلاين (Google Drive)</div>';
+  let h = '<div class="card"><div class="bkh"><span class="glgs">' + GLOGO + '</span>النسخ السحابية (Google Drive)</div>';
   if (!secure) h += '<div class="mut" style="margin-bottom:10px;color:#e53935">يتطلب هذا الخيار فتح التطبيق من رابط https (لا يعمل من ملف محلي).</div>';
   if (!id) {
     h += '<div class="mut" style="margin-bottom:10px;font-size:13px">ارفع نسخة من بياناتك إلى حساب Google Drive الخاص بك. أدخل معرّف العميل (Client ID) مرة واحدة فقط.</div><input id="cbid" dir="ltr" placeholder="xxxx.apps.googleusercontent.com" style="margin-bottom:10px"><button class="bkx" style="margin:0" onclick="cloudSaveId()">حفظ المعرّف</button><details style="margin-top:12px"><summary class="mut" style="cursor:pointer">كيف أحصل على المعرّف؟</summary><ol class="mut" style="font-size:13px;line-height:1.9;padding-right:18px;margin:8px 0 0"><li>افتح Google Cloud Console وأنشئ مشروعاً.</li><li>فعّل Google Drive API.</li><li>من «بيانات الاعتماد» أنشئ OAuth Client ID من نوع Web.</li><li>أضف رابط تطبيقك في Authorized JavaScript origins.</li><li>انسخ المعرّف وألصقه هنا.</li></ol></details>';
   } else if (!c.linked) {
-    h += '<div class="mut" style="margin-bottom:12px;font-size:13px">اربط حسابك لرفع النسخ إلى مجلد التطبيق المخفي في Drive (لا يصل التطبيق لباقي ملفاتك).</div><button class="bkx" style="margin:0" onclick="cloudConnect()">🔗 ربط Google Drive</button>' + (CLOUD_GOOGLE_CLIENT_ID ? "" : '<button class="btn sm ghost" style="margin-top:8px" onclick="cbCfg().gid=\'\';save();render()">تغيير المعرّف</button>');
+    h += '<div class="mut" style="margin-bottom:12px;font-size:13px">اربط حسابك لرفع النسخ إلى مجلد التطبيق المخفي في Drive (لا يصل التطبيق لباقي ملفاتك).</div><button class="bkx" style="margin:0" onclick="cloudConnect()"><span class="glgs">' + GLOGO + '</span> ربط Google Drive</button>' + (CLOUD_GOOGLE_CLIENT_ID ? "" : '<button class="btn sm ghost" style="margin-top:8px" onclick="cbCfg().gid=\'\';save();render()">تغيير المعرّف</button>');
   } else {
     h += '<div class="bkr"><span>🟢</span><span>حالة الربط:</span><b>متصل بـ Google</b></div>';
     h += c.last ? '<div class="bkr"><span>📅</span><span>آخر رفع:</span><b>' + fmtTs(c.last.ts) + (c.last.enc ? " 🔐" : "") + "</b></div>" : '<div class="mut" style="margin:6px 0 10px">لم تُرفع أي نسخة بعد</div>';
-    h += '<button class="bkx" style="margin:8px 0" onclick="cloudUpload()"' + (CB.busy ? " disabled" : "") + ">" + (CB.busy ? "⏳ جارٍ العمل..." : "⬆️ رفع نسخة الآن") + "</button>";
+    h += '<button class="bkx" style="margin:8px 0" onclick="cloudUpload()"' + (CB.busy ? " disabled" : "") + ">" + (CB.busy ? "⏳ جارٍ العمل..." : "☁️ إنشاء نسخة سحابية") + "</button>";
     h += '<div class="tr2" style="margin:10px 0"><div><b style="font-size:15px">رفع تلقائي يومي</b><div class="mut" style="margin-top:3px;font-size:12px">مرة كل يوم عند فتح التطبيق مع الاتصال بالإنترنت</div></div><input type="checkbox" class="sw" ' + (c.auto ? "checked " : "") + 'onchange="cbCfg().auto=this.checked;save();if(this.checked)cloudAuto();render()"></div>';
     h += '<div class="tr2" style="margin:10px 0"><div><b style="font-size:15px">تشفير النسخ بكلمة سر</b><div class="mut" style="margin-top:3px;font-size:12px">تُشفَّر على جهازك قبل الرفع، ولا يمكن استرجاعها بدون كلمة السر</div></div><input type="checkbox" class="sw" ' + (c.enc ? "checked " : "") + 'onchange="cloudToggleEnc(this.checked)"></div>';
     h += '<div class="tr2" style="margin:10px 0"><div><b style="font-size:15px">عدد النسخ المحفوظة</b></div><select style="width:auto" onchange="cbCfg().keep=+this.value;save()">' + [5, 10, 20, 30].map((n) => '<option value="' + n + '"' + (+c.keep === n ? " selected" : "") + ">" + n + "</option>").join("") + "</select></div>";
-    h += '<div class="bkh" style="margin-top:14px;font-size:15px"><span>🗂️</span>النسخ على السحابة</div>';
+    h += '<div class="bkh" style="margin-top:14px;font-size:15px"><span>🗂️</span>استرداد النسخة السحابية</div>';
     if (CB.list === null) h += '<button class="btn sm ghost" onclick="cloudList()">عرض النسخ</button>';
     else if (!CB.list.length) h += '<div class="mut" style="margin:6px 0">لا توجد نسخ على السحابة</div><button class="btn sm ghost" onclick="cloudList()">تحديث القائمة</button>';
     else h += CB.list.map((f) => {
       let m = {};
       try { m = JSON.parse(f.description || "{}"); } catch (e) {}
-      return '<div class="bkr" style="align-items:center"><span>' + (m.enc ? "🔐" : "📄") + '</span><span style="flex:1"><b>' + fmtTs(m.ts || Date.parse(f.createdTime)) + '</b><div class="mut">' + cbSize(f.size) + '</div></span><button class="btn sm grn" onclick="cloudRestore(\'' + E(f.id) + '\')">استعادة</button><button class="btn sm red" style="margin-inline-start:6px" onclick="cloudDelete(\'' + E(f.id) + '\')">🗑️</button></div>';
+      return '<div class="bkr" style="align-items:center"><span>' + (m.enc ? "🔐" : "📄") + '</span><span style="flex:1"><b>' + fmtTs(m.ts || Date.parse(f.createdTime)) + '</b><div class="mut">' + cbSize(f.size) + '</div></span><button class="btn sm grn" onclick="cloudRestore(\'' + E(f.id) + '\')">استرداد</button><button class="btn sm red" style="margin-inline-start:6px" onclick="cloudDelete(\'' + E(f.id) + '\')">🗑️</button></div>';
     }).join("") + '<button class="btn sm ghost" style="margin-top:8px" onclick="cloudList()">تحديث القائمة</button>';
     h += '<div class="acts" style="margin-top:12px"><button class="btn sm red" onclick="cloudDisconnect()">فصل الحساب</button></div>';
   }
@@ -7445,7 +7516,17 @@ function animSample() {
 }
 function animCard() {
   const c = S.anim || "none";
-  return scd("anim", 3) + shd2("anim", "حركة البطاقات", "حركة تظهر بها بطاقات الأقساط والديون عند فتح القسم وعند التمرير للأعلى والأسفل", (ANIMS.find((a) => a[0] === c) || ANIMS[0])[1]) + animSample() + '<div class="thg" id="animOpts" style="grid-template-columns:repeat(4,1fr)">' + ANIMS.map((a) => '<button class="tho' + (c === a[0] ? " on" : "") + '" data-a="' + a[0] + `" onclick="setAnim('` + a[0] + `')"><span class="sico xs" style="background:linear-gradient(135deg,` + ANIC[a[0]][1] + "," + ANIC[a[0]][2] + `)"><svg viewBox="0 0 24 24">` + ANIC[a[0]][0] + "</svg></span><span>" + a[1] + "</span></button>").join("") + "</div></div>";
+  return scd("anim", 3) + shd2("anim", "حركة البطاقات", "حركة تظهر بها بطاقات الأقساط والديون عند فتح القسم وعند التمرير للأعلى والأسفل", (ANIMS.find((a) => a[0] === c) || ANIMS[0])[1]) + '<button type="button" class="apbtn" id="animBtn" onclick="animTogglePrev()" aria-expanded="false" aria-controls="animPrevWrap"><span class="apic"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span><span class="aplb">معاينة الحركة</span><span class="apch">‹</span></button><div class="apw" id="animPrevWrap"><div class="apw-in">' + animSample() + '</div></div><div class="thg" id="animOpts" style="grid-template-columns:repeat(4,1fr)">' + ANIMS.map((a) => '<button class="tho' + (c === a[0] ? " on" : "") + '" data-a="' + a[0] + `" onclick="setAnim('` + a[0] + `')"><span class="sico xs" style="background:linear-gradient(135deg,` + ANIC[a[0]][1] + "," + ANIC[a[0]][2] + `)"><svg viewBox="0 0 24 24">` + ANIC[a[0]][0] + "</svg></span><span>" + a[1] + "</span></button>").join("") + "</div></div>";
+}
+function animTogglePrev() {
+  const w = document.getElementById("animPrevWrap"), b = document.getElementById("animBtn");
+  if (!w || !b) return;
+  const on = !w.classList.contains("open");
+  w.classList.toggle("open", on);
+  b.classList.toggle("on", on);
+  b.setAttribute("aria-expanded", on ? "true" : "false");
+  b.querySelector(".aplb").textContent = on ? "إخفاء المعاينة" : "معاينة الحركة";
+  if (on) setTimeout(animReplay, 280);
 }
 function animReplay() {
   const el = document.getElementById("animPrev"), name = animName();
@@ -7634,7 +7715,7 @@ Object.assign(SI, {
   alert: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>',
   timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/>'
 });
-Object.assign(SHC, { alert: ["#fbbf24", "#d97706"], timer: ["#f7b733", "#f0931b"], bak: ["#2dd4bf", "#0d9488"] });
+Object.assign(SHC, { alert: ["#fb7185", "#e11d48"], timer: ["#f7b733", "#f0931b"], bak: ["#2dd4bf", "#0d9488"] });
 const wrapC = (id, h) => '<div id="' + id + '">' + h + "</div>";
 function refreshC(id, h) {
   const w = document.getElementById(id);
@@ -7711,8 +7792,22 @@ function bakGate(fn) {
   else fn();
 }
 function bakCard() {
-  const lb = S.lastBak, au = !!S.autoBak;
-  return scd("bak", 7) + shd2("bak", "النسخة الاحتياطية", "احفظ بياناتك واستعدها في أي وقت", lb ? lb.type : "") + '<div class="bkg"><div class="bkk"><small>آخر نسخة</small><b>' + (lb ? fmtTs(lb.ts) : "لا توجد بعد") + '</b></div><div class="bkk"><small>النسخ التلقائي</small><b class="' + (au ? "ok" : "") + '">' + (au ? "مفعّل" : "متوقف") + '</b></div></div><div class="acts"><button class="btn sbtn" onclick="bakGate(makeBackup)">☁️ نسخة الآن</button><button class="btn ghost" onclick="bakGate(bakWin)">التفاصيل والخيارات ‹</button></div></div>';
+  const lb = S.lastBak, c = cbCfg(), id = cbGid(), cl = c.last, linked = !!c.linked && !!id, busy = CB.busy;
+  if (id) cbLoadGis();
+  const PH = '<svg viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 7v7M9 11.5l3 3 3-3M10.5 18.5h3"/></svg>';
+  const hero = (cls, fn, ic, t, sm, dis) => '<button type="button" class="gbtn ' + cls + '" onclick="' + fn + '"' + (dis ? " disabled" : "") + '><span class="glg">' + ic + '</span><span class="gtx"><b>' + t + '</b><small>' + sm + '</small></span><span class="gar">‹</span></button>';
+  return scd("bak", 7) + shd2("bak", "النسخة الاحتياطية", "احفظ بياناتك على Google Drive أو على هاتفك واستعدها في أي وقت", linked ? "متصل بـ Google" : "غير مربوط") + '<div class="bkset">'
+    + hero("cl", "bakGate(cloudUpload)", GLOGO, busy ? "جارٍ إنشاء النسخة..." : "إنشاء نسخة سحابية", cl ? "آخر نسخة: " + fmtTs(cl.ts) : linked ? "لم تُنشأ نسخة سحابية بعد" : "ربط Google Drive ورفع نسخة", busy)
+    + '<button type="button" class="bqb wide" onclick="bakGate(cloudRestoreLatest)"' + (busy ? " disabled" : "") + '><span class="glgs">' + GLOGO + '</span><span>استرداد النسخة السحابية</span></button>'
+    + '<div class="bkdv"><span>على الهاتف</span></div>'
+    + hero("ph", "bakGate(makeBackup)", PH, "إنشاء نسخة على الهاتف", lb ? "آخر نسخة: " + fmtTs(lb.ts) : "لم تُنشأ نسخة على الهاتف بعد", false)
+    + '<button type="button" class="bqb wide" onclick="bakGate(bakPickFile)"><span class="glgs" style="font-size:18px">📱</span><span>استرداد النسخة من الهاتف</span></button>'
+    + '</div><input type="file" id="bkFileS" accept=".xlsx,.xls,.json" style="display:none" onchange="pickRestore(this.files[0]);this.value=\'\'">'
+    + '<button type="button" class="btn ghost bkdt" onclick="bakGate(bakWin)">التفاصيل والخيارات ‹</button></div>';
+}
+function bakPickFile() {
+  const f = document.getElementById("bkFileS");
+  if (f) f.click();
 }
 function bakWin() {
   if (document.getElementById("bkw")) return;
@@ -7747,7 +7842,7 @@ function bakClose() {
   };
 }
 (function() {
-  const T = { "الأقسام": "Sections", "انتقال سريع إلى أي قسم": "Quick jump to any section", "تنبيه تجاوز الموعد": "Overdue alert", "تلقائي": "Auto", "نهاية كل شهر": "End of every month", "تخصيص يوم": "Custom day", "يوم محدد من الشهر": "A specific day of the month", "يوم التنبيه من كل شهر": "Alert day of each month", "العداد الموقت": "Activity timer", "تفعيل العداد الموقت": "Enable activity timer", "مفعّل": "On", "متوقف": "Off", "آخر النشاط": "Latest activity", "النسخة الاحتياطية": "Backup", "نسخة الآن": "Backup now", "التفاصيل والخيارات": "Details & options", "آخر نسخة": "Last backup", "النسخ التلقائي": "Auto backup" };
+  const T = { "الأقسام": "Sections", "انتقال سريع إلى أي قسم": "Quick jump to any section", "تنبيه تجاوز الموعد": "Overdue alert", "تلقائي": "Auto", "نهاية كل شهر": "End of every month", "تخصيص يوم": "Custom day", "يوم محدد من الشهر": "A specific day of the month", "يوم التنبيه من كل شهر": "Alert day of each month", "العداد الموقت": "Activity timer", "تفعيل العداد الموقت": "Enable activity timer", "مفعّل": "On", "متوقف": "Off", "آخر النشاط": "Latest activity", "النسخة الاحتياطية": "Backup", "نسخة الآن": "Backup now", "التفاصيل والخيارات": "Details & options", "آخر نسخة": "Last backup", "النسخ التلقائي": "Auto backup", "معاينة الحركة": "Preview animation", "إخفاء المعاينة": "Hide preview", "إنشاء نسخة سحابية": "Create cloud backup", "استرداد النسخة السحابية": "Restore cloud backup", "إنشاء نسخة على الهاتف": "Create backup on phone", "استرداد النسخة من الهاتف": "Restore backup from phone", "على الهاتف": "On phone", "آخر نسخة سحابية": "Last cloud backup", "آخر نسخة على الهاتف": "Last phone backup", "استرداد": "Restore" };
   Object.keys(T).forEach((k) => {
     if (!EN.some((e) => e[0] === k)) EN.push([k, T[k]]);
   });
