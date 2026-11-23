@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>وصل — أقساطي وديوني</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#d9dde3">
+<meta property="og:type" content="website">
+<meta property="og:title" content="وصل — أقساطي وديوني">
+<meta property="og:description" content="اضغط لعرض الوصل كاملاً">
+<meta property="og:image" content="https://a-makls.github.io/aksat/icon-512.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:Cairo,Tahoma,Arial,sans-serif;background:#d9dde3;color:#161616;min-height:100vh;padding:20px 14px calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:16px}
+.rc{width:100%;max-width:400px;background:#fff;border-radius:16px;padding:22px 20px 20px;box-shadow:0 18px 40px -18px rgba(0,0,0,.35);animation:in .5s cubic-bezier(.2,.9,.3,1) both}
+.of{text-align:center;font-weight:700;font-size:19px;margin:0 0 2px;word-break:break-word}
+.ti{text-align:center;font-weight:700;font-size:25px;margin:0 0 4px}
+.sep{border:0;border-top:1.5px dashed #b9bec7;margin:14px 0}
+.rw{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:15px;line-height:1.6}
+.rw span{color:#666;flex:none}
+.rw b{font-weight:600;text-align:left;word-break:break-word}
+.rw.bd b{font-weight:700;font-size:16px}
+.tb .rw{font-size:16px}
+.tb .rw.hl{font-weight:700}
+.tb .rw.hl span{color:#161616}
+.bx{background:#f2f2f2;border-radius:12px;text-align:center;padding:12px 8px;margin-top:14px}
+.bx small{display:block;color:#666;font-size:14px}
+.bx b{font-size:30px;font-weight:700;letter-spacing:.3px}
+.bx i{font-style:normal;font-size:16px;margin-inline-start:4px}
+.st{background:#161616;color:#fff;border-radius:10px;text-align:center;font-weight:700;font-size:16px;padding:10px;margin-top:12px}
+.ft{text-align:center;color:#888;font-size:12.5px;margin-top:16px}
+.ft a{color:#444;font-weight:700}
+.bad{text-align:center;color:#b91c1c;font-weight:700;padding:30px 6px;margin:0}
+.ac{width:100%;max-width:400px;display:flex;gap:10px}
+.ac button{flex:1;font-family:inherit;font-size:15px;font-weight:700;border:0;border-radius:14px;padding:13px 8px;background:#161616;color:#fff;cursor:pointer}
+.ac button.g{background:#fff;color:#161616}
+.ac button:active{transform:scale(.97)}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+@media (prefers-color-scheme:dark){body{background:#12151b}.ac button.g{background:#1d222b;color:#e8edfa}.ft{color:#8a93a6}}
+@media (prefers-reduced-motion:reduce){.rc{animation:none}}
+@media print{body{background:#fff;padding:0}.ac,.ft a{display:none}.rc{box-shadow:none;border-radius:0}}
+</style>
+</head>
+<body>
+<div class="rc" id="rc"><p class="bad" id="ld">جارٍ تحميل الوصل...</p></div>
+<div class="ac" id="ac" hidden><button id="sh">📤 مشاركة</button><button id="pr" class="g">🖨️ طباعة / PDF</button></div>
+<noscript><p class="bad">يلزم تفعيل JavaScript لعرض الوصل.</p></noscript>
+<script>
+(function(){
+  var box=document.getElementById('rc');
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=String(x);return e}
+  function fmt(v){return typeof v==='number'&&isFinite(v)?v.toLocaleString('en-US')+' د.ع':String(v==null?'':v).slice(0,200)}
+  function bad(m){box.textContent='';box.appendChild(el('p','bad',m))}
+  var o;
+  try{
+    var b=location.hash.slice(1).replace(/-/g,'+').replace(/_/g,'/');
+    while(b.length%4)b+='=';
+    var bin=atob(b),u=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+    o=JSON.parse(new TextDecoder().decode(u));
+    if(!o||typeof o!=='object'||!Array.isArray(o.r)||!Array.isArray(o.b))throw 0;
+  }catch(e){return bad('رابط الوصل غير صالح أو ناقص')}
+  var t=String(o.t||'وصل').slice(0,60);
+  document.title=t+' — أقساطي وديوني';
+  box.textContent='';
+  if(o.o)box.appendChild(el('div','of',String(o.o).slice(0,80)));
+  box.appendChild(el('div','ti',t));
+  box.appendChild(el('hr','sep'));
+  o.r.slice(0,12).forEach(function(r){
+    var d=el('div','rw'+(r[2]?' bd':''));
+    d.appendChild(el('span',null,String(r[0]).slice(0,40)));
+    d.appendChild(el('b',null,String(r[1]).slice(0,200)));
+    box.appendChild(d);
+  });
+  box.appendChild(el('hr','sep'));
+  var tb=el('div','tb');
+  o.b.slice(0,12).forEach(function(r){
+    var d=el('div','rw'+(r[2]?' hl':''));
+    d.appendChild(el('span',null,String(r[0]).slice(0,40)));
+    d.appendChild(el('b',null,fmt(r[1])));
+    tb.appendChild(d);
+  });
+  box.appendChild(tb);
+  if(typeof o.v==='number'){
+    var x=el('div','bx');
+    x.appendChild(el('small',null,String(o.l||'المبلغ').slice(0,40)));
+    var n=el('b',null,o.v.toLocaleString('en-US'));
+    n.appendChild(el('i',null,'د.ع'));
+    x.appendChild(n);box.appendChild(x);
+  }
+  if(o.s)box.appendChild(el('div','st',String(o.s).slice(0,80)));
+  var f=el('div','ft','صدر عبر تطبيق ');
+  var a=el('a',null,'أقساطي وديوني');a.href='index.html';f.appendChild(a);
+  box.appendChild(f);
+  var ac=document.getElementById('ac');ac.hidden=false;
+  document.getElementById('pr').onclick=function(){window.print()};
+  document.getElementById('sh').onclick=function(){
+    if(navigator.share)navigator.share({title:t,url:location.href}).catch(function(){});
+    else if(navigator.clipboard)navigator.clipboard.writeText(location.href).then(function(){alert('تم نسخ رابط الوصل')});
+  };
+})();
+</script>
+</body>
+</html>
