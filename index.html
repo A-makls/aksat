@@ -4397,14 +4397,22 @@ function rcptCfg(i, c, pay, x, no) {
 function rcptCanvas(i, c, pay, x, no, pl) {
   return rcptRender(rcptCfg(i, c, pay, x, no), pl);
 }
-/* رابط الوصل: بيانات الوصل داخل الرابط نفسه (بعد #) فلا تُرسل لأي خادم، وتعرضها صفحة r.html */
+/* رابط الوصل: بيانات مختصرة داخل الرابط (?d=) وتعرضها صفحة r.html.
+   لا نستخدم # لأن واتساب يقطع الرابط عندها. القائمة RL مشتركة مع r.html ويُضاف إليها فقط من النهاية. */
+const RL = ["وصل تسديد", "وصل شراء", "التاريخ:", "رقم الوصل:", "وصل إلى:", "رقم السجل:", "عن:", "المادة:", "مدفوع إلى:", "إجمالي القسط", "إجمالي الدين", "المسدد سابقاً", "المسدد الآن", "المتبقي", "المبلغ المسدد", "المجموع", "سعر البيع", "الدفعة الأولى", "القسط الشهري", "القسط الأسبوعي", "القسط اليومي", "عدد الأقساط", "القسط القادم", "تم تسديد القسط بالكامل", "تم تسديد الدين بالكامل", "بيع نقدي - مدفوع بالكامل"];
 function rcptLink(cfg) {
-  const o = { o: (S.office || "").trim(), t: cfg.title, n: cfg.no, d: cfg.dt, r: cfg.rows, b: cfg.tbl, l: cfg.boxL, v: cfg.boxV, s: cfg.stamp || "" };
+  const e = (x) => {
+    const k = RL.indexOf(x);
+    return k < 0 ? x : k;
+  }, row = (r) => r[2] ? [e(r[0]), r[1], 1] : [e(r[0]), r[1]];
+  const o = { v: 2, o: (S.office || "").trim(), t: e(cfg.title), r: cfg.rows.map(row), b: cfg.tbl.map(row), l: e(cfg.boxL), m: cfg.boxV };
+  if (cfg.stamp) o.s = e(cfg.stamp);
+  if (!o.o) delete o.o;
   const by = new TextEncoder().encode(JSON.stringify(o));
   let bin = "";
   for (let i = 0; i < by.length; i++) bin += String.fromCharCode(by[i]);
-  const b64 = btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""), base = /^https?:$/.test(location.protocol) ? new URL("r.html", location.href).href : APP_URL + "r.html";
-  return base + "#" + b64;
+  const b64 = btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""), base = /^https?:$/.test(location.protocol) ? new URL("r.html", location.href).href.split(/[?#]/)[0] : APP_URL + "r.html";
+  return base + "?d=" + b64;
 }
 function rcptLinkMsg(cfg) {
   const office = (S.office || "").trim();
@@ -4412,7 +4420,7 @@ function rcptLinkMsg(cfg) {
   cfg.tbl.forEach((r) => {
     if (r[2] || r[0] === "المتبقي") {
       const v = typeof r[1] === "number" ? F(r[1]) + " د.ع" : r[1];
-      t += (r[2] ? "✅ *" + r[0] + ": " + v + "*" : "▫️ " + r[0] + ": " + v) + "\n";
+      t += (r[2] ? "✅ *" + r[0] + ": " + v + "*" : "🔹 " + r[0] + ": " + v) + "\n";
     }
   });
   return t + "\n🔗 اضغط لعرض الوصل كاملاً:\n" + rcptLink(cfg);
@@ -4422,12 +4430,12 @@ function rcptTxt(o) {
   const ln = "━━━━━━━━━━━━━━", office = (S.office || "").trim();
   let t = "🧾 *" + o.title + "*\n" + (office ? "*" + office + "*\n" : "") + ln + "\n";
   o.rows.forEach((r) => {
-    t += "▫️ " + r[0] + " " + (r[2] ? "*" + r[1] + "*" : r[1]) + "\n";
+    t += "🔹 " + r[0] + " " + (r[2] ? "*" + r[1] + "*" : r[1]) + "\n";
   });
   t += ln + "\n";
   o.tbl.forEach((r) => {
     const v = typeof r[1] === "number" ? F(r[1]) + " د.ع" : r[1];
-    t += (r[2] ? "✅ *" + r[0] + ": " + v + "*" : "▫️ " + r[0] + ": " + v) + "\n";
+    t += (r[2] ? "✅ *" + r[0] + ": " + v + "*" : "🔹 " + r[0] + ": " + v) + "\n";
   });
   t += ln + "\n";
   if (o.stamp) t += "🎉 *" + o.stamp + "*\n";

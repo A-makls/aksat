@@ -57,22 +57,28 @@ body{font-family:Cairo,Tahoma,Arial,sans-serif;background:#d9dde3;color:#161616;
   function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=String(x);return e}
   function fmt(v){return typeof v==='number'&&isFinite(v)?v.toLocaleString('en-US')+' د.ع':String(v==null?'':v).slice(0,200)}
   function bad(m){box.textContent='';box.appendChild(el('p','bad',m))}
-  var o;
+  var RL=["وصل تسديد", "وصل شراء", "التاريخ:", "رقم الوصل:", "وصل إلى:", "رقم السجل:", "عن:", "المادة:", "مدفوع إلى:", "إجمالي القسط", "إجمالي الدين", "المسدد سابقاً", "المسدد الآن", "المتبقي", "المبلغ المسدد", "المجموع", "سعر البيع", "الدفعة الأولى", "القسط الشهري", "القسط الأسبوعي", "القسط اليومي", "عدد الأقساط", "القسط القادم", "تم تسديد القسط بالكامل", "تم تسديد الدين بالكامل", "بيع نقدي - مدفوع بالكامل"];
+  function dl(x){return typeof x==='number'?(RL[x]||''):String(x==null?'':x)}
+  var o,rows,tbl,t,boxL,boxV,stamp;
   try{
-    var b=location.hash.slice(1).replace(/-/g,'+').replace(/_/g,'/');
+    var q=new URLSearchParams(location.search).get('d'),b=(q||location.hash.slice(1)).replace(/-/g,'+').replace(/_/g,'/');
+    if(!b)throw 0;
     while(b.length%4)b+='=';
     var bin=atob(b),u=new Uint8Array(bin.length);
     for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
     o=JSON.parse(new TextDecoder().decode(u));
     if(!o||typeof o!=='object'||!Array.isArray(o.r)||!Array.isArray(o.b))throw 0;
-  }catch(e){return bad('رابط الوصل غير صالح أو ناقص')}
-  var t=String(o.t||'وصل').slice(0,60);
+    var mp=function(r){return[dl(r[0]),r[1],!!r[2]]};
+    if(o.v===2){t=dl(o.t);rows=o.r.map(mp);tbl=o.b.map(mp);boxL=dl(o.l);boxV=o.m;stamp=dl(o.s)}
+    else{t=o.t;rows=o.r.map(mp);tbl=o.b.map(mp);boxL=o.l;boxV=o.v;stamp=o.s}
+  }catch(e){return bad('رابط الوصل غير صالح أو ناقص. اطلب من المرسل إعادة إرساله.')}
+  t=String(t||'وصل').slice(0,60);
   document.title=t+' — أقساطي وديوني';
   box.textContent='';
   if(o.o)box.appendChild(el('div','of',String(o.o).slice(0,80)));
   box.appendChild(el('div','ti',t));
   box.appendChild(el('hr','sep'));
-  o.r.slice(0,12).forEach(function(r){
+  rows.slice(0,12).forEach(function(r){
     var d=el('div','rw'+(r[2]?' bd':''));
     d.appendChild(el('span',null,String(r[0]).slice(0,40)));
     d.appendChild(el('b',null,String(r[1]).slice(0,200)));
@@ -80,21 +86,21 @@ body{font-family:Cairo,Tahoma,Arial,sans-serif;background:#d9dde3;color:#161616;
   });
   box.appendChild(el('hr','sep'));
   var tb=el('div','tb');
-  o.b.slice(0,12).forEach(function(r){
+  tbl.slice(0,12).forEach(function(r){
     var d=el('div','rw'+(r[2]?' hl':''));
     d.appendChild(el('span',null,String(r[0]).slice(0,40)));
     d.appendChild(el('b',null,fmt(r[1])));
     tb.appendChild(d);
   });
   box.appendChild(tb);
-  if(typeof o.v==='number'){
+  if(typeof boxV==='number'){
     var x=el('div','bx');
-    x.appendChild(el('small',null,String(o.l||'المبلغ').slice(0,40)));
-    var n=el('b',null,o.v.toLocaleString('en-US'));
+    x.appendChild(el('small',null,String(boxL||'المبلغ').slice(0,40)));
+    var n=el('b',null,boxV.toLocaleString('en-US'));
     n.appendChild(el('i',null,'د.ع'));
     x.appendChild(n);box.appendChild(x);
   }
-  if(o.s)box.appendChild(el('div','st',String(o.s).slice(0,80)));
+  if(stamp)box.appendChild(el('div','st',String(stamp).slice(0,80)));
   var f=el('div','ft','صدر عبر تطبيق ');
   var a=el('a',null,'أقساطي وديوني');a.href='index.html';f.appendChild(a);
   box.appendChild(f);
