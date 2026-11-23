@@ -4457,7 +4457,7 @@ function rcptDlg(k) {
   const ph = k.ph, o = document.createElement("div");
   o.className = "ov";
   o.style.alignItems = "center";
-  o.innerHTML = '<div class="md" style="border-radius:22px;max-width:380px;width:94%;text-align:center;padding:14px"><h3 style="margin:0 0 4px">' + k.title + '</h3><div class="mut" style="margin-bottom:10px">' + k.sub + '</div><div id="rw" style="max-height:56vh;overflow:auto;border-radius:12px;background:#d9dde3;margin-bottom:10px"><div class="mut" style="padding:50px 0">جارٍ إنشاء الوصل...</div></div><button class="btn" id="rs" disabled style="width:100%;background:#25d366;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;margin-bottom:8px;font-size:16px">' + WA + " " + k.label + "</button>" + (ph ? '<div class="row" style="margin-bottom:8px"><button class="btn ghost" id="rv" disabled style="font-size:13px">نسخ الصورة ولصقها</button><button class="btn ghost" id="rt" disabled style="font-size:13px">إرسال كنص</button></div>' : "") + (ph ? '<a id="rl" target="_blank" rel="noopener" href="https://wa.me/' + ph + '" style="display:none;text-decoration:none;text-align:center;margin-bottom:8px;padding:10px;border:1.5px solid #25d366;border-radius:14px;color:#128c7e;font-weight:700">فتح محادثة العميل في واتساب</a>' : "") + '<div id="rh" class="mut" style="display:none;font-size:13px;margin:0 0 8px;line-height:1.6"></div><div class="row"><button class="btn ghost" id="rd" disabled>إرسال صورة</button><button class="btn ghost" id="rp" disabled>طباعة</button><button class="btn ghost" id="cl">إغلاق</button></div></div>';
+  o.innerHTML = '<div class="md" style="border-radius:22px;max-width:380px;width:94%;text-align:center;padding:14px"><h3 style="margin:0 0 4px">' + k.title + '</h3><div class="mut" style="margin-bottom:10px">' + k.sub + '</div><div id="rw" style="max-height:56vh;overflow:auto;border-radius:12px;background:#d9dde3;margin-bottom:10px"><div class="mut" style="padding:50px 0">جارٍ إنشاء الوصل...</div></div><button class="btn" id="rs" disabled style="width:100%;background:#25d366;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;margin-bottom:8px;font-size:16px">' + WA + " " + (ph ? "نسخ الصورة ولصقها" : k.label) + "</button>" + (ph ? '<div class="row" style="margin-bottom:8px"><button class="btn ghost" id="rv" disabled style="font-size:13px;background:#38bdf8;border-color:#38bdf8;color:#fff;font-weight:700">إرسال رابط 🔗 للوصل</button><button class="btn ghost" id="rt" disabled style="font-size:13px">إرسال كنص</button></div>' : "") + (ph ? '<a id="rl" target="_blank" rel="noopener" href="https://wa.me/' + ph + '" style="display:none;text-decoration:none;text-align:center;margin-bottom:8px;padding:10px;border:1.5px solid #25d366;border-radius:14px;color:#128c7e;font-weight:700">فتح محادثة العميل في واتساب</a>' : "") + '<div id="rh" class="mut" style="display:none;font-size:13px;margin:0 0 8px;line-height:1.6"></div><div class="row"><button class="btn ghost" id="rd" disabled>إرسال صورة</button><button class="btn ghost" id="rp" disabled>طباعة</button><button class="btn ghost" id="cl">إغلاق</button></div></div>';
   document.body.appendChild(o);
   let url = "", blob = null;
   const close = () => {
@@ -4552,11 +4552,11 @@ function rcptDlg(k) {
       if (!w) location.href = u;
     };
     bd.onclick = () => sh(0);
-    bs.onclick = () => k.ph && k.msg ? wa(k.msgL || k.msg) : sh(1);
+    bs.onclick = () => k.ph ? pasteSend() : sh(1);
     const bv = o.querySelector("#rv");
     if (bv) {
       bv.disabled = false;
-      bv.onclick = pasteSend;
+      bv.onclick = () => k.msg ? wa(k.msgL || k.msg) : sh(1);
     }
     const bt = o.querySelector("#rt");
     if (bt) {
@@ -6427,6 +6427,7 @@ const EN_RAW = {
   "إرسال كنص بدل الرابط": "Send as text instead of a link",
   "إرسال كنص": "Send as text",
   "نسخ الصورة ولصقها": "Copy image & paste",
+  "إرسال رابط 🔗 للوصل": "Send receipt link 🔗",
   "الوضع التلقائي يتبع إعداد جهازك": "Auto mode follows your device setting",
   "الوضع ثابت ولا يتغيّر مع إعداد الجهاز": "This mode stays fixed regardless of your device setting",
   "تسجيل الخروج من التطبيق": "Log out of the app",
