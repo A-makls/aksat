@@ -4457,7 +4457,7 @@ function rcptDlg(k) {
   const ph = k.ph, o = document.createElement("div");
   o.className = "ov";
   o.style.alignItems = "center";
-  o.innerHTML = '<div class="md" style="border-radius:22px;max-width:380px;width:94%;text-align:center;padding:14px"><h3 style="margin:0 0 4px">' + k.title + '</h3><div class="mut" style="margin-bottom:10px">' + k.sub + '</div><div id="rw" style="max-height:56vh;overflow:auto;border-radius:12px;background:#d9dde3;margin-bottom:10px"><div class="mut" style="padding:50px 0">جارٍ إنشاء الوصل...</div></div><button class="btn" id="rs" disabled style="width:100%;background:#25d366;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;margin-bottom:8px;font-size:16px">' + WA + " " + k.label + "</button>" + (ph ? '<button class="btn ghost" id="rt" disabled style="width:100%;margin-bottom:8px;font-size:13px">إرسال كنص بدل الرابط</button>' : "") + (ph ? '<a id="rl" target="_blank" rel="noopener" href="https://wa.me/' + ph + '" style="display:none;text-decoration:none;text-align:center;margin-bottom:8px;padding:10px;border:1.5px solid #25d366;border-radius:14px;color:#128c7e;font-weight:700">فتح محادثة العميل في واتساب</a>' : "") + '<div id="rh" class="mut" style="display:none;font-size:13px;margin:0 0 8px;line-height:1.6"></div><div class="row"><button class="btn ghost" id="rd" disabled>إرسال صورة</button><button class="btn ghost" id="rp" disabled>طباعة</button><button class="btn ghost" id="cl">إغلاق</button></div></div>';
+  o.innerHTML = '<div class="md" style="border-radius:22px;max-width:380px;width:94%;text-align:center;padding:14px"><h3 style="margin:0 0 4px">' + k.title + '</h3><div class="mut" style="margin-bottom:10px">' + k.sub + '</div><div id="rw" style="max-height:56vh;overflow:auto;border-radius:12px;background:#d9dde3;margin-bottom:10px"><div class="mut" style="padding:50px 0">جارٍ إنشاء الوصل...</div></div><button class="btn" id="rs" disabled style="width:100%;background:#25d366;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;margin-bottom:8px;font-size:16px">' + WA + " " + k.label + "</button>" + (ph ? '<div class="row" style="margin-bottom:8px"><button class="btn ghost" id="rv" disabled style="font-size:13px">نسخ الصورة ولصقها</button><button class="btn ghost" id="rt" disabled style="font-size:13px">إرسال كنص</button></div>' : "") + (ph ? '<a id="rl" target="_blank" rel="noopener" href="https://wa.me/' + ph + '" style="display:none;text-decoration:none;text-align:center;margin-bottom:8px;padding:10px;border:1.5px solid #25d366;border-radius:14px;color:#128c7e;font-weight:700">فتح محادثة العميل في واتساب</a>' : "") + '<div id="rh" class="mut" style="display:none;font-size:13px;margin:0 0 8px;line-height:1.6"></div><div class="row"><button class="btn ghost" id="rd" disabled>إرسال صورة</button><button class="btn ghost" id="rp" disabled>طباعة</button><button class="btn ghost" id="cl">إغلاق</button></div></div>';
   document.body.appendChild(o);
   let url = "", blob = null;
   const close = () => {
@@ -4533,8 +4533,31 @@ function rcptDlg(k) {
       const w = window.open(u, "_blank");
       if (!w) location.href = u;
     };
+    // خيار اللصق: تُنسخ صورة الوصل للحافظة وتُفتح محادثة العميل بنص «اضغط مطولاً للصق ...» لتلصقها
+    const pasteSend = async () => {
+      let ok = false;
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+        ok = true;
+      } catch (e) {
+      }
+      if (!ok) {
+        hint("تعذّر نسخ الصورة تلقائياً، استخدم شاشة المشاركة لإرسالها.");
+        sh(1);
+        return;
+      }
+      const u = "https://wa.me/" + k.ph + "?text=" + encodeURIComponent("اضغط مطولاً للصق " + (k.pl || k.alt));
+      hint("تم نسخ صورة الوصل. في المحادثة اضغط مطولاً على خانة الكتابة ثم «لصق».");
+      const w = window.open(u, "_blank");
+      if (!w) location.href = u;
+    };
     bd.onclick = () => sh(0);
     bs.onclick = () => k.ph && k.msg ? wa(k.msgL || k.msg) : sh(1);
+    const bv = o.querySelector("#rv");
+    if (bv) {
+      bv.disabled = false;
+      bv.onclick = pasteSend;
+    }
     const bt = o.querySelector("#rt");
     if (bt) {
       bt.disabled = false;
@@ -4548,13 +4571,13 @@ function receipt(id) {
   const c = S.cust.find((k) => k.id === i.cust) || {}, x = { i, ...late(i) }, ps = S.pays.filter((p) => p.inst === id), pay = ps[ps.length - 1];
   if (!pay) return;
   const no = String(S.pays.indexOf(pay) + 1).padStart(5, "0");
-  rcptDlg({ title: "تم تسديد القسط", sub: E(c.name || "") + " · المتبقي " + F(x.rem) + " د.ع", label: "إرسال وصل تسديد", alt: "وصل تسديد", fn: "receipt-" + no + ".png", ph: normPh(c.phone), msg: rcptTxt(rcptCfg(i, c, pay, x, no)), msgL: rcptLinkMsg(rcptCfg(i, c, pay, x, no)), draw: (pl) => rcptCanvas(i, c, pay, x, no, pl) });
+  rcptDlg({ title: "تم تسديد القسط", sub: E(c.name || "") + " · المتبقي " + F(x.rem) + " د.ع", label: "إرسال وصل تسديد", alt: "وصل تسديد", fn: "receipt-" + no + ".png", pl: "وصل تسديد", ph: normPh(c.phone), msg: rcptTxt(rcptCfg(i, c, pay, x, no)), msgL: rcptLinkMsg(rcptCfg(i, c, pay, x, no)), draw: (pl) => rcptCanvas(i, c, pay, x, no, pl) });
 }
 function purchaseDlg(id) {
   const i = S.inst.find((x2) => x2.id === id);
   if (!i) return;
   const c = S.cust.find((k) => k.id === i.cust) || {}, x = { i, ...late(i) }, no = String(S.inst.indexOf(i) + 1).padStart(5, "0");
-  rcptDlg({ title: "تمت إضافة القسط", sub: E(c.name || "") + " · المتبقي " + F(x.rem) + " د.ع", label: "إرسال وصل الشراء", alt: "وصل شراء", fn: "purchase-" + no + ".png", ph: normPh(c.phone), msg: rcptTxt(purchaseCfg(i, c, x, no)), msgL: rcptLinkMsg(purchaseCfg(i, c, x, no)), draw: (pl) => purchaseCanvas(i, c, x, no, pl) });
+  rcptDlg({ title: "تمت إضافة القسط", sub: E(c.name || "") + " · المتبقي " + F(x.rem) + " د.ع", label: "إرسال وصل الشراء", alt: "وصل شراء", fn: "purchase-" + no + ".png", pl: "وصل شراء", ph: normPh(c.phone), msg: rcptTxt(purchaseCfg(i, c, x, no)), msgL: rcptLinkMsg(purchaseCfg(i, c, x, no)), draw: (pl) => purchaseCanvas(i, c, x, no, pl) });
 }
 
 // ===== وصل تسديد الدين =====
@@ -4575,7 +4598,7 @@ function debtReceipt(id, k) {
   const before = Math.max(0, x.paid - sumPl(x.pl)) + sumPl(x.pl.slice(0, k));
   const rem = Math.max(0, x.amount - before - pay.amt);
   const no = "D" + String(S.debts.indexOf(x) + 1).padStart(3, "0") + "-" + String(k + 1).padStart(2, "0");
-  rcptDlg({ title: "تم تسديد الدين", sub: E(name || "") + " · المتبقي " + F(rem) + " د.ع", label: "إرسال وصل تسديد", alt: "وصل تسديد دين", fn: "debt-receipt-" + no + ".png", ph: normPh(phone), msg: rcptTxt(debtRcptCfg(x, name, pay, before, rem, no)), msgL: rcptLinkMsg(debtRcptCfg(x, name, pay, before, rem, no)), draw: (pl) => debtRcptCanvas(x, name, pay, before, rem, no, pl) });
+  rcptDlg({ title: "تم تسديد الدين", sub: E(name || "") + " · المتبقي " + F(rem) + " د.ع", label: "إرسال وصل تسديد", alt: "وصل تسديد دين", fn: "debt-receipt-" + no + ".png", pl: "وصل تسديد دين", ph: normPh(phone), msg: rcptTxt(debtRcptCfg(x, name, pay, before, rem, no)), msgL: rcptLinkMsg(debtRcptCfg(x, name, pay, before, rem, no)), draw: (pl) => debtRcptCanvas(x, name, pay, before, rem, no, pl) });
 }
 
 </script>
@@ -6402,6 +6425,8 @@ const EN_RAW = {
   "إرسال صورة": "Send image",
   "فُتحت محادثة العميل والرسالة جاهزة في خانة الكتابة، اضغط إرسال.": "The customer chat is open with the message ready. Tap send.",
   "إرسال كنص بدل الرابط": "Send as text instead of a link",
+  "إرسال كنص": "Send as text",
+  "نسخ الصورة ولصقها": "Copy image & paste",
   "الوضع التلقائي يتبع إعداد جهازك": "Auto mode follows your device setting",
   "الوضع ثابت ولا يتغيّر مع إعداد الجهاز": "This mode stays fixed regardless of your device setting",
   "تسجيل الخروج من التطبيق": "Log out of the app",
