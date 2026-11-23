@@ -3715,6 +3715,40 @@ html[data-eff=dark] .lt2 .av2 { box-shadow: 0 10px 20px -8px rgba(244, 63, 94, .
 @keyframes fxTw { 50% { opacity: .25; transform: scale(.5); } }
 @media (prefers-reduced-motion: reduce) { .fx-r, .fx-d svg, .fx-st, .thn i { animation: none !important; } }
 </style>
+<style id="actCss">
+.card,.iw{position:relative}
+.actb{position:absolute;top:-14px;left:-4px;z-index:4;width:46px;height:46px;border:0;border-radius:50%;padding:0;background:#fff;color:#8a4b00;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 14px rgba(240,147,27,.4),0 0 0 3px #fff;animation:actIn .55s cubic-bezier(.34,1.56,.64,1) both,actPulse 2.4s ease-in-out 1s infinite;-webkit-tap-highlight-color:transparent;font:inherit}
+.actb svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.actb circle{fill:none;stroke-width:4.5}
+.actb .tr{stroke:#fde9c2}
+.actb .pg{stroke:#f0931b;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.actb b{position:relative;font-size:15px;font-weight:800;line-height:1}
+.actb:active{transform:scale(.9)}
+html[data-eff=dark] .actb{background:#262b45;color:#ffd58a;box-shadow:0 6px 14px rgba(0,0,0,.5),0 0 0 3px #262b45}
+html[data-eff=dark] .actb .tr{stroke:rgba(255,213,138,.18)}
+@keyframes actIn{from{opacity:0;transform:scale(.3) rotate(-120deg)}to{opacity:1;transform:none}}
+@keyframes actPulse{0%,100%{box-shadow:0 6px 14px rgba(240,147,27,.4),0 0 0 3px #fff,0 0 0 3px rgba(240,147,27,.35)}50%{box-shadow:0 6px 14px rgba(240,147,27,.4),0 0 0 3px #fff,0 0 0 9px rgba(240,147,27,0)}}
+.actov{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.42);backdrop-filter:blur(3px);animation:actFade .2s both}
+.actov.out{opacity:0;transition:opacity .18s}
+.actw{width:min(320px,88vw);max-height:80vh;overflow:auto;background:#fffaf0;color:#0f172a;border:2px solid #f0931b;border-radius:30px;padding:16px;box-shadow:0 24px 50px -12px rgba(240,147,27,.55);animation:actPop .42s cubic-bezier(.34,1.56,.64,1) both}
+.ach{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.ach b{flex:1;font-size:17px}
+.aci{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#f7b733,#f0931b);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 12px rgba(240,147,27,.4),inset 0 1px 0 rgba(255,255,255,.4)}
+.aci svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.acx{cursor:pointer;font-size:20px;color:#a16207;padding:4px 8px}
+.ar{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid #fde1b0;border-radius:18px;padding:10px 12px;margin-top:8px;animation:actRow .4s both}
+.ar i{width:12px;height:12px;border-radius:50%;background:#f0931b;margin-top:6px;flex:none;box-shadow:0 0 0 4px #fde9c2}
+.ar b{display:block;font-size:15px}
+.ar span{display:block;font-size:13.5px;margin-top:2px}
+.ar small{display:block;color:#92700a;font-size:12px;margin-top:3px}
+@keyframes actFade{from{opacity:0}}
+@keyframes actPop{from{opacity:0;transform:scale(.6) translateY(20px)}}
+@keyframes actRow{from{opacity:0;transform:translateY(10px)}}
+html[data-eff=dark] .actw{background:#2a2438;color:#f1f1ff}
+html[data-eff=dark] .ar{background:rgba(255,255,255,.05);border-color:rgba(240,147,27,.3)}
+html[data-eff=dark] .ar small{color:#ffd58a}
+@media (prefers-reduced-motion:reduce){.actb,.actw,.ar{animation:none}}
+</style>
 </head>
 <body>
 <div id="spl" aria-hidden="true"><div class="sp-net"></div><div class="sp-st"><div class="sp-glow"></div><div class="sp-ring"></div><div class="sp-ring r2"></div><svg class="sp-svg" viewBox="0 0 300 540" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -3746,7 +3780,7 @@ const HLOGO=`<svg viewBox="0 0 300 540" xmlns="http://www.w3.org/2000/svg"><defs
  * سكربت كلاسيكي يشترك في النطاق العام مع بقية الملفات؛ الترتيب مهم (انظر index.html).
  */
 const K = "aqsat_app_v1";
-const DEF = () => ({ cust: [], emp: [], items: [], inst: [], pays: [], exps: [], debts: [], log: [], cash0: 0 });
+const DEF = () => ({ cust: [], emp: [], items: [], inst: [], pays: [], exps: [], debts: [], log: [], act: [], cash0: 0 });
 let S = DEF(), _loadFailed = false;
 try {
   const r = localStorage.getItem(K);
@@ -3799,6 +3833,66 @@ const LOG = (x) => {
   S.log.unshift({ t: (/* @__PURE__ */ new Date()).toLocaleString("ar-EG"), x });
   S.log = S.log.slice(0, 300);
 };
+const ACT_MS = 36e5, ACT_C = 2 * Math.PI * 17;
+const actAdd = (k, key, ev, txt) => {
+  const n = Date.now();
+  S.act = (S.act || []).filter((a) => n - a.t < ACT_MS);
+  S.act.push({ k, key, t: n, ev, txt });
+};
+const actOf = (k, key) => {
+  const n = Date.now();
+  return (S.act || []).filter((a) => a.k === k && a.key === key && n - a.t < ACT_MS);
+};
+const actTs = (k, key) => actOf(k, key).reduce((m, a) => Math.max(m, a.t), 0);
+const actBadge = (k, key) => {
+  const t = actTs(k, key);
+  if (!t) return "";
+  const left = Math.max(0, ACT_MS - (Date.now() - t));
+  return '<button type="button" class="actb" data-t="' + t + '" data-k="' + k + '" data-key="' + E(key) + '" onclick="event.stopPropagation();actShow(this)" aria-label="النشاط الأخير"><svg viewBox="0 0 44 44"><circle class="tr" cx="22" cy="22" r="17"/><circle class="pg" cx="22" cy="22" r="17" stroke-dasharray="' + ACT_C.toFixed(1) + '" stroke-dashoffset="' + (ACT_C * (1 - left / ACT_MS)).toFixed(1) + '"/></svg><b>' + Math.max(1, Math.ceil(left / 6e4)) + "</b></button>";
+};
+const actWrap = (h, k, key) => {
+  const b = actBadge(k, key);
+  return b ? h.replace(/^(<div [^>]*>)/, "$1" + b) : h;
+};
+function actShow(b) {
+  const a = actOf(b.dataset.k, b.dataset.key).sort((x, y) => y.t - x.t);
+  if (!a.length) {
+    b.remove();
+    return;
+  }
+  const n = Date.now(), o = document.createElement("div");
+  o.className = "actov";
+  o.innerHTML = '<div class="actw"><div class="ach"><span class="aci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>آخر النشاط</b><span class="acx">✕</span></div>' + a.map((x) => {
+    const mn = Math.floor((n - x.t) / 6e4);
+    return '<div class="ar"><i></i><div><b>' + E(x.ev) + "</b><span>" + E(x.txt) + "</span><small>" + (mn < 1 ? "الآن" : "قبل " + mn + " دقيقة") + " · " + new Date(x.t).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }) + "</small></div></div>";
+  }).join("") + "</div>";
+  document.body.appendChild(o);
+  const cl = () => {
+    o.classList.add("out");
+    setTimeout(() => o.remove(), 180);
+  };
+  o.onclick = (e) => {
+    if (e.target === o || e.target.classList.contains("acx")) cl();
+  };
+}
+function actTick() {
+  const n = Date.now();
+  if (S.act && S.act.some((a) => n - a.t >= ACT_MS)) S.act = S.act.filter((a) => n - a.t < ACT_MS);
+  document.querySelectorAll(".actb").forEach((b) => {
+    const left = ACT_MS - (n - +b.dataset.t);
+    if (left <= 0) {
+      b.remove();
+      return;
+    }
+    b.querySelector("b").textContent = Math.max(1, Math.ceil(left / 6e4));
+    b.querySelector(".pg").style.strokeDashoffset = (ACT_C * (1 - left / ACT_MS)).toFixed(1);
+  });
+}
+setInterval(actTick, 15e3);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) actTick();
+});
+
 let tab = "home";
 const TABS = [["home", "🏠", "الرئيسية"], ["settings", "⚙️", "الإعدادات"], ["about", "ℹ️", "من نحن"], ["inst", "🧾", "الأقساط"], ["late", "⏰", "الأقساط المتأخرة"], ["pays", "💵", "التسديدات"], ["debts", "🤝", "الديون"], ["stock", "📦", "المخزن"], ["cust", "👥", "العملاء"], ["emp", "👔", "الموظفون"], ["exp", "💸", "المصروفات"], ["profit", "📈", "الأرباح"], ["stats", "📊", "الإحصائيات"], ["cash", "🏦", "الصندوق"], ["log", "📜", "سجل العمليات"], ["bak", "💾", "النسخة الاحتياطية"]];
 let _pinOK = false;
@@ -3935,6 +4029,7 @@ const addDebt = (pre) => debtForm(pre) || openForm("دين جديد", [{ k: "typ
     return false;
   }
   S.debts.push({ id: uid(), cust: d.cust, type: d.type, name: c ? c.name : d.name, amount: +d.amount, paid: 0, date: d.date, phone: c ? c.phone : d.phone, prod: d.prod, qty: +d.qty || 1, ts: d.date === today() ? Date.now() : new Date(d.date).getTime() });
+  actAdd("d", d.cust || "n:" + (c ? c.name : d.name), "دين جديد", (c ? c.name : d.name) + " · " + F(d.amount) + " د.ع");
   LOG("دين جديد: " + (c ? c.name : d.name) + " " + F(d.amount));
 });
 const payDebt = (id) => {
@@ -4088,6 +4183,7 @@ function editDebt(id) {
       return false;
     }
     Object.assign(d, { cust: x.cust, type: x.type, name: c ? c.name : x.name, phone: c ? c.phone : x.phone, prod: x.prod, note: "", qty: +x.qty || 1, amount: +x.amount, date: x.date });
+    actAdd("d", gk(d), "تعديل دين", (c ? c.name : x.name) + " · " + F(x.amount) + " د.ع");
     LOG("تعديل دين: " + (c ? c.name : x.name));
   });
 }
@@ -4119,10 +4215,10 @@ V.debts = function() {
   });
   const rows = Object.values(G).sort((x, y) => {
     const dx = x.every((d) => d.paid >= d.amount), dy = y.every((d) => d.paid >= d.amount);
-    return dx - dy || S.debts.indexOf(y[y.length - 1]) - S.debts.indexOf(x[x.length - 1]);
+    return actTs("d", gk(y[0])) - actTs("d", gk(x[0])) || dx - dy || S.debts.indexOf(y[y.length - 1]) - S.debts.indexOf(x[x.length - 1]);
   }).map((a) => {
     const c = S.cust.find((k) => k.id === a[0].cust), nmx = c ? c.name : a[0].name, ph = c ? c.phone : a[0].phone, t = sum(a, "amount"), p = sum(a, "paid"), rIn = a.filter((x) => x.type === "in").reduce((s, x) => s + x.amount - x.paid, 0), rOut = a.filter((x) => x.type === "out").reduce((s, x) => s + x.amount - x.paid, 0), r = t - p, id = a[0].id;
-    return card(E(nmx), a.length + " دين" + (ph ? " · " + E(ph) : "") + " · الكلي " + F(t) + " · مسدد " + F(p), '<span class="' + (rOut > rIn ? "bad" : "ok") + '">' + F(r) + "</span>", (r > 0 ? `<button class="btn sm grn" onclick="payPerson('` + id + `')">تسديد</button>` : '<span class="tag g">مسدد</span>') + (rIn > 0 ? waDebt(id) : "") + `<button class="btn sm" onclick="addDebtFor('` + id + `')">＋ دين</button><button class="btn sm" style="background:#0d9488" onclick="debtPays('` + id + `')">🕘 التسديدات</button>`, bar(t ? p / t * 100 : 0), "openDebt('" + id + "')", "dy" + (r <= 0 ? " dn" : ""));
+    return actWrap(card(E(nmx), a.length + " دين" + (ph ? " · " + E(ph) : "") + " · الكلي " + F(t) + " · مسدد " + F(p), '<span class="' + (rOut > rIn ? "bad" : "ok") + '">' + F(r) + "</span>", (r > 0 ? `<button class="btn sm grn" onclick="payPerson('` + id + `')">تسديد</button>` : '<span class="tag g">مسدد</span>') + (rIn > 0 ? waDebt(id) : "") + `<button class="btn sm" style="background:#f0931b;color:#fff;box-shadow:0 4px 10px rgba(240,147,27,.35)" onclick="addDebtFor('` + id + `')">＋ دين</button><button class="btn sm" style="background:#0d9488" onclick="debtPays('` + id + `')">🕘 التسديدات</button>`, bar(t ? p / t * 100 : 0), "openDebt('" + id + "')", "dy" + (r <= 0 ? " dn" : "")), "d", gk(a[0]));
   });
   return head("الديون", "addDebt") + (rows.length ? rows.join("") : empty("لا توجد ديون"));
 };
@@ -4157,6 +4253,7 @@ function addDebtFor(id) {
     e.preventDefault();
     const d = Object.fromEntries(new FormData(e.target));
     S.debts.push({ id: uid(), cust: a0.cust, type: a0.type, name: a0.name, phone: a0.phone, amount: +d.amount, paid: 0, date: d.date, note: "", prod: d.prod, qty: 1, ts: d.date === today() ? Date.now() : new Date(d.date).getTime() });
+    actAdd("d", gk(a0), "إضافة دين", F(d.amount) + " د.ع" + (d.prod ? " — " + d.prod : ""));
     LOG("إضافة دين لـ " + a0.name + ": " + F(d.amount));
     save();
     m.remove();
@@ -4204,6 +4301,7 @@ function payDlg(a, name) {
     }
     x.paid += t;
     (x.pl = x.pl || []).push({ date: d.date, amt: t, note: d.note });
+    actAdd("d", gk(x), "تسديد دين", F(t) + " د.ع" + (x.prod ? " — " + x.prod : ""));
     LOG("تسديد دين " + name + " (" + (x.prod || x.note || "دين") + "): " + F(t) + (d.note ? " - " + d.note : ""));
     save();
     m.remove();
@@ -4690,6 +4788,7 @@ function payInstDlg(id) {
       return;
     }
     S.pays.push({ id: uid(), inst: id, amt, date: today(), note: "قسط" });
+    actAdd("i", i.cust || "n:" + i.id, "تسديد قسط", F(amt) + " د.ع — " + i.desc);
     LOG("تسديد " + F(amt) + " - " + i.desc);
     save();
     m.remove();
@@ -5150,6 +5249,7 @@ function addInst(ex, pre) {
           dp.note = nt;
         } else S.pays.push({ id: uid(), inst: ex.id, amt: down, date: d.date, note: nt });
       } else if (dp) S.pays = S.pays.filter((p) => p !== dp);
+      actAdd("i", ex.cust || "n:" + ex.id, "تعديل قسط", desc);
       LOG("تعديل القسط: " + desc);
       save();
       o.remove();
@@ -5158,6 +5258,7 @@ function addInst(ex, pre) {
     }
     S.inst.push(i);
     if (down > 0) S.pays.push({ id: uid(), inst: i.id, amt: down, date: d.date, note: cash ? "بيع نقدي" : "دفعة أولى" });
+    actAdd("i", i.cust || "n:" + i.id, "قسط جديد", desc + " · " + F(total) + " د.ع");
     LOG("قسط جديد: " + desc + " للعميل " + nm(S.cust, cid));
     save();
     o.remove();
@@ -5491,6 +5592,7 @@ function debtForm(pre) {
     const x = { id: uid(), cust: cid, type: fr, name, phone, amount, paid, date: d.date, note: (d.note || "").trim(), prod: (d.prod || "").trim(), qty, ts: d.date === today() ? Date.now() : new Date(d.date).getTime() };
     if (paid > 0) x.pl = [{ date: d.date, amt: paid, note: "دفعة مسبقة" }];
     S.debts.push(x);
+    actAdd("d", gk(x), "دين جديد", name + " · " + F(amount) + " د.ع");
     LOG("دين جديد: " + name + " " + F(amount));
     save();
     o.remove();
@@ -5676,12 +5778,12 @@ function instList() {
   if (!S.inst.length) return '<div class="ilist">' + empty("لا توجد أقساط بعد") + "</div>";
   const G = /* @__PURE__ */ new Map();
   S.inst.forEach((i, k) => {
-    const y = i.cust || "n:" + i.id, g = G.get(y) || { a: [], k: 0 };
+    const y = i.cust || "n:" + i.id, g = G.get(y) || { a: [], k: 0, y };
     g.a.push(i);
     g.k = k;
     G.set(y, g);
   });
-  return '<div class="ilist">' + [...G.values()].map((g) => ({ g, d: g.a.every((i) => late(i).rem <= 0) })).sort((x, y) => x.d - y.d || y.g.k - x.g.k).map((x) => x.g.a.length > 1 ? gCard(x.g.a) : iCard(x.g.a[0])).join("") + "</div>";
+  return '<div class="ilist">' + [...G.values()].map((g) => ({ g, d: g.a.every((i) => late(i).rem <= 0) })).sort((x, y) => actTs("i", y.g.y) - actTs("i", x.g.y) || x.d - y.d || y.g.k - x.g.k).map((x) => actWrap(x.g.a.length > 1 ? gCard(x.g.a) : iCard(x.g.a[0]), "i", x.g.y)).join("") + "</div>";
 }
 const gInsts = (id) => S.inst.filter((i) => i.cust === id);
 function gStat(a) {
@@ -5757,6 +5859,7 @@ function payGrp(id) {
     const d = Object.fromEntries(new FormData(f)), i = cur(), amt = Math.min(+d.amount, late(i).rem);
     if (!(amt > 0)) return;
     S.pays.push({ id: uid(), inst: i.id, amt, date: today(), note: "قسط" });
+    actAdd("i", i.cust || "n:" + i.id, "تسديد قسط", F(amt) + " د.ع — " + i.desc);
     LOG("تسديد " + F(amt) + " - " + i.desc);
     save();
     m.remove();
