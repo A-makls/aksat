@@ -3715,6 +3715,23 @@ html[data-eff=dark] .it2 span .sk,html[data-eff=dark] .ip b .sk{background:linea
 .lgx b{font-size:12.5px;font-weight:700;word-break:break-word}
 .bigc[style*="--c:#d97706"] .bg{background:#d97706}
 @media (prefers-reduced-motion:reduce){.lgs,.lgr{animation:none}}
+.nfh{position:relative}.nfh svg{width:23px;height:23px;display:block;margin:auto}
+.nfhh{flex:none;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;cursor:pointer}
+.nfb{position:absolute;top:-2px;inset-inline-start:-3px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#e11d48;color:#fff;font:700 11px/18px inherit;font-style:normal;text-align:center;border:2px solid var(--pri);box-sizing:content-box;animation:nfPop .5s cubic-bezier(.34,1.56,.64,1) both}
+.nfb[hidden]{display:none}
+.nfh.ring svg{transform-origin:50% 8%;animation:nfRing 3.2s ease-in-out infinite}
+@keyframes nfRing{0%,40%,100%{transform:rotate(0)}4%{transform:rotate(16deg)}8%{transform:rotate(-14deg)}12%{transform:rotate(10deg)}16%{transform:rotate(-6deg)}20%{transform:rotate(0)}}
+@keyframes nfPop{from{transform:scale(0)}to{transform:scale(1)}}
+@keyframes nfGlow{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 18%,transparent)}}
+.nf-late{--c:#e11d48}.nf-soon{--c:#d97706}.nf-debt{--c:#2563eb}.nf-stock{--c:#0d9488}.nf-pay{--c:#16a34a}
+.nfr{cursor:pointer;position:relative;transition:transform .15s,background .2s}.nfr:active{transform:scale(.98)}
+.nfr.un{border-color:color-mix(in srgb,var(--c) 45%,var(--bd));background:color-mix(in srgb,var(--c) 5%,var(--card))}
+.nfr.un .lgi{animation:nfGlow 2.4s ease-in-out infinite}
+.nfr.un::after{content:"";position:absolute;top:10px;inset-inline-end:10px;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.nfr.un .lga{margin-top:8px}
+.nfr.rd{opacity:.78}
+.nfall{flex:1}
+@media (prefers-reduced-motion:reduce){.nfh.ring svg,.nfr.un .lgi,.nfb{animation:none}}
 </style>
 </head>
 <body>
@@ -3731,7 +3748,7 @@ html[data-eff=dark] .it2 span .sk,html[data-eff=dark] .ip b .sk{background:linea
 <g class="sp-red"><path d="M116,425 H140 V470 H163 L128,512 L93,470 H116 Z" fill="#2c0505" transform="translate(1.5,2)"/><path d="M116,425 H140 V470 H163 L128,512 L93,470 H116 Z" fill="url(#spred)" stroke="#d65a52" stroke-width="1.4"/><path d="M119,429 H137 V474 H152 L128,502 L104,474 H119 Z" fill="none" stroke="#2a0404" stroke-width="2" opacity=".6"/></g>
 <g mask="url(#spm)"><rect class="sp-sh" x="0" y="-20" width="90" height="580" fill="url(#spshg)"/></g></svg></div><div class="sp-t"><b>أقساطي وديوني</b><span id="spo"></span></div><div class="sp-bar"><i></i></div></div>
 
-<header><button id="secb" onclick="secWin()" aria-label="الأقسام" title="الأقسام"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></button><button id="tgl" onclick="toggleTheme()" aria-label="الوضع الليلي / النهاري" title="الوضع الليلي / النهاري"><span class="tk"><svg class="sn" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="mn" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><i class="st s1"></i><i class="st s2"></i><i class="st s3"></i><b class="cl"></b></button><button id="bkh" onclick="goBack()" style="display:none" aria-label="رجوع">➡️</button><h1 id="ttl">أقساطي وديوني</h1><span id="hsw" class="sw2 hsw" style="display:none"><input id="hsr" class="hs" placeholder="🔍 ابحث..." oninput="hdrType(this.value)"><button type="button" class="sx" aria-label="مسح" onclick="hdrClear()">✕</button></span><button id="fb" class="fbn" onclick="fMenu(event)" style="display:none" aria-label="تصفية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span id="fbt">الكل</span></button><button id="hb" onclick="go('home')">🏠</button></header>
+<header><button id="secb" onclick="secWin()" aria-label="الأقسام" title="الأقسام"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></button><button id="tgl" onclick="toggleTheme()" aria-label="الوضع الليلي / النهاري" title="الوضع الليلي / النهاري"><span class="tk"><svg class="sn" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="mn" viewBox="0 0 24 24" fill="none"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><i class="st s1"></i><i class="st s2"></i><i class="st s3"></i><b class="cl"></b></button><button id="bkh" onclick="goBack()" style="display:none" aria-label="رجوع">➡️</button><h1 id="ttl">أقساطي وديوني</h1><span id="hsw" class="sw2 hsw" style="display:none"><input id="hsr" class="hs" placeholder="🔍 ابحث..." oninput="hdrType(this.value)"><button type="button" class="sx" aria-label="مسح" onclick="hdrClear()">✕</button></span><button id="fb" class="fbn" onclick="fMenu(event)" style="display:none" aria-label="تصفية"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span id="fbt">الكل</span></button><button id="hb" class="nfh" onclick="go('notif')" aria-label="الإشعارات" title="الإشعارات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg><em class="nfb" hidden></em></button></header>
 <main id="main"></main>
 <div class="nb"><div class="nb-bg"><i class="l"></i><div class="m"><svg viewBox="0 0 210 48" width="210" height="48"><path d="M0 0C52 0 58 46 105 46C152 46 158 0 210 0V48H0Z"/></svg><i></i></div><i class="r"></i></div><div class="nb-row"><button class="it" data-t="home" onclick="go('home')"><span class="e">🏠</span>الرئيسية</button><button class="it" data-t="debts" onclick="go('debts')"><span class="e">🤝</span>الديون</button><i class="nb-sp"></i><button class="it" data-t="inst" onclick="go('inst')"><span class="e">👥</span>الأقساط<em class="b" id="lb" style="display:none"></em></button><button class="it" data-t="settings" onclick="go('settings')"><span class="e">⚙️</span>الإعدادات</button></div><button class="fab" aria-label="قسط جديد" onclick="fabGo()"><span>＋</span></button></div>
 
@@ -3746,7 +3763,7 @@ const HLOGO=`<svg viewBox="0 0 300 540" xmlns="http://www.w3.org/2000/svg"><defs
  * سكربت كلاسيكي يشترك في النطاق العام مع بقية الملفات؛ الترتيب مهم (انظر index.html).
  */
 const K = "aqsat_app_v1";
-const DEF = () => ({ cust: [], emp: [], items: [], inst: [], pays: [], exps: [], debts: [], log: [], act: [], cash0: 0 });
+const DEF = () => ({ cust: [], emp: [], items: [], inst: [], pays: [], exps: [], debts: [], log: [], act: [], nr: {}, cash0: 0 });
 let S = DEF(), _loadFailed = false;
 try {
   const r = localStorage.getItem(K);
@@ -3877,7 +3894,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 let tab = "home";
-const TABS = [["home", "🏠", "الرئيسية"], ["settings", "⚙️", "الإعدادات"], ["about", "ℹ️", "من نحن"], ["inst", "🧾", "الأقساط"], ["late", "⏰", "الأقساط المتأخرة"], ["pays", "💵", "التسديدات"], ["debts", "🤝", "الديون"], ["stock", "📦", "المخزن"], ["cust", "👥", "العملاء"], ["emp", "👔", "الموظفون"], ["exp", "💸", "المصروفات"], ["profit", "📈", "الأرباح"], ["stats", "📊", "الإحصائيات"], ["cash", "🏦", "الصندوق"], ["log", "📜", "سجل العمليات"], ["bak", "💾", "النسخة الاحتياطية"]];
+const TABS = [["home", "🏠", "الرئيسية"], ["notif", "🔔", "الإشعارات"], ["settings", "⚙️", "الإعدادات"], ["about", "ℹ️", "من نحن"], ["inst", "🧾", "الأقساط"], ["late", "⏰", "الأقساط المتأخرة"], ["pays", "💵", "التسديدات"], ["debts", "🤝", "الديون"], ["stock", "📦", "المخزن"], ["cust", "👥", "العملاء"], ["emp", "👔", "الموظفون"], ["exp", "💸", "المصروفات"], ["profit", "📈", "الأرباح"], ["stats", "📊", "الإحصائيات"], ["cash", "🏦", "الصندوق"], ["log", "📜", "سجل العمليات"], ["bak", "💾", "النسخة الاحتياطية"]];
 let _pinOK = false;
 const SCRPOS = {};
 const go = (t) => {
@@ -4059,7 +4076,7 @@ const V = {
   cust() {
     return head("العملاء", "addCust") + (S.cust.length ? S.cust.map((c) => {
       const ins = S.inst.filter((i) => i.cust === c.id), r = ins.reduce((a, i) => a + late(i).rem, 0);
-      return card(E(c.name), E(c.phone || "") + " · " + ins.length + " أقساط", '<span class="' + (r ? "warn" : "ok") + '">' + F(r) + "</span>", callC(c.id) + `<button class="btn sm" onclick="editCust('` + c.id + `')">✏️ تعديل</button>` + dbtn("cust", c.id, c.name));
+      return card(E(c.name), E(fmtPh(c.phone)) + " · " + ins.length + " أقساط", '<span class="' + (r ? "warn" : "ok") + '">' + F(r) + "</span>", callC(c.id) + `<button class="btn sm" onclick="editCust('` + c.id + `')">✏️ تعديل</button>` + dbtn("cust", c.id, c.name));
     }).join("") : empty("لا يوجد عملاء"));
   },
   emp() {
@@ -4096,6 +4113,9 @@ const V = {
   },
   log() {
     return lgView();
+  },
+  notif() {
+    return nfView();
   }
 };
 function normPh(p) {
@@ -4899,7 +4919,7 @@ V.settings = function() {
 V.home = function() {
   const L = lateList(), d = /* @__PURE__ */ new Date(), ds = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear(), rec = S.inst.reduce((a, i) => a + late(i).rem, 0), dc = new Set(S.debts.map(gk)).size, dRem = S.debts.reduce((a, x) => a + (x.type === "in" ? x.amount - x.paid : 0), 0);
   const big = (k, ic, t, l1, l2, c, b) => '<div class="bigc" style="--c:' + c + `" onclick="go('` + k + `')">` + (b ? '<em class="bg">' + b + "</em>" : "") + ico(k, "l") + "<div><b>" + t + "</b><div>" + l1 + "</div><small>" + l2 + "</small></div></div>";
-  return adBar() + '<div class="db"><div class="dh"><div style="display:flex;gap:10px;align-items:center"><span class="hlogo' + (window.__hlp ? "" : " f") + '" style="--d:' + (document.getElementById("spl") ? "4.4s" : "0s") + '">' + HLOGO + "</span><div><b>" + E(S.office || "اكتب اسم مكتبك من الإعدادات") + '</b><div style="font-size:12px;opacity:.85">' + ds + ' 📅</div></div></div><span class="live" dir="ltr">v' + APP_VER + '</span></div><div id="subc" class="subc" hidden></div><div class="tg1">' + big("inst", "👥", "الأقساط", S.inst.length + " قسط", "المتبقي " + F(rec) + " د.ع", "#0284c7", L.length ? "متأخر " + L.length : "") + big("debts", "🤝", "الديون", dc + " عميل", "المتبقي لك " + F(dRem) + " د.ع", "#0e7490", "") + big("log", "📜", "سجل العمليات", S.log.length + " عملية", lgHomeLine(), "#d97706", lgTodayCount() ? "اليوم " + lgTodayCount() : "") + "</div></div>";
+  return adBar() + '<div class="db"><div class="dh"><div style="display:flex;gap:10px;align-items:center"><span class="hlogo' + (window.__hlp ? "" : " f") + '" style="--d:' + (document.getElementById("spl") ? "4.4s" : "0s") + '">' + HLOGO + "</span><div><b>" + E(S.office || "اكتب اسم مكتبك من الإعدادات") + '</b><div style="font-size:12px;opacity:.85">' + ds + ' 📅</div></div></div><span style="display:flex;gap:8px;align-items:center"><button class="nfh nfhh" onclick="go(\'notif\')" aria-label="الإشعارات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg><em class="nfb" hidden></em></button><span class="live" dir="ltr">v' + APP_VER + '</span></span></div><div id="subc" class="subc" hidden></div><div class="tg1">' + big("inst", "👥", "الأقساط", S.inst.length + " قسط", "المتبقي " + F(rec) + " د.ع", "#0284c7", L.length ? "متأخر " + L.length : "") + big("debts", "🤝", "الديون", dc + " عميل", "المتبقي لك " + F(dRem) + " د.ع", "#0e7490", "") + big("log", "📜", "سجل العمليات", S.log.length + " عملية", lgHomeLine(), "#d97706", lgTodayCount() ? "اليوم " + lgTodayCount() : "") + "</div></div>";
 };
 let qI = "", qD = "";
 const oldInst = () => '<h2 class="hx"></h2>' + instList(), oldDebts = V.debts;
@@ -5154,6 +5174,85 @@ function lgClear() {
     toast("تم مسح السجل");
   }));
 }
+let nfF = "all", NF = [];
+const NF_T = [["all", "الكل"], ["un", "غير مقروءة"], ["late", "متأخرة"], ["soon", "قريبة"], ["debt", "ديون"], ["stock", "مخزن"], ["pay", "تسديدات"]];
+const NF_IC = { late: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', soon: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>', debt: '<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', stock: '<path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/>', pay: '<path d="M20 6L9 17l-5-5"/>' };
+const NF_LB = { late: "تأخير", soon: "استحقاق", debt: "دين", stock: "مخزن", pay: "تسديد" };
+function nfData() {
+  const T = today(), now = Date.now(), o = [], D = (a) => Math.round((Date.parse(a) - Date.parse(T)) / 864e5);
+  S.inst.forEach((i) => {
+    const l = late(i);
+    if (!(l.rem > 0 && l.m > 0)) return;
+    const c = nm(S.cust, i.cust), g = ["openInst", i.id];
+    if (l.L > 0) o.push({ id: "late:" + i.id + ":" + l.due, ty: "late", ts: Date.parse(l.due) || now, t: "قسط متأخر · " + c, x: (i.desc || "قسط") + (l.days > 0 ? " — متأخر " + l.days + " يوم" : " — يستحق اليوم"), a: l.L, g });
+    else if (D(l.due) >= 0 && D(l.due) <= 3) o.push({ id: "soon:" + i.id + ":" + l.due, ty: "soon", ts: Date.parse(l.due), t: "قسط يستحق " + (D(l.due) ? "بعد " + D(l.due) + " أيام" : "اليوم") + " · " + c, x: i.desc || "قسط", a: Math.round(Math.min(l.m, l.rem)), g });
+  });
+  S.debts.forEach((d) => {
+    const r = (+d.amount || 0) - (+d.paid || 0), age = Math.floor((now - (d.ts || Date.parse(d.date) || now)) / 864e5);
+    if (d.type === "in" && r > 0 && age >= 30) o.push({ id: "debt:" + d.id, ty: "debt", ts: d.ts || Date.parse(d.date) || now, t: "دين قديم · " + (nm(S.cust, d.cust) !== "—" ? nm(S.cust, d.cust) : d.name), x: "مضى " + age + " يوماً ولم يُسدَّد كاملاً", a: r, g: ["openDebt", d.id] });
+  });
+  S.items.forEach((i) => { if ((+i.qty || 0) <= 2) o.push({ id: "stk:" + i.id + ":" + i.qty, ty: "stock", ts: now, t: (+i.qty > 0 ? "مخزون منخفض · " : "نفد المخزون · ") + i.name, x: "الكمية المتبقية " + (+i.qty || 0), g: ["go", "stock"] }); });
+  lgData().filter((r) => r.ty === "pay" && r.a && r.ts > now - 2 * 864e5).slice(0, 8).forEach((r) => o.push({ id: "pay:" + r.ts + ":" + r.i, ty: "pay", ts: r.ts, t: "تسديد جديد" + (r.m ? " · " + r.m.c : ""), x: r.x, a: r.a.v }));
+  const P = { late: 0, soon: 1, debt: 2, stock: 3, pay: 4 };
+  return o.sort((a, b) => P[a.ty] - P[b.ty] || b.ts - a.ts);
+}
+const nfUn = (r) => !S.nr[r.id];
+function nfBadge() {
+  const n = nfData().filter(nfUn).length;
+  document.querySelectorAll(".nfb").forEach((b) => { b.textContent = n > 99 ? "99+" : n; b.hidden = !n; });
+  document.querySelectorAll(".nfh").forEach((b) => b.classList.toggle("ring", n > 0));
+}
+function nfView() {
+  const all = NF = nfData(), un = all.filter(nfUn).length;
+  const st = (n, v, c) => '<div class="lgs" style="--c:' + c + '"><b>' + v + "</b><small>" + n + "</small></div>";
+  return head("الإشعارات")
+    + '<div class="lgst">' + st("غير مقروءة", un, "#e11d48") + st("متأخرة", all.filter((r) => r.ty === "late").length, "#d97706") + st("قريبة الاستحقاق", all.filter((r) => r.ty === "soon").length, "#2563eb") + "</div>"
+    + '<div class="lgtl"><button type="button" class="btn ghost sm nfall" onclick="nfReadAll()">✓ تحديد الكل كمقروء</button></div>'
+    + '<div id="nfw">' + nfBody() + "</div>";
+}
+function nfBody() {
+  const all = NF, cnt = (k) => k === "all" ? all.length : k === "un" ? all.filter(nfUn).length : all.filter((r) => r.ty === k).length;
+  const chips = '<div class="lgch">' + NF_T.map((t) => '<button type="button" class="lgc' + (nfF === t[0] ? " on" : "") + '" onclick="nfSet(\'' + t[0] + '\')">' + t[1] + "<i>" + cnt(t[0]) + "</i></button>").join("") + "</div>";
+  const f = all.filter((r) => nfF === "all" || (nfF === "un" ? nfUn(r) : r.ty === nfF));
+  if (!f.length) return chips + empty(all.length ? "لا توجد إشعارات في هذا القسم" : "🔔 لا توجد إشعارات — كل شيء على ما يرام");
+  let out = chips, n = 0;
+  [[true, "جديدة"], [false, "مقروءة"]].forEach(([u, lb]) => {
+    const g = f.filter((r) => nfUn(r) === u);
+    if (!g.length) return;
+    out += '<div class="lgg"><div class="lgd"><span>' + lb + "</span><small>" + g.length + " إشعار</small></div>";
+    g.forEach((r) => {
+      out += '<div class="lgr nfr nf-' + r.ty + (u ? " un" : " rd") + '" style="animation-delay:' + Math.min(n++, 12) * 35 + 'ms" onclick="nfOpen(' + NF.indexOf(r) + ')"><span class="lgi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + NF_IC[r.ty] + '</svg></span><div class="lgb"><b>' + E(r.t) + "</b><small><em>" + NF_LB[r.ty] + "</em> · " + E(r.x) + "</small>" + (r.a ? '<span class="lga ' + (r.ty === "pay" ? "in" : "") + '">' + F(r.a) + " <small>د.ع</small></span>" : "") + "</div></div>";
+    });
+    out += "</div>";
+  });
+  return out;
+}
+function nfSet(k) { nfF = k; const w = document.getElementById("nfw"); if (w) w.innerHTML = nfBody(); }
+function nfOpen(i) {
+  const r = NF[i];
+  if (!r) return;
+  S.nr[r.id] = 1;
+  save();
+  nfBadge();
+  if (r.g) (r.g[0] === "go" ? go : window[r.g[0]])(r.g[1]); else render();
+}
+function nfReadAll() {
+  const all = nfData();
+  if (!all.some(nfUn)) { toast("لا توجد إشعارات جديدة"); return; }
+  S.nr = {};
+  all.forEach((r) => { S.nr[r.id] = 1; });
+  save();
+  render();
+  toast("تم تحديد الكل كمقروء");
+}
+function fmtPh(p) {
+  const d = String(p || "").replace(/\D/g, "");
+  return d.length <= 4 ? d : d.slice(0, 4) + " " + d.slice(4, 7) + (d.length > 7 ? " " + d.slice(7) : "");
+}
+["input", "focusin"].forEach((ev) => document.addEventListener(ev, (e) => {
+  const x = e.target;
+  if (x && x.tagName === "INPUT" && (x.name === "phone" || x.name === "cphone")) { const v = fmtPh(x.value); if (v !== x.value) x.value = v; }
+}, true));
 </script>
 <script>
 /**
@@ -6085,7 +6184,7 @@ function msgPurchase(x) {
   const c = S.cust.find((k) => k.id === x.i.cust) || {};
   return "السلام عليكم\n\nتحية طيبة  " + (c.name || "") + "\nتذكير بخصوص القسط\n\n▫️ المبلغ الإجمالي: " + F(x.i.total) + " د.ع\n▫️ المبلغ المدفوع: " + F(x.p) + " د.ع\n▫️ المبلغ المتبقي: " + F(x.rem) + " د.ع\n\nوصل شراء (" + x.i.desc + ") (" + (x.i.start || "").replace(/-/g, "/") + ")";
 }
-const APP_VER = "1.0";
+const APP_VER = "1.1";
 function officeCard() {
   const v = S.office || "", ic = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + SI.office + "</svg>";
   return scd("office", 0) + shd2("office", "اسم المكتب", "يظهر في الواجهة الرئيسية، وإذا تركته فارغاً تظهر عبارة «اكتب اسم مكتبك من الإعدادات»", v ? "اسم مخصّص" : "اسم افتراضي", "ofb") + '<div class="ofrow"><label class="ofin">' + ic + '<input id="ofn" placeholder="مثال: مكتب النور للأقساط" value="' + E(v) + '" oninput="ofPrev(this.value)"></label><button class="btn sbtn" onclick="saveOffice()">حفظ</button></div><div class="ofp"><small>معاينة</small><b id="ofp">' + E(v || "اكتب اسم مكتبك من الإعدادات") + "</b></div></div>";
@@ -7658,9 +7757,10 @@ function render() {
     }
   }
   postLang();
+  nfBadge();
 }
 let PREV = "home";
-const SEC = ["pays", "late", "stock", "cust", "emp", "exp", "profit", "stats", "cash", "log", "bak", "about"];
+const SEC = ["notif", "pays", "late", "stock", "cust", "emp", "exp", "profit", "stats", "cash", "log", "bak", "about"];
 function goBack() {
   const t = PREV && PREV !== tab ? PREV : "settings", from = tab, y = SCRPOS[t] || 0;
   go(t);
