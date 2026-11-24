@@ -4,7 +4,7 @@
  *  - الخط (Google Fonts) ومكتبة Excel (cdnjs): تُحفظ عند أول استخدام.
  *  - غيّر VERSION عند نشر تحديث لإجبار المتصفحات على تنزيل الملفات الجديدة.
  */
-const VERSION = 'aqsati-v1.1';
+const VERSION = 'aqsati-v1.2';
 const SHELL = [
   "./",
   "index.html",

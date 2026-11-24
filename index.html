@@ -3717,7 +3717,7 @@ html[data-eff=dark] .it2 span .sk,html[data-eff=dark] .ip b .sk{background:linea
 @media (prefers-reduced-motion:reduce){.lgs,.lgr{animation:none}}
 .nfh{position:relative}.nfh svg{width:23px;height:23px;display:block;margin:auto}
 .nfhh{flex:none;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;cursor:pointer}
-.nfb{position:absolute;top:-2px;inset-inline-start:-3px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#e11d48;color:#fff;font:700 11px/18px inherit;font-style:normal;text-align:center;border:2px solid var(--pri);box-sizing:content-box;animation:nfPop .5s cubic-bezier(.34,1.56,.64,1) both}
+.nfb{position:absolute;top:-2px;inset-inline-start:-3px;min-width:18px;height:18px;padding:0 4px;border-radius:99px;background:#e11d48;color:#fff;font-family:inherit;font-size:11px;font-weight:800;line-height:18px;font-style:normal;text-align:center;letter-spacing:0;white-space:nowrap;overflow:hidden;direction:ltr;border:2px solid var(--pri);box-sizing:content-box;animation:nfPop .5s cubic-bezier(.34,1.56,.64,1) both}
 .nfb[hidden]{display:none}
 .nfh.ring svg{transform-origin:50% 8%;animation:nfRing 3.2s ease-in-out infinite}
 @keyframes nfRing{0%,40%,100%{transform:rotate(0)}4%{transform:rotate(16deg)}8%{transform:rotate(-14deg)}12%{transform:rotate(10deg)}16%{transform:rotate(-6deg)}20%{transform:rotate(0)}}
@@ -3732,6 +3732,16 @@ html[data-eff=dark] .it2 span .sk,html[data-eff=dark] .ip b .sk{background:linea
 .nfr.rd{opacity:.78}
 .nfall{flex:1}
 @media (prefers-reduced-motion:reduce){.nfh.ring svg,.nfr.un .lgi,.nfb{animation:none}}
+.nf-pay{--c:#16a34a}.nf-add{--c:#2563eb}.nf-edit{--c:#d97706}.nf-del{--c:#e11d48}.nf-bak{--c:#0d9488}.nf-other{--c:#64748b}
+.lgr.nfr{animation:nfIn .7s cubic-bezier(.22,1,.36,1) both;will-change:transform,opacity}
+.lgr.nfr.un::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(110deg,transparent 35%,color-mix(in srgb,var(--c) 26%,transparent) 50%,transparent 65%);background-size:260% 100%;background-position:120% 0;animation:nfShine 1.5s ease .55s 1 both}
+.nfr .nft{display:inline-block;margin-inline-start:6px;padding:1px 7px;border-radius:99px;font-size:10px;font-weight:800;color:#fff;background:var(--c);vertical-align:middle}
+.lgd.nfd{animation:nfIn .6s cubic-bezier(.22,1,.36,1) both}
+.lgs.nfs,.lgch.nfc{animation:nfIn .6s cubic-bezier(.22,1,.36,1) both}
+@keyframes nfIn{0%{opacity:0;transform:translateY(22px) scale(.95);filter:blur(5px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+@keyframes nfShine{from{background-position:120% 0;opacity:1}to{background-position:-20% 0;opacity:0}}
+@media (prefers-reduced-motion:reduce){.lgr.nfr,.lgr.nfr.un::before,.lgd.nfd,.lgs.nfs,.lgch.nfc{animation:none}}
+
 </style>
 </head>
 <body>
@@ -3763,7 +3773,7 @@ const HLOGO=`<svg viewBox="0 0 300 540" xmlns="http://www.w3.org/2000/svg"><defs
  * سكربت كلاسيكي يشترك في النطاق العام مع بقية الملفات؛ الترتيب مهم (انظر index.html).
  */
 const K = "aqsat_app_v1";
-const DEF = () => ({ cust: [], emp: [], items: [], inst: [], pays: [], exps: [], debts: [], log: [], act: [], nr: {}, cash0: 0 });
+const DEF = () => ({ cust: [], emp: [], items: [], inst: [], pays: [], exps: [], debts: [], log: [], act: [], nr: {}, nseen: 0, cash0: 0 });
 let S = DEF(), _loadFailed = false;
 try {
   const r = localStorage.getItem(K);
@@ -4119,7 +4129,7 @@ const V = {
   }
 };
 function normPh(p) {
-  let d = String(p || "").replace(/\D/g, "");
+  let d = enDg(p).replace(/\D/g, "");
   if (!d) return "";
   if (d.startsWith("00")) d = d.slice(2);
   if (d.startsWith("964")) return d;
@@ -5174,85 +5184,100 @@ function lgClear() {
     toast("تم مسح السجل");
   }));
 }
-let nfF = "all", NF = [];
-const NF_T = [["all", "الكل"], ["un", "غير مقروءة"], ["late", "متأخرة"], ["soon", "قريبة"], ["debt", "ديون"], ["stock", "مخزن"], ["pay", "تسديدات"]];
-const NF_IC = { late: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', soon: '<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>', debt: '<path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', stock: '<path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/>', pay: '<path d="M20 6L9 17l-5-5"/>' };
-const NF_LB = { late: "تأخير", soon: "استحقاق", debt: "دين", stock: "مخزن", pay: "تسديد" };
-function nfData() {
-  const T = today(), now = Date.now(), o = [], D = (a) => Math.round((Date.parse(a) - Date.parse(T)) / 864e5);
-  S.inst.forEach((i) => {
-    const l = late(i);
-    if (!(l.rem > 0 && l.m > 0)) return;
-    const c = nm(S.cust, i.cust), g = ["openInst", i.id];
-    if (l.L > 0) o.push({ id: "late:" + i.id + ":" + l.due, ty: "late", ts: Date.parse(l.due) || now, t: "قسط متأخر · " + c, x: (i.desc || "قسط") + (l.days > 0 ? " — متأخر " + l.days + " يوم" : " — يستحق اليوم"), a: l.L, g });
-    else if (D(l.due) >= 0 && D(l.due) <= 3) o.push({ id: "soon:" + i.id + ":" + l.due, ty: "soon", ts: Date.parse(l.due), t: "قسط يستحق " + (D(l.due) ? "بعد " + D(l.due) + " أيام" : "اليوم") + " · " + c, x: i.desc || "قسط", a: Math.round(Math.min(l.m, l.rem)), g });
-  });
-  S.debts.forEach((d) => {
-    const r = (+d.amount || 0) - (+d.paid || 0), age = Math.floor((now - (d.ts || Date.parse(d.date) || now)) / 864e5);
-    if (d.type === "in" && r > 0 && age >= 30) o.push({ id: "debt:" + d.id, ty: "debt", ts: d.ts || Date.parse(d.date) || now, t: "دين قديم · " + (nm(S.cust, d.cust) !== "—" ? nm(S.cust, d.cust) : d.name), x: "مضى " + age + " يوماً ولم يُسدَّد كاملاً", a: r, g: ["openDebt", d.id] });
-  });
-  S.items.forEach((i) => { if ((+i.qty || 0) <= 2) o.push({ id: "stk:" + i.id + ":" + i.qty, ty: "stock", ts: now, t: (+i.qty > 0 ? "مخزون منخفض · " : "نفد المخزون · ") + i.name, x: "الكمية المتبقية " + (+i.qty || 0), g: ["go", "stock"] }); });
-  lgData().filter((r) => r.ty === "pay" && r.a && r.ts > now - 2 * 864e5).slice(0, 8).forEach((r) => o.push({ id: "pay:" + r.ts + ":" + r.i, ty: "pay", ts: r.ts, t: "تسديد جديد" + (r.m ? " · " + r.m.c : ""), x: r.x, a: r.a.v }));
-  const P = { late: 0, soon: 1, debt: 2, stock: 3, pay: 4 };
-  return o.sort((a, b) => P[a.ty] - P[b.ty] || b.ts - a.ts);
-}
-const nfUn = (r) => !S.nr[r.id];
+let nfF = "all", NF = [], nfPrev = 0, nfLive = false, nfN = 40;
+const NF_T = [["all", "الكل"], ["new", "جديدة"], ["pay", "تسديدات"], ["add", "إضافة"], ["edit", "تعديل"], ["del", "حذف"], ["bak", "نسخ احتياطي"]];
+// الإشعارات = عمليات سجل العمليات فقط
+function nfData() { return lgData().filter((r) => r.ts); }
+const nfUn = (r) => r.ts > (S.nseen || 0);
 function nfBadge() {
+  if (tab !== "notif") nfLive = false;
   const n = nfData().filter(nfUn).length;
   document.querySelectorAll(".nfb").forEach((b) => { b.textContent = n > 99 ? "99+" : n; b.hidden = !n; });
   document.querySelectorAll(".nfh").forEach((b) => b.classList.toggle("ring", n > 0));
 }
 function nfView() {
-  const all = NF = nfData(), un = all.filter(nfUn).length;
-  const st = (n, v, c) => '<div class="lgs" style="--c:' + c + '"><b>' + v + "</b><small>" + n + "</small></div>";
+  if (!nfLive) { nfLive = true; nfPrev = S.nseen || 0; nfF = "all"; nfN = 40; }
+  const all = NF = nfData(), newN = all.filter((r) => r.ts > nfPrev).length, t0 = lgDayStart(Date.now()), td = all.filter((r) => r.ts >= t0).length;
+  // الدخول لصفحة الإشعارات = اعتبارها كلها مقروءة (تختفي الأرقام)
+  if ((S.nseen || 0) < Date.now()) { S.nseen = Date.now(); save(); }
+  const st = (n, v, c, i) => '<div class="lgs nfs" style="--c:' + c + ';animation-delay:' + i * 70 + 'ms"><b>' + v + "</b><small>" + n + "</small></div>";
   return head("الإشعارات")
-    + '<div class="lgst">' + st("غير مقروءة", un, "#e11d48") + st("متأخرة", all.filter((r) => r.ty === "late").length, "#d97706") + st("قريبة الاستحقاق", all.filter((r) => r.ty === "soon").length, "#2563eb") + "</div>"
-    + '<div class="lgtl"><button type="button" class="btn ghost sm nfall" onclick="nfReadAll()">✓ تحديد الكل كمقروء</button></div>'
+    + '<div class="lgst">' + st("جديدة", newN, "#e11d48", 0) + st("عمليات اليوم", td, "#d97706", 1) + st("الإجمالي", all.length, "#2563eb", 2) + "</div>"
+    + '<div class="lgtl"><button type="button" class="btn ghost sm nfall" onclick="go(\'log\')">📋 فتح سجل العمليات</button></div>'
     + '<div id="nfw">' + nfBody() + "</div>";
 }
 function nfBody() {
-  const all = NF, cnt = (k) => k === "all" ? all.length : k === "un" ? all.filter(nfUn).length : all.filter((r) => r.ty === k).length;
-  const chips = '<div class="lgch">' + NF_T.map((t) => '<button type="button" class="lgc' + (nfF === t[0] ? " on" : "") + '" onclick="nfSet(\'' + t[0] + '\')">' + t[1] + "<i>" + cnt(t[0]) + "</i></button>").join("") + "</div>";
-  const f = all.filter((r) => nfF === "all" || (nfF === "un" ? nfUn(r) : r.ty === nfF));
-  if (!f.length) return chips + empty(all.length ? "لا توجد إشعارات في هذا القسم" : "🔔 لا توجد إشعارات — كل شيء على ما يرام");
-  let out = chips, n = 0;
-  [[true, "جديدة"], [false, "مقروءة"]].forEach(([u, lb]) => {
-    const g = f.filter((r) => nfUn(r) === u);
-    if (!g.length) return;
-    out += '<div class="lgg"><div class="lgd"><span>' + lb + "</span><small>" + g.length + " إشعار</small></div>";
-    g.forEach((r) => {
-      out += '<div class="lgr nfr nf-' + r.ty + (u ? " un" : " rd") + '" style="animation-delay:' + Math.min(n++, 12) * 35 + 'ms" onclick="nfOpen(' + NF.indexOf(r) + ')"><span class="lgi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + NF_IC[r.ty] + '</svg></span><div class="lgb"><b>' + E(r.t) + "</b><small><em>" + NF_LB[r.ty] + "</em> · " + E(r.x) + "</small>" + (r.a ? '<span class="lga ' + (r.ty === "pay" ? "in" : "") + '">' + F(r.a) + " <small>د.ع</small></span>" : "") + "</div></div>";
-    });
-    out += "</div>";
+  const all = NF, isNew = (r) => r.ts > nfPrev, cnt = (k) => k === "all" ? all.length : k === "new" ? all.filter(isNew).length : all.filter((r) => r.ty === k).length;
+  const chips = '<div class="lgch nfc">' + NF_T.map((t) => '<button type="button" class="lgc' + (nfF === t[0] ? " on" : "") + '" onclick="nfSet(\'' + t[0] + '\')">' + t[1] + "<i>" + cnt(t[0]) + "</i></button>").join("") + "</div>";
+  const f = all.filter((r) => nfF === "all" || (nfF === "new" ? isNew(r) : r.ty === nfF));
+  if (!f.length) return chips + empty(all.length ? "لا توجد إشعارات في هذا القسم" : "🔔 لا توجد إشعارات — ستظهر هنا عمليات السجل");
+  const shown = f.slice(0, nfN);
+  let out = chips, cur = null, n = 0;
+  shown.forEach((r) => {
+    const d = lgDayLabel(r.ts);
+    if (d !== cur) {
+      if (cur !== null) out += "</div>";
+      out += '<div class="lgg"><div class="lgd nfd" style="animation-delay:' + Math.min(n, 14) * 55 + 'ms"><span>' + d + "</span><small>" + f.filter((z) => lgDayLabel(z.ts) === d).length + " إشعار</small></div>";
+      cur = d;
+    }
+    const u = isNew(r), lb = /^مصروف/.test(r.x) ? "مصروف" : /^صرف راتب/.test(r.x) ? "راتب" : LG_LB[r.ty];
+    out += '<div class="lgr nfr nf-' + r.ty + (u ? " un" : " rd") + '" style="animation-delay:' + (120 + Math.min(n++, 14) * 60) + 'ms" onclick="go(\'log\')"><span class="lgi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + LG_IC[r.ty] + '</svg></span><div class="lgb"><b>' + E(r.x) + (u ? '<span class="nft">جديد</span>' : "") + "</b><small><em>" + lb + "</em> · " + lgTime(r.ts) + (r.m && r.m.c ? " · " + E(r.m.c) : "") + "</small>" + (r.a ? '<span class="lga ' + r.a.d + '">' + (r.a.d === "in" ? "+" : r.a.d === "out" ? "−" : "") + F(r.a.v) + " <small>د.ع</small></span>" : "") + "</div></div>";
   });
+  out += "</div>";
+  if (f.length > shown.length) out += '<button type="button" class="btn ghost lgmore" onclick="nfN+=40;nfSet(nfF)">عرض المزيد (' + (f.length - shown.length) + ")</button>";
   return out;
 }
 function nfSet(k) { nfF = k; const w = document.getElementById("nfw"); if (w) w.innerHTML = nfBody(); }
-function nfOpen(i) {
-  const r = NF[i];
-  if (!r) return;
-  S.nr[r.id] = 1;
-  save();
-  nfBadge();
-  if (r.g) (r.g[0] === "go" ? go : window[r.g[0]])(r.g[1]); else render();
-}
-function nfReadAll() {
-  const all = nfData();
-  if (!all.some(nfUn)) { toast("لا توجد إشعارات جديدة"); return; }
-  S.nr = {};
-  all.forEach((r) => { S.nr[r.id] = 1; });
-  save();
-  render();
-  toast("تم تحديد الكل كمقروء");
-}
+// أرقام الهاتف: أرقام إنكليزية فقط (تحويل الأرقام العربية/الفارسية تلقائياً) مع الإبقاء على الفراغات 0770 123 4567
+const enDg = (v) => String(v == null ? "" : v).replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
 function fmtPh(p) {
-  const d = String(p || "").replace(/\D/g, "");
+  let d = enDg(p).replace(/\D/g, "");
+  if (/^(00)?964\d{9,}/.test(d)) d = "0" + d.replace(/^(00)?964/, "");
+  d = d.slice(0, 15);
   return d.length <= 4 ? d : d.slice(0, 4) + " " + d.slice(4, 7) + (d.length > 7 ? " " + d.slice(7) : "");
 }
-["input", "focusin"].forEach((ev) => document.addEventListener(ev, (e) => {
-  const x = e.target;
-  if (x && x.tagName === "INPUT" && (x.name === "phone" || x.name === "cphone")) { const v = fmtPh(x.value); if (v !== x.value) x.value = v; }
-}, true));
+const PH_SEL = "input[name=phone],input[name=cphone]";
+function phSetup(x) {
+  if (x._ph) return;
+  x._ph = 1;
+  x.setAttribute("inputmode", "numeric");
+  x.setAttribute("autocomplete", "tel-national");
+  x.setAttribute("autocapitalize", "off");
+  x.setAttribute("autocorrect", "off");
+  x.setAttribute("spellcheck", "false");
+  x.setAttribute("maxlength", "18");
+  x.setAttribute("dir", "ltr");
+  x.setAttribute("lang", "en");
+  x.style.direction = "ltr";
+  x.style.textAlign = "right";
+  x.style.unicodeBidi = "plaintext";
+  if (x.value) x._pv = x.value = fmtPh(x.value);
+}
+function phScan(r) {
+  if (!r || r.nodeType !== 1) return;
+  if (r.matches && r.matches(PH_SEL)) phSetup(r);
+  r.querySelectorAll && r.querySelectorAll(PH_SEL).forEach(phSetup);
+}
+phScan(document.body);
+new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach(phScan))).observe(document.body, { childList: true, subtree: true });
+function phInput(x, e) {
+  phSetup(x);
+  const v = x.value, foc = document.activeElement === x;
+  let pos = foc && x.selectionStart != null ? x.selectionStart : v.length;
+  let db = enDg(v.slice(0, pos)).replace(/\D/g, "").length, d = enDg(v).replace(/\D/g, "").slice(0, 15);
+  // حذف الفراغ بزر الرجوع يحذف الرقم الذي قبله بدل أن يعود الفراغ
+  if (e && e.inputType === "deleteContentBackward" && x._pv && fmtPh(d) === x._pv && db > 0) { d = d.slice(0, db - 1) + d.slice(db); db--; }
+  const nv = fmtPh(d);
+  if (nv !== v) x.value = nv;
+  x._pv = nv;
+  if (foc && nv !== v) {
+    let c = 0, k = 0;
+    while (c < db && k < nv.length) { if (/\d/.test(nv[k])) c++; k++; }
+    try { x.setSelectionRange(k, k); } catch (_) {}
+  }
+}
+document.addEventListener("input", (e) => { const x = e.target; if (x && x.tagName === "INPUT" && (x.name === "phone" || x.name === "cphone")) phInput(x, e); }, true);
+document.addEventListener("focusin", (e) => { const x = e.target; if (x && x.tagName === "INPUT" && (x.name === "phone" || x.name === "cphone")) { phSetup(x); const v = fmtPh(x.value); if (v !== x.value) x.value = v; x._pv = v; } }, true);
 </script>
 <script>
 /**
