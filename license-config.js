@@ -5,5 +5,6 @@ window.AQSATI_LICENSE = {
     "x": "OS6gxktmmoC2J-gu-RxlJdLhz6YM2f8rdlAD9g08e5I",
     "y": "IYtsf3XgG4Ph1gcZ-FBSuvS4bWp0eKqswpDjO7Cyoo8"
   },
-  "whatsapp": "9647737043441"
+  "whatsapp": "9647737043441",
+  "trialDays": 30
 };

@@ -2,7 +2,22 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script>
+/* منع التكبير والتصغير (iOS يتجاهل user-scalable لذا تُمنع الإيماءات برمجياً) */
+(function () {
+  var stop = function (e) { e.preventDefault(); };
+  ["gesturestart", "gesturechange", "gestureend"].forEach(function (t) { document.addEventListener(t, stop, { passive: false }); });
+  document.addEventListener("touchmove", function (e) { if ((e.scale && e.scale !== 1) || (e.touches && e.touches.length > 1)) e.preventDefault(); }, { passive: false });
+  var last = 0;
+  document.addEventListener("touchend", function (e) {
+    var n = Date.now();
+    if (n - last <= 300 && !/^(INPUT|TEXTAREA|SELECT)$/.test((e.target && e.target.tagName) || "")) e.preventDefault();
+    last = n;
+  }, { passive: false });
+  document.addEventListener("wheel", function (e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+})();
+</script>
 <meta name="description" content="أقساطي وديوني: إدارة الأقساط والديون والعملاء والمخزن والمصروفات والوصولات، ويعمل بدون إنترنت.">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.webmanifest">
@@ -1680,6 +1695,25 @@ main {
 }
 .it2 span svg {
   flex: none;
+}
+.it2 span.pnl {
+  flex-wrap: wrap;
+  gap: 1px 12px;
+  line-height: 1.55;
+}
+.it2 span.pnl svg {
+  margin-inline-end: 2px;
+}
+.it2 em.pn, .it2 em.pd {
+  font-style: normal;
+  display: inline;
+}
+.it2 em.pn.fin {
+  color: #9aa3b2 !important;
+  font-weight: 600;
+}
+.it2 em.pd {
+  margin-inline-start: -3px;
 }
 .pl {
   background:
@@ -3469,6 +3503,39 @@ html[data-eff=dark] .lt2 .av2 { box-shadow: 0 10px 20px -8px rgba(244, 63, 94, .
 .thn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 9px 12px; border-radius: 12px; background: rgba(148, 163, 184, .1); color: var(--mut); font-size: 12.5px; font-weight: 600; }
 .thn i { width: 7px; height: 7px; border-radius: 50%; background: var(--a1); animation: pinBlink 1.8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .thn i { animation: none !important; } }
+
+/* ملخص الشهر في الإحصائيات */
+.sr { padding: 16px 14px 14px; cursor: pointer; }
+.sr-hd { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.sr-hd b { font-size: 16px; }
+.sr-hd span { color: var(--mut); font-size: 12px; }
+.sr-svg { display: block; width: min(100%, 340px); margin: 6px auto 4px; direction: ltr; }
+.sr-arc { stroke-dasharray: var(--c); stroke-dashoffset: var(--o); transform: rotate(-90deg); transform-origin: 160px 160px; animation: srDraw 1.5s cubic-bezier(.22, 1, .36, 1) both; }
+@keyframes srDraw { from { stroke-dashoffset: var(--c); } to { stroke-dashoffset: var(--o); } }
+.sr-svg text { fill: var(--tx); font-family: Cairo, Tahoma, Arial, sans-serif; direction: rtl; }
+.sr-pct { font-size: 46px; font-weight: 700; }
+.sr-lb { font-size: 13px; fill: var(--mut) !important; }
+.sr-sm { font-size: 12.5px; font-weight: 600; }
+.sr-g { fill: var(--ok) !important; font-weight: 400; }
+.sr-m { fill: var(--mut) !important; font-weight: 400; }
+.sr-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 0 12px; }
+.sr-chip { display: flex; gap: 8px; align-items: flex-start; min-width: 0; }
+.sr-chip i { width: 10px; height: 10px; border-radius: 50%; margin-top: 7px; flex: none; }
+.sr-chip small { display: block; color: var(--mut); font-size: 12px; }
+.sr-chip b { display: block; font-size: 17px; line-height: 1.3; }
+.sr-chip span { display: block; color: var(--mut); font-size: 11px; }
+.sr-bar { height: 8px; border-radius: 8px; background: var(--bd); overflow: hidden; margin-bottom: 12px; }
+.sr-bar i { display: block; height: 100%; width: var(--w); border-radius: 8px; background: linear-gradient(90deg, #16a34a, #2dd4bf); transform-origin: right; animation: srBar 1.4s cubic-bezier(.22, 1, .36, 1) .3s both; }
+@keyframes srBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.sr-k { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sr-k > div { background: var(--bg); border-radius: 12px; padding: 10px 12px; min-width: 0; }
+.sr-k small { display: block; color: var(--mut); font-size: 11.5px; }
+.sr-k b { font-size: 16px; }
+.srx-r { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.srx-r label { font-size: 12.5px; color: var(--mut); }
+.srx-r select { font-size: 16px; font-weight: 700; }
+.sr-late { margin-top: 10px; font-size: 12.5px; color: var(--bad); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .sr-arc, .sr-bar i { animation: none; } }
 </style>
 <style id="actCss">
 .card,.iw{position:relative}
@@ -3496,6 +3563,8 @@ html[data-eff=dark] .actb .tr{stroke:rgba(255,213,138,.18)}
 .ar b{display:block;font-size:15px}
 .ar span{display:block;font-size:13.5px;margin-top:2px}
 .ar small{display:block;color:#92700a;font-size:12px;margin-top:3px}
+.ar>div{flex:1;min-width:0}
+.aundo{margin-top:8px;border:0;border-radius:99px;padding:6px 16px;background:#dc2626;color:#fff;font:700 13px Cairo,system-ui,sans-serif;cursor:pointer;box-shadow:0 4px 10px rgba(220,38,38,.35)}.aundo:active{transform:scale(.96)}
 @keyframes actFade{from{opacity:0}}
 @keyframes actPop{from{opacity:0;transform:scale(.6) translateY(20px)}}
 @keyframes actRow{from{opacity:0;transform:translateY(10px)}}
@@ -3839,12 +3908,78 @@ function alertDue(y, m) {
 }
 const actOn = () => S.actOn !== false;
 const ACT_MS = 36e5, ACT_C = 2 * Math.PI * 17;
-const actAdd = (k, key, ev, txt) => {
+const actUndoOn = () => S.actUndo !== false;
+const actAdd = (k, key, ev, txt, u) => {
   if (!actOn()) return;
   const n = Date.now();
   S.act = (S.act || []).filter((a) => n - a.t < ACT_MS);
-  S.act.push({ k, key, t: n, ev, txt });
+  S.act.push(u ? { k, key, t: n, ev, txt, u } : { k, key, t: n, ev, txt });
 };
+function actUndoDo(t) {
+  const a = (S.act || []).find((x) => x.t === t && x.u);
+  if (!a) return;
+  const u = a.u, bad = () => toast("تعذّر التراجع: العنصر لم يعد موجوداً");
+  if (u.t === "ipay") {
+    if (!S.pays.some((p) => p.id === u.id)) return bad();
+    S.pays = S.pays.filter((p) => p.id !== u.id);
+  } else if (u.t === "dnew") {
+    if (!S.debts.some((d) => d.id === u.id)) return bad();
+    S.debts = S.debts.filter((d) => d.id !== u.id);
+  } else if (u.t === "dpay") {
+    for (const q of u.items) {
+      const d = S.debts.find((x) => x.id === q.id);
+      if (!d) return bad();
+    }
+    u.items.forEach((q) => {
+      const d = S.debts.find((x) => x.id === q.id);
+      d.paid = Math.max(0, d.paid - q.amt);
+      const k = (d.pl || []).map((p) => p.date + "|" + p.amt).lastIndexOf(q.date + "|" + q.amt);
+      if (k > -1) d.pl.splice(k, 1);
+    });
+  } else if (u.t === "dedit") {
+    const d = S.debts.find((x) => x.id === u.id);
+    if (!d) return bad();
+    Object.assign(d, u.old);
+  } else if (u.t === "inew") {
+    if (!S.inst.some((i) => i.id === u.id)) return bad();
+    S.inst = S.inst.filter((i) => i.id !== u.id);
+    S.pays = S.pays.filter((p) => p.inst !== u.id);
+    if (u.item) {
+      const it = S.items.find((x) => x.id === u.item.id);
+      if (it) it.qty += u.item.qty;
+    }
+  } else if (u.t === "iedit") {
+    const i = S.inst.find((x) => x.id === u.id);
+    if (!i) return bad();
+    Object.assign(i, u.old);
+    S.pays = S.pays.filter((p) => p.inst !== u.id).concat(u.pays);
+    if (u.item) {
+      const it = S.items.find((x) => x.id === u.item.id);
+      if (it) it.qty = u.item.qty;
+    }
+  } else return;
+  S.act = S.act.filter((x) => x !== a);
+  LOG("تراجع عن: " + a.ev + " — " + a.txt);
+  save();
+  toast("تم التراجع");
+  render();
+}
+function actUndo(t, btn) {
+  const a = (S.act || []).find((x) => x.t === t && x.u);
+  if (!a) return;
+  const ov = btn && btn.closest(".actov");
+  if (ov) ov.remove();
+  ask("التراجع عن «" + a.ev + "»؟ " + a.txt, () => {
+    if (S.pin) pinPad("أدخل رمز الحماية لتأكيد التراجع", async (v) => {
+      if (await hashPin(v) === S.pin) {
+        actUndoDo(t);
+        return true;
+      }
+      return false;
+    });
+    else actUndoDo(t);
+  });
+}
 const actOf = (k, key) => {
   const n = Date.now();
   return (S.act || []).filter((a) => a.k === k && a.key === key && n - a.t < ACT_MS);
@@ -3874,7 +4009,7 @@ function actShow(b) {
   o.className = "actov";
   o.innerHTML = '<div class="actw"><div class="ach"><span class="aci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>آخر النشاط</b><span class="acx">✕</span></div>' + a.map((x) => {
     const mn = Math.floor((n - x.t) / 6e4);
-    return '<div class="ar"><i></i><div><b>' + E(x.ev) + "</b><span>" + E(x.txt) + "</span><small>" + (mn < 1 ? "الآن" : "قبل " + mn + " دقيقة") + " · " + new Date(x.t).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }) + "</small></div></div>";
+    return '<div class="ar"><i></i><div><b>' + E(x.ev) + "</b><span>" + E(x.txt) + "</span><small>" + (mn < 1 ? "الآن" : "قبل " + mn + " دقيقة") + " · " + new Date(x.t).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }) + "</small>" + (x.u && actUndoOn() ? '<button type="button" class="aundo" onclick="event.stopPropagation();actUndo(' + x.t + ',this)">↩ تراجع</button>' : "") + "</div></div>";
   }).join("") + "</div>";
   document.body.appendChild(o);
   const cl = () => {
@@ -3960,6 +4095,7 @@ function ask(m, cb) {
   const o = document.createElement("div");
   o.className = "ov";
   o.style.alignItems = "center";
+  o.style.zIndex = "100000";
   o.innerHTML = '<div class="md" style="border-radius:22px;max-width:340px;text-align:center"><h3>' + E(m) + '</h3><div class="row"><button class="btn red" id="y">نعم</button><button class="btn ghost" id="n">إلغاء</button></div></div>';
   document.body.appendChild(o);
   o.querySelector("#n").onclick = () => o.remove();
@@ -3990,7 +4126,7 @@ function copyText(t) {
 function toast(m) {
   const t = document.createElement("div");
   t.textContent = m;
-  t.style.cssText = "position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 18px;border-radius:99px;z-index:50;font-size:14px";
+  t.style.cssText = "position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 18px;border-radius:99px;z-index:100001;font-size:14px";
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 2200);
 }
@@ -4039,8 +4175,9 @@ const addDebt = (pre) => debtForm(pre) || openForm("دين جديد", [{ k: "typ
     alert("اختر عميلاً أو اكتب الاسم");
     return false;
   }
-  S.debts.push({ id: uid(), cust: d.cust, type: d.type, name: c ? c.name : d.name, amount: +d.amount, paid: 0, date: d.date, phone: c ? c.phone : d.phone, prod: d.prod, qty: +d.qty || 1, ts: d.date === today() ? Date.now() : new Date(d.date).getTime() });
-  actAdd("d", d.cust || "n:" + (c ? c.name : d.name), "دين جديد", (c ? c.name : d.name) + " · " + F(d.amount) + " د.ع");
+  const nid = uid();
+  S.debts.push({ id: nid, cust: d.cust, type: d.type, name: c ? c.name : d.name, amount: +d.amount, paid: 0, date: d.date, phone: c ? c.phone : d.phone, prod: d.prod, qty: +d.qty || 1, ts: d.date === today() ? Date.now() : new Date(d.date).getTime() });
+  actAdd("d", d.cust || "n:" + (c ? c.name : d.name), "دين جديد", (c ? c.name : d.name) + " · " + F(d.amount) + " د.ع", { t: "dnew", id: nid });
   LOG("دين جديد: " + (c ? c.name : d.name) + " " + F(d.amount), lgDebtG(d.cust || "n:" + (c ? c.name : d.name), c ? c.name : d.name));
 });
 const payDebt = (id) => {
@@ -4067,6 +4204,122 @@ const kv = (a, b, c) => '<div class="kv"><span>' + a + '</span><b class="' + (c 
  * 03 · pages.js — صفحات العرض: المتأخرات، التسديدات، المخزن، العملاء، تفاصيل القسط والدين
  * سكربت كلاسيكي يشترك في النطاق العام مع بقية الملفات؛ الترتيب مهم (انظر index.html).
  */
+
+/* ===== الإحصائيات: ملخص الشهر (دائرة الأقساط والديون) ===== */
+const SR_AR = ["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"];
+const SR_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+function srAdd(s, n) {
+  const d = new Date(Date.parse(s) + n * 864e5);
+  return d.toISOString().slice(0, 10);
+}
+function srMk(y, m, d) {
+  const x = new Date(Date.UTC(y, m - 1, 1)), yy = x.getUTCFullYear(), mm = x.getUTCMonth() + 1, dim = new Date(Date.UTC(yy, mm, 0)).getUTCDate();
+  return yy + "-" + String(mm).padStart(2, "0") + "-" + String(Math.min(d, dim)).padStart(2, "0");
+}
+function srWin() {
+  const T = today(), y = +T.slice(0, 4), mo = +T.slice(5, 7), dd = +T.slice(8, 10);
+  const f = Math.min(31, Math.max(1, +S.srFrom || 1)), t = Math.min(31, Math.max(1, +S.srTo || 31));
+  if (f <= t) return { ws: srMk(y, mo, f), we: srMk(y, mo, t) };
+  return dd >= f ? { ws: srMk(y, mo, f), we: srMk(y, mo + 1, t) } : { ws: srMk(y, mo - 1, f), we: srMk(y, mo, t) };
+}
+function srCnt(l, f, d) {
+  if (!l.due || l.due > d) return 0;
+  if (f === "m") {
+    const y = +d.slice(0, 4), m = +d.slice(5, 7);
+    let n = y * 12 + m - ((+l.due.slice(0, 4)) * 12 + (+l.due.slice(5, 7))) + 1;
+    if (alertDue(y, m) > d) n--;
+    return Math.max(0, n);
+  }
+  return Math.floor((Date.parse(d) - Date.parse(l.due)) / 864e5 / (f === "w" ? 7 : 1)) + 1;
+}
+function srUpTo(i, l, d) {
+  if (l.rem <= 0 || l.m <= 0) return 0;
+  return Math.min(Math.round(l.rem), Math.round(l.m * srCnt(l, i.freq || "m", d)));
+}
+function srData() {
+  const W = srWin(), ws = W.ws, me = W.we, wp = srAdd(ws, -1);
+  const skip = !!S.srSkip;
+  const inM = (d) => d && d >= ws && d <= me;
+  const ls = S.inst.map((i) => ({ i, ...late(i) }));
+  const instTotal = sum(S.inst, "total"), instRem = ls.reduce((a, x) => a + x.rem, 0);
+  const dIn = S.debts.filter((d) => d.type === "in");
+  const debtTotal = sum(dIn, "amount"), debtRem = dIn.reduce((a, d) => a + Math.max(0, (+d.amount || 0) - (+d.paid || 0)), 0);
+  const paidM = S.pays.filter((p) => inM(p.date)).reduce((a, p) => a + (+p.amt || 0), 0);
+  const debtPaidM = dIn.reduce((a, d) => a + (d.pl || []).filter((p) => inM(p.date)).reduce((b, p) => b + (+p.amt || 0), 0), 0);
+  const upTo = ls.reduce((a, x) => a + srUpTo(x.i, x, me), 0);
+  const before = ls.reduce((a, x) => a + srUpTo(x.i, x, wp), 0);
+  const dueLeft = skip ? Math.max(0, upTo - before) : upTo;
+  const target = paidM + dueLeft;
+  const pct = target > 0 ? Math.min(100, Math.round(paidM / target * 100)) : 0;
+  const lateAmt = ls.reduce((a, x) => a + x.L, 0), lateN = ls.filter((x) => x.L > 0).length;
+  const skipN = ls.filter((x) => srUpTo(x.i, x, wp) > 0).length;
+  const en = S.lang === "en", M = en ? SR_EN : SR_AR;
+  const a = { d: +ws.slice(8), m: M[+ws.slice(5, 7) - 1], y: +ws.slice(0, 4) }, b = { d: +me.slice(8), m: M[+me.slice(5, 7) - 1], y: +me.slice(0, 4) };
+  const same = ws.slice(0, 7) === me.slice(0, 7);
+  const range = en
+    ? (same ? a.d + " – " + b.d + " " + b.m + " " + b.y : a.d + " " + a.m + " – " + b.d + " " + b.m + " " + b.y)
+    : (same ? "من " + a.d + " إلى " + b.d + " " + b.m + " " + b.y : "من " + a.d + " " + a.m + " إلى " + b.d + " " + b.m + " " + b.y);
+  return { instTotal, instRem, debtTotal, debtRem, paidM, debtPaidM, dueLeft, target, pct, lateAmt, lateN, skip, skipAmt: before, skipN, range };
+}
+function srSet(k, v) {
+  if (k === "skip") S.srSkip = !!v;
+  else S[k === "f" ? "srFrom" : "srTo"] = +v;
+  save();
+  render();
+}
+function srReset() {
+  delete S.srFrom;
+  delete S.srTo;
+  delete S.srSkip;
+  save();
+  render();
+}
+function srOpts() {
+  const f = Math.min(31, Math.max(1, +S.srFrom || 1)), t = Math.min(31, Math.max(1, +S.srTo || 31)), d = srData();
+  const opt = (sel) => Array.from({ length: 31 }, (_, k) => '<option value="' + (k + 1) + '"' + (k + 1 === sel ? " selected" : "") + ">" + (k + 1) + "</option>").join("");
+  const custom = f !== 1 || t !== 31 || S.srSkip;
+  return '<div class="card srx"><b>📅 فترة الأيام المستحقة</b><div class="mut" style="margin:2px 0 8px">اختر الأيام من الشهر، مثلاً من 20 إلى 10 يعرض المستحقين بين هذين اليومين</div>' +
+    '<div class="srx-r"><label>من يوم<select onchange="srSet(\'f\',this.value)">' + opt(f) + '</select></label><label>إلى يوم<select onchange="srSet(\'t\',this.value)">' + opt(t) + "</select></label></div>" +
+    '<div class="tr2" style="margin:12px 0 0"><span>لا تحسب المتأخرين سابقاً</span><input type="checkbox" class="sw"' + (S.srSkip ? " checked" : "") + ' onchange="srSet(\'skip\',this.checked)"></div>' +
+    '<div class="mut" style="font-size:12px">عند التفعيل يُعتبر من تأخر قبل بداية الفترة متلكئاً ولا يدخل في المستحق، ليظهر لك وارد هذه الفترة فقط</div>' +
+    (d.skip && d.skipAmt > 0 ? '<div class="sr-late" style="margin-top:8px">⏳ المتلكئون: ' + d.skipN + " قسط بمبلغ " + F(d.skipAmt) + " د.ع (غير محسوب)</div>" : "") +
+    (custom ? '<button type="button" class="btn ghost sm" style="margin-top:10px" onclick="srReset()">↺ الشهر الكامل</button>' : "") + "</div>";
+}
+function srArc(cx, r, w, frac, color, delay) {
+  const c = 2 * Math.PI * r, f = Math.max(0, Math.min(1, frac)), o = c * (1 - f);
+  return '<circle cx="160" cy="160" r="' + r + '" fill="none" stroke="var(--bd)" stroke-width="' + w + '"/><circle class="sr-arc" cx="160" cy="160" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="' + w + '" stroke-linecap="round" style="--c:' + c.toFixed(2) + ';--o:' + o.toFixed(2) + ';animation-delay:' + delay + 's"/>';
+}
+function srHero() {
+  const d = srData(), cu = (v, extra) => '<tspan data-cu="' + Math.round(v) + '"' + (extra || "") + ">" + F(v) + "</tspan>";
+  const fo = d.instTotal ? d.instRem / d.instTotal : 0, fi = d.debtTotal ? d.debtRem / d.debtTotal : 0;
+  const ring = '<svg class="sr-svg" viewBox="0 0 320 320" role="img" aria-label="ملخص الأقساط والديون">' + srArc(160, 140, 22, fo, "#2563eb", .1) + srArc(160, 108, 20, fi, "#f59e0b", .35) +
+    '<text x="160" y="142" text-anchor="middle" class="sr-pct"><tspan data-cu="' + d.pct + '" data-sfx="%">' + d.pct + '%</tspan></text>' +
+    '<text x="160" y="164" text-anchor="middle" class="sr-lb">نسبة الإنجاز</text>' +
+    '<text x="160" y="190" text-anchor="middle" class="sr-sm"><tspan class="sr-m">مستحق</tspan> ' + cu(d.target) + '</text>' +
+    '<text x="160" y="209" text-anchor="middle" class="sr-sm"><tspan class="sr-g">سُدّد</tspan> ' + cu(d.paidM) + "</text></svg>";
+  const chip = (c, t, v, sub) => '<div class="sr-chip"><i style="background:' + c + '"></i><div><small>' + t + '</small><b data-cu="' + Math.round(v) + '">' + F(v) + "</b><span>" + sub + "</span></div></div>";
+  const bar = '<div class="sr-bar"><i style="--w:' + d.pct + '%"></i></div>';
+  return '<div class="card sr" onclick="render()" title="إعادة الحركة"><div class="sr-hd"><b>ملخص الشهر</b><span>' + d.range + "</span></div>" + ring + '<div class="sr-chips">' +
+    chip("#2563eb", "المتبقي من الأقساط", d.instRem, "من " + F(d.instTotal) + " د.ع") +
+    chip("#f59e0b", "المتبقي من الديون", d.debtRem, "من " + F(d.debtTotal) + " د.ع") + "</div>" + bar +
+    '<div class="sr-k"><div><small>الأقساط المستحقة هذا الشهر</small><b>' + F(d.target) + '</b></div><div><small>تسديدات الأقساط هذا الشهر</small><b class="ok">' + F(d.paidM) + '</b></div><div><small>المتبقي تحصيله هذا الشهر</small><b class="' + (d.dueLeft ? "bad" : "ok") + '">' + F(d.dueLeft) + '</b></div><div><small>تسديدات الديون هذا الشهر</small><b class="ok">' + F(d.debtPaidM) + "</b></div></div>" +
+    (d.lateN ? '<div class="sr-late">⚠️ ' + d.lateN + " قسط متأخر بمبلغ " + F(d.lateAmt) + " د.ع</div>" : "") + "</div>";
+}
+function statsAnim() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const els = document.querySelectorAll("#main [data-cu]");
+  const t0 = performance.now(), dur = 1300;
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    els.forEach((el) => {
+      if (!el.isConnected) return;
+      const v = +el.dataset.cu;
+      el.textContent = F(v * e) + (el.dataset.sfx || "");
+    });
+    if (k < 1 && els[0] && els[0].isConnected) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
 const V = {
   late() {
     const L = lateList();
@@ -4086,7 +4339,7 @@ const V = {
   cust() {
     return head("العملاء", "addCust") + (S.cust.length ? S.cust.map((c) => {
       const ins = S.inst.filter((i) => i.cust === c.id), r = ins.reduce((a, i) => a + late(i).rem, 0);
-      return card(E(c.name), E(fmtPh(c.phone)) + " · " + ins.length + " أقساط", '<span class="' + (r ? "warn" : "ok") + '">' + F(r) + "</span>", callC(c.id) + `<button class="btn sm" onclick="editCust('` + c.id + `')">✏️ تعديل</button>` + dbtn("cust", c.id, c.name));
+      return card(E(c.name), phH(c.phone) + " · " + ins.length + " أقساط", '<span class="' + (r ? "warn" : "ok") + '">' + F(r) + "</span>", callC(c.id) + `<button class="btn sm" onclick="editCust('` + c.id + `')">✏️ تعديل</button>` + dbtn("cust", c.id, c.name));
     }).join("") : empty("لا يوجد عملاء"));
   },
   emp() {
@@ -4116,7 +4369,7 @@ const V = {
     });
     svg += "</svg>";
     const sv = S.items.reduce((a, i) => a + i.qty, 0), low = S.items.filter((i) => i.qty <= 2).length;
-    return head("الإحصائيات") + '<div class="card"><b>التحصيل مقابل المصروفات (آخر 6 أشهر)</b><div class="mut"><span class="ok">■</span> تحصيل &nbsp; <span class="bad">■</span> مصروفات</div>' + svg + '</div><div class="card"><b>إحصائيات المخزن</b>' + kv("عدد الأصناف", S.items.length) + kv("إجمالي القطع", sv) + kv("أصناف قاربت على النفاد", low, low ? "bad" : "") + kv("الأرباح المتوقعة من المخزون", F(S.items.reduce((a, i) => a + i.qty * (i.price - i.cost), 0)), "ok") + '</div><div class="card"><b>عام</b>' + kv("العملاء", S.cust.length) + kv("الموظفون", S.emp.length) + kv("عقود الأقساط", S.inst.length) + kv("إجمالي المبالغ المحصلة", F(sum(S.pays, "amt")), "ok") + "</div>";
+    return head("الإحصائيات") + srHero() + srOpts() + '<div class="card"><b>التحصيل مقابل المصروفات (آخر 6 أشهر)</b><div class="mut"><span class="ok">■</span> تحصيل &nbsp; <span class="bad">■</span> مصروفات</div>' + svg + '</div><div class="card"><b>إحصائيات المخزن</b>' + kv("عدد الأصناف", S.items.length) + kv("إجمالي القطع", sv) + kv("أصناف قاربت على النفاد", low, low ? "bad" : "") + kv("الأرباح المتوقعة من المخزون", F(S.items.reduce((a, i) => a + i.qty * (i.price - i.cost), 0)), "ok") + '</div><div class="card"><b>عام</b>' + kv("العملاء", S.cust.length) + kv("الموظفون", S.emp.length) + kv("عقود الأقساط", S.inst.length) + kv("إجمالي المبالغ المحصلة", F(sum(S.pays, "amt")), "ok") + "</div>";
   },
   cash() {
     return head("الصندوق") + '<div class="hero"><small>الرصيد الحالي</small><b>' + F(cash()) + '</b></div><div class="card">' + kv("الرصيد الافتتاحي", F(S.cash0)) + kv("+ تسديدات الأقساط", F(sum(S.pays, "amt")), "ok") + kv("+ ديون مستلمة", F(debtIn()), "ok") + kv("− المصروفات والرواتب", F(sum(S.exps, "amt")), "bad") + kv("− ديون مسددة", F(debtOut()), "bad") + '</div><button class="btn" onclick="setCash()">تعديل الرصيد الافتتاحي</button>';
@@ -4141,7 +4394,7 @@ function callC(id) {
   return ph ? `<button class="btn sm" onclick="callPh('` + ph + `')">📞 اتصال</button>` : "";
 }
 function remind(x) {
-  const c = S.cust.find((c2) => c2.id === x.i.cust) || {}, ph = normPh(c.phone), msg = encodeURIComponent("السلام عليكم\n\nتحية طيبة *" + (c.name || "") + " (" + (x.i.no || "") + ")*\n\n(" + x.i.desc + ")\n▫️ المبلغ الإجمالي: " + F(x.i.total) + " د.ع\n▫️ المبلغ المدفوع: " + F(x.p) + " د.ع\n▫️ المبلغ المتبقي: " + F(x.rem) + " د.ع\n\n⏰ نرجو منكم التكرم بتسديد القسط");
+  const c = S.cust.find((c2) => c2.id === x.i.cust) || {}, ph = normPh(c.phone), msg = encodeURIComponent(msgOf(x));
   return ph ? callC(x.i.cust) + '<a class="btn sm" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/' + ph + "?text=" + msg + '">' + WA + ' تذكير واتساب</a><a class="btn sm ghost" style="text-decoration:none" target="_blank" rel="noopener" href="sms:+' + ph + "?&body=" + msg + '">✉️ رسالة</a>' : '<span class="mut">أضف رقم هاتف العميل للتذكير</span>';
 }
 let cur = null;
@@ -4155,7 +4408,7 @@ function openInst(id) {
 }
 function msgOf(x) {
   const c = S.cust.find((c2) => c2.id === x.i.cust) || {};
-  return "السلام عليكم\n\nتحية طيبة *" + (c.name || "") + " (" + (x.i.no || "") + ")*\n\n(" + x.i.desc + ")\n▫️ المبلغ الإجمالي: " + F(x.i.total) + " د.ع\n▫️ المبلغ المدفوع: " + F(x.p) + " د.ع\n▫️ المبلغ المتبقي: " + F(x.rem) + " د.ع\n\n⏰ نرجو منكم التكرم بتسديد القسط";
+  return "السلام عليكم\n\nتحية طيبة  " + (c.name || "") + "\n\nالمبلغ المتبقي: " + F(x.rem) + " د.ع\n\n⏰ نرجو منكم التكرم بتسديد القسط";
 }
 function copyInst(id) {
   const i = S.inst.find((x) => x.id === id);
@@ -4173,7 +4426,7 @@ V.detail = function() {
   const l = late(i), x = { i, ...l }, c = S.cust.find((k) => k.id === i.cust) || {}, ph = normPh(c.phone);
   const st = l.rem === 0 ? "مكتمل" : l.L > 0 ? "متأخر" : "قيد التنفيذ";
   const ps = S.pays.filter((p) => p.inst === i.id).map((p, k) => [p, k]).sort((a, b) => b[0].date.localeCompare(a[0].date) || b[1] - a[1]).map((x) => x[0]);
-  return `<div class="tb"><button onclick="backInst()">➡️</button><button onclick="var d=document.getElementById('pl');d.open=true;d.scrollIntoView()">🕘</button><button onclick="editInst('` + i.id + `')">✏️</button><button onclick="print()">🖨️</button><button onclick="copyInst('` + i.id + `')">📄</button><button style="margin-right:auto" onclick="del('inst','` + i.id + `','القسط')">🗑️</button></div><div class="hd"><div><b style="font-size:17px">` + E(c.name || "—") + " (" + (i.no || "—") + ')</b><div style="font-size:13px;opacity:.75">' + E(i.desc) + '</div></div><span class="pill">' + st + '</span></div><details class="sec s1" open><summary>👤 معلومات الزبون</summary>' + kv("الهاتف", c.phone ? `<a onclick="callPh('` + ph + `')" style="cursor:pointer">` + E(c.phone) + " 📞</a>" : "—") + (i.guar ? kv("الكفيل", E(i.guar)) : "") + kv("تاريخ الإنشاء", (i.created || i.start).replace(/-/g, "/")) + '</details><details class="sec s2" open><summary>📦 معلومات المنتج</summary>' + kv("اسم المنتج", E(i.desc)) + kv("الكمية", i.qty || 1) + '</details><details class="sec s3"><summary>💳 معلومات الدفع</summary>' + kv("السعر الإجمالي", F(i.total)) + kv("المقدمة", F(i.down)) + kv("مبلغ القسط", F(l.m)) + kv("نوع القسط", i.freq === "w" ? "أسبوعي" : i.freq === "d" ? "يومي" : "شهري") + kv("عدد الأقساط", i.months) + kv("المدفوع", F(l.p), "ok") + kv("المتبقي", F(l.rem), l.rem ? "bad" : "ok") + kv("المتأخر", F(l.L), l.L ? "bad" : "") + kv("الربح المحقق", F(profitOf(i))) + '</details><details class="sec s4" id="pl"><summary>🕘 سجل المدفوعات</summary>' + (ps.length ? ps.map((p) => kv(p.date + " · " + E(p.note || ""), F(p.amt) + ` <button class="btn sm red" onclick="del('pays','` + p.id + `','التسديد')">حذف</button>`, "ok")).join("") : '<div class="mut">لا توجد مدفوعات</div>') + '</details><div class="bt"><a style="background:linear-gradient(135deg,#2563eb,#1d4ed8)" target="_blank" rel="noopener" ' + (ph ? 'href="https://wa.me/' + ph + "?text=" + encodeURIComponent(msgOf(x)) + '"' : `onclick="alert('أضف رقم هاتف العميل')"`) + ">" + WA + ` إرسال تذكير</a><button style="background:#16a34a" onclick="payInst('` + i.id + `')">💳 تسديد قسط</button></div>`;
+  return `<div class="tb"><button onclick="backInst()">➡️</button><button onclick="var d=document.getElementById('pl');d.open=true;d.scrollIntoView()">🕘</button><button onclick="editInst('` + i.id + `')">✏️</button><button onclick="print()">🖨️</button><button onclick="copyInst('` + i.id + `')">📄</button><button style="margin-right:auto" onclick="del('inst','` + i.id + `','القسط')">🗑️</button></div><div class="hd"><div><b style="font-size:17px">` + E(c.name || "—") + " (" + (i.no || "—") + ')</b><div style="font-size:13px;opacity:.75">' + E(i.desc) + '</div></div><span class="pill">' + st + '</span></div><details class="sec s1" open><summary>👤 معلومات الزبون</summary>' + kv("الهاتف", c.phone ? `<a onclick="callPh('` + ph + `')" style="cursor:pointer">` + phH(c.phone) + " 📞</a>" : "—") + (i.guar ? kv("الكفيل", E(i.guar)) : "") + kv("تاريخ الإنشاء", (i.created || i.start).replace(/-/g, "/")) + '</details><details class="sec s2" open><summary>📦 معلومات المنتج</summary>' + kv("اسم المنتج", E(i.desc)) + kv("الكمية", i.qty || 1) + '</details><details class="sec s3"><summary>💳 معلومات الدفع</summary>' + kv("السعر الإجمالي", F(i.total)) + kv("المقدمة", F(i.down)) + kv("مبلغ القسط", F(l.m)) + kv("نوع القسط", i.freq === "w" ? "أسبوعي" : i.freq === "d" ? "يومي" : "شهري") + kv("عدد الأقساط", i.months) + kv("المدفوع", F(l.p), "ok") + kv("المتبقي", F(l.rem), l.rem ? "bad" : "ok") + kv("المتأخر", F(l.L), l.L ? "bad" : "") + kv("الربح المحقق", F(profitOf(i))) + '</details><details class="sec s4" id="pl"><summary>🕘 سجل المدفوعات</summary>' + (ps.length ? ps.map((p) => kv(p.date + " · " + E(p.note || ""), F(p.amt) + ` <button class="btn sm red" onclick="del('pays','` + p.id + `','التسديد')">حذف</button>`, "ok")).join("") : '<div class="mut">لا توجد مدفوعات</div>') + '</details><div class="bt"><a style="background:linear-gradient(135deg,#2563eb,#1d4ed8)" target="_blank" rel="noopener" ' + (ph ? 'href="https://wa.me/' + ph + "?text=" + encodeURIComponent(msgOf(x)) + '"' : `onclick="alert('أضف رقم هاتف العميل')"`) + ">" + WA + ` إرسال تذكير</a><button style="background:#16a34a" onclick="payInst('` + i.id + `')">💳 تسديد قسط</button></div>`;
 };
 let curD = null;
 function openDebt(id) {
@@ -4196,8 +4449,9 @@ function editDebt(id) {
       alert("المبلغ أقل من المسدد");
       return false;
     }
+    const old0 = JSON.parse(JSON.stringify(d));
     Object.assign(d, { cust: x.cust, type: x.type, name: c ? c.name : x.name, phone: c ? c.phone : x.phone, prod: x.prod, note: "", qty: +x.qty || 1, amount: +x.amount, date: x.date });
-    actAdd("d", gk(d), "تعديل دين", (c ? c.name : x.name) + " · " + F(x.amount) + " د.ع");
+    actAdd("d", gk(d), "تعديل دين", (c ? c.name : x.name) + " · " + F(x.amount) + " د.ع", { t: "dedit", id: d.id, old: old0 });
     LOG("تعديل دين: " + (c ? c.name : x.name), lgDebtG(gk(d), d.name));
   });
 }
@@ -4233,7 +4487,7 @@ V.debts = function() {
     return actTs("d", gk(y[0])) - actTs("d", gk(x[0])) || dx - dy || S.debts.indexOf(y[y.length - 1]) - S.debts.indexOf(x[x.length - 1]);
   }).map((a) => {
     const c = S.cust.find((k) => k.id === a[0].cust), nmx = c ? c.name : a[0].name, ph = c ? c.phone : a[0].phone, t = sum(a, "amount"), p = sum(a, "paid"), rIn = a.filter((x) => x.type === "in").reduce((s, x) => s + x.amount - x.paid, 0), rOut = a.filter((x) => x.type === "out").reduce((s, x) => s + x.amount - x.paid, 0), r = t - p, id = a[0].id;
-    return actWrap(card(E(nmx), a.length + " دين" + (ph ? " · " + E(ph) : "") + " · الكلي " + F(t) + " · مسدد " + F(p), '<span class="' + (rOut > rIn ? "bad" : "ok") + '">' + F(r) + "</span>", (r > 0 ? `<button class="btn sm grn" onclick="payPerson('` + id + `')">تسديد</button>` : '<span class="tag g">مسدد</span>') + (rIn > 0 ? waDebt(id) : "") + `<button class="btn sm" style="background:#f0931b;color:#fff;box-shadow:0 4px 10px rgba(240,147,27,.35)" onclick="addDebtFor('` + id + `')">＋ دين</button><button class="btn sm" style="background:#0d9488" onclick="debtPays('` + id + `')">🕘 التسديدات</button>`, bar(t ? p / t * 100 : 0), "openDebt('" + id + "')", "dy" + (r <= 0 ? " dn" : "")), "d", gk(a[0]));
+    return actWrap(card(E(nmx), a.length + " دين" + (ph ? " · " + phH(ph) : "") + " · الكلي " + F(t) + " · مسدد " + F(p), '<span class="' + (rOut > rIn ? "bad" : "ok") + '">' + F(r) + "</span>", (r > 0 ? `<button class="btn sm grn" onclick="payPerson('` + id + `')">تسديد</button>` : '<span class="tag g">مسدد</span>') + (rIn > 0 ? waDebt(id) : "") + `<button class="btn sm" style="background:#f0931b;color:#fff;box-shadow:0 4px 10px rgba(240,147,27,.35)" onclick="addDebtFor('` + id + `')">＋ دين</button><button class="btn sm" style="background:#0d9488" onclick="debtPays('` + id + `')">🕘 التسديدات</button>`, bar(t ? p / t * 100 : 0), "openDebt('" + id + "')", "dy" + (r <= 0 ? " dn" : "")), "d", gk(a[0]));
   });
   return head("الديون", "addDebt") + (rows.length ? rows.join("") : empty("لا توجد ديون"));
 };
@@ -4251,7 +4505,7 @@ V.ddetail = function() {
     const rr = x.amount - x.paid;
     return card(E(x.prod || x.note || "دين") + ' <span class="tag">' + (x.type === "in" ? "لي" : "عليّ") + "</span>", x.date.split("-").reverse().join("/") + " · الكلي " + F(x.amount) + " · المسدد " + F(x.paid), (x.note ? `<button class="nt" onclick="event.stopPropagation();showNote('` + x.id + `')" aria-label="ملاحظة">!</button>` : "") + '<span class="' + (x.type === "in" ? "ok" : "bad") + '">' + F(rr) + "</span>", (rr > 0 ? `<button class="btn sm grn" onclick="payDebt('` + x.id + `')">تسديد</button>` : '<span class="tag g">مسدد</span>') + `<button class="btn sm" onclick="editDebt('` + x.id + `')">✏️ تعديل</button><button class="btn sm" style="background:#0d9488" onclick="debtPays('` + x.id + `',1)">🕘 التسديدات</button>` + dbtn("debts", x.id, "الدين"), bar(x.amount ? x.paid / x.amount * 100 : 0), "", rr <= 0 ? "dn" : "");
   }).join("");
-  return `<div class="tb" style="align-items:center"><button onclick="navBack('debts')">➡️</button><b style="flex:1;padding:0 8px">` + E(name) + `</b><button onclick="print()">🖨️</button><button onclick="editGrp('` + d0.id + `')" aria-label="تعديل">✏️</button><button onclick="delPerson('` + d0.id + `')" aria-label="حذف">🗑️</button>` + (rIn > 0 ? waDebt(d0.id, 1) : "") + `<button onclick="copyPerson('` + d0.id + `')">📋</button><button onclick="debtPays('` + d0.id + `')" aria-label="التسديدات">🕘</button></div>` + bn + '<div class="sm3"><div class="c"><span>👛</span><div class="mut">الدين الكلي</div><b style="color:#2563eb">' + F(t) + '</b></div><div class="c"><span>💵</span><div class="mut">المسدد</div><b class="ok">' + F(p) + '</b></div><div class="c"><span>💲</span><div class="mut">الباقي</div><b style="color:#f59e0b">' + F(r) + '</b></div></div><div class="dcard">' + kv("الاسم", E(name)) + kv("رقم الهاتف", phone ? `<a onclick="callPh('` + normPh(phone) + `')" style="cursor:pointer">` + E(phone) + " 📞</a>" : "—") + kv("عدد الديون", arr.length) + kv("مدة أقدم دين", dy + " أيام و " + hr + " ساعة و " + mn + " دقيقة") + '</div><h2 style="margin-top:16px">قائمة ديون ' + E(name) + "</h2>" + list + `<div class="bt"><button style="background:#f0931b" onclick="addDebtFor('` + d0.id + `')">➕<br>إضافة دين</button><button style="background:#5cb85c" onclick="payPerson('` + d0.id + `')">🧾<br>تسديد</button></div>`;
+  return `<div class="tb" style="align-items:center"><button onclick="navBack('debts')">➡️</button><b style="flex:1;padding:0 8px">` + E(name) + `</b><button onclick="print()">🖨️</button><button onclick="editGrp('` + d0.id + `')" aria-label="تعديل">✏️</button><button onclick="delPerson('` + d0.id + `')" aria-label="حذف">🗑️</button>` + (rIn > 0 ? waDebt(d0.id, 1) : "") + `<button onclick="copyPerson('` + d0.id + `')">📋</button><button onclick="debtPays('` + d0.id + `')" aria-label="التسديدات">🕘</button></div>` + bn + '<div class="sm3"><div class="c"><span>👛</span><div class="mut">الدين الكلي</div><b style="color:#2563eb">' + F(t) + '</b></div><div class="c"><span>💵</span><div class="mut">المسدد</div><b class="ok">' + F(p) + '</b></div><div class="c"><span>💲</span><div class="mut">الباقي</div><b style="color:#f59e0b">' + F(r) + '</b></div></div><div class="dcard">' + kv("الاسم", E(name)) + kv("رقم الهاتف", phone ? `<a onclick="callPh('` + normPh(phone) + `')" style="cursor:pointer">` + phH(phone) + " 📞</a>" : "—") + kv("عدد الديون", arr.length) + kv("مدة أقدم دين", dy + " أيام و " + hr + " ساعة و " + mn + " دقيقة") + '</div><h2 style="margin-top:16px">قائمة ديون ' + E(name) + "</h2>" + list + `<div class="bt"><button style="background:#f0931b" onclick="addDebtFor('` + d0.id + `')">➕<br>إضافة دين</button><button style="background:#5cb85c" onclick="payPerson('` + d0.id + `')">🧾<br>تسديد</button></div>`;
 };
 function addDebtFor(id) {
   const a0 = S.debts.find((x) => x.id === id), a = grp(gk(a0)), rem = a.reduce((s, x) => s + x.amount - x.paid, 0), ip = "background:#fff;color:#0f172a;margin:0 0 12px";
@@ -4267,8 +4521,9 @@ function addDebtFor(id) {
   m.querySelector("form").onsubmit = (e) => {
     e.preventDefault();
     const d = Object.fromEntries(new FormData(e.target));
-    S.debts.push({ id: uid(), cust: a0.cust, type: a0.type, name: a0.name, phone: a0.phone, amount: +d.amount, paid: 0, date: d.date, note: "", prod: d.prod, qty: 1, ts: d.date === today() ? Date.now() : new Date(d.date).getTime() });
-    actAdd("d", gk(a0), "إضافة دين", F(d.amount) + " د.ع" + (d.prod ? " — " + d.prod : ""));
+    const nid = uid();
+    S.debts.push({ id: nid, cust: a0.cust, type: a0.type, name: a0.name, phone: a0.phone, amount: +d.amount, paid: 0, date: d.date, note: "", prod: d.prod, qty: 1, ts: d.date === today() ? Date.now() : new Date(d.date).getTime() });
+    actAdd("d", gk(a0), "إضافة دين", F(d.amount) + " د.ع" + (d.prod ? " — " + d.prod : ""), { t: "dnew", id: nid });
     LOG("إضافة دين لـ " + a0.name + ": " + F(d.amount), lgDebtG(gk(a0), a0.name));
     save();
     m.remove();
@@ -4285,38 +4540,71 @@ function payDlg(a, name) {
     toast("لا توجد ديون مستحقة");
     return;
   }
-  const ip = "background:#fff;color:#0f172a;margin:0 0 12px", cs = a.map((x, i) => '<label class="pc" style="display:flex;align-items:center;gap:10px;background:#fff;border:2px solid transparent;border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer"><input type="radio" name="d" value="' + x.id + '"' + (i ? "" : " checked") + ' style="width:auto;margin:0"><div style="flex:1"><b>' + E(x.prod || x.note || "دين") + '</b> <span class="tag">' + (x.type === "in" ? "لي" : "عليّ") + '</span><div class="mut">' + x.date.split("-").reverse().join("/") + " · الكلي " + F(x.amount) + " · المسدد " + F(x.paid) + '</div></div><b style="color:#dc2626">' + F(x.amount - x.paid) + "</b></label>").join("");
+  const ip = "background:#fff;color:#0f172a;margin:0 0 12px", tyN = (t) => t === "in" ? "لي" : "عليّ", types = [...new Set(a.map((x) => x.type))], allOpts = types.map((t) => ({ t, v: "__all_" + t, list: a.filter((x) => x.type === t) })).filter((o) => o.list.length > 1), allH = allOpts.map((o) => {
+    const tot = o.list.reduce((s, x) => s + x.amount - x.paid, 0);
+    return '<label class="pc pcall" style="display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#ecfccb,#d9f99d);border:2px solid transparent;border-radius:14px;padding:12px;margin-bottom:10px;cursor:pointer"><input type="radio" name="d" value="' + o.v + '" style="width:auto;margin:0"><div style="flex:1"><b>تسديد كل الديون</b>' + (types.length > 1 ? ' <span class="tag">' + tyN(o.t) + "</span>" : "") + '<div class="mut">' + o.list.length + " ديون · يُوزَّع المبلغ على الأقدم أولاً</div></div><b style=\"color:#dc2626\">" + F(tot) + "</b></label>";
+  }).join(""), cs = a.map((x, i) => '<label class="pc" style="display:flex;align-items:center;gap:10px;background:#fff;border:2px solid transparent;border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer"><input type="radio" name="d" value="' + x.id + '"' + (i ? "" : " checked") + ' style="width:auto;margin:0"><div style="flex:1"><b>' + E(x.prod || x.note || "دين") + '</b> <span class="tag">' + (x.type === "in" ? "لي" : "عليّ") + '</span><div class="mut">' + x.date.split("-").reverse().join("/") + " · الكلي " + F(x.amount) + " · المسدد " + F(x.paid) + '</div></div><b style="color:#dc2626">' + F(x.amount - x.paid) + "</b></label>").join("");
   const m = document.createElement("div");
   m.className = "ov";
   m.style.alignItems = "center";
-  m.innerHTML = '<form class="md" style="padding:0;border-radius:22px;max-width:380px;width:92%;overflow:auto;max-height:90vh;background:#f1f8ec;color:#0f172a"><div style="background:#6cc644;color:#fff;padding:18px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:18px"><span>تسديد دين · ' + E(name) + '</span><span id="x" style="cursor:pointer;font-size:22px">✕</span></div><div style="padding:16px"><div style="font-weight:700;margin-bottom:8px">اختر الدين المراد تسديده</div>' + cs + '<div style="background:#fff;border-radius:16px;padding:14px;text-align:center;margin:12px 0"><div class="mut">الدين المستحق</div><b id="rm" style="font-size:30px;color:#dc2626"></b></div><input name="amount" type="number" step="any" min="1" required placeholder="💳 المبلغ المراد تسديده" style="' + ip + '"><input name="date" type="date" value="' + today() + '" required style="' + ip + '"><button class="btn" style="width:100%;background:#6cc644;padding:14px;font-weight:700;border-radius:14px">تسديد</button></div></form>';
+  m.innerHTML = '<form class="md" style="padding:0;border-radius:22px;max-width:380px;width:92%;overflow:auto;max-height:90vh;background:#f1f8ec;color:#0f172a"><div style="background:#6cc644;color:#fff;padding:18px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:18px"><span>تسديد دين · ' + E(name) + '</span><span id="x" style="cursor:pointer;font-size:22px">✕</span></div><div style="padding:16px"><div style="font-weight:700;margin-bottom:8px">اختر الدين المراد تسديده</div>' + allH + cs + '<div style="background:#fff;border-radius:16px;padding:14px;text-align:center;margin:12px 0"><div class="mut">الدين المستحق</div><b id="rm" style="font-size:30px;color:#dc2626"></b></div><input name="amount" type="number" step="any" min="1" required placeholder="💳 المبلغ المراد تسديده" style="' + ip + '"><input name="date" type="date" value="' + today() + '" required style="' + ip + '"><button class="btn" style="width:100%;background:#6cc644;padding:14px;font-weight:700;border-radius:14px">تسديد</button></div></form>';
   document.body.appendChild(m);
   m.querySelector("#x").onclick = () => m.remove();
   m.onclick = (e) => {
     if (e.target === m) m.remove();
   };
-  const f = m.querySelector("form"), cur2 = () => a.find((x) => x.id === f.d.value), sync = () => {
-    const r = cur2().amount - cur2().paid;
+  const f = m.querySelector("form"), isAll = () => String(f.d.value).startsWith("__all_"), allList = () => a.filter((x) => x.type === f.d.value.slice(6)), cur2 = () => a.find((x) => x.id === f.d.value), remOf = () => isAll() ? allList().reduce((s, x) => s + x.amount - x.paid, 0) : cur2().amount - cur2().paid, sync = (ch) => {
+    const r = remOf();
     f.querySelectorAll(".pc").forEach((l) => {
       l.style.borderColor = l.querySelector("input").checked ? "#6cc644" : "transparent";
     });
     f.amount.max = r;
     f.querySelector("#rm").textContent = F(r);
+    if (ch) f.amount.value = isAll() ? r : "";
   };
   f.addEventListener("change", (e) => {
-    if (e.target.name === "d") sync();
+    if (e.target.name === "d") sync(true);
   });
   sync();
   f.onsubmit = (e) => {
     e.preventDefault();
-    const d = Object.fromEntries(new FormData(f)), x = cur2(), t = Math.min(+d.amount, x.amount - x.paid);
+    const d = Object.fromEntries(new FormData(f));
+    if (isAll()) {
+      const L = allList(), tot = L.reduce((s, x) => s + x.amount - x.paid, 0), t = Math.min(+d.amount, tot);
+      if (!(t > 0)) {
+        toast("أدخل مبلغاً صحيحاً");
+        return;
+      }
+      let left = t;
+      const touched = [], undoItems = [], before = L.reduce((s, x) => s + x.paid, 0);
+      L.forEach((x) => {
+        if (left <= 0) return;
+        const q = Math.min(left, x.amount - x.paid);
+        if (!(q > 0)) return;
+        x.paid += q;
+        left -= q;
+        (x.pl = x.pl || []).push({ date: d.date, amt: q, note: d.note || "تسديد شامل" });
+        touched.push(x);
+        undoItems.push({ id: x.id, amt: q, date: d.date });
+      });
+      const names = touched.map((x) => x.prod || x.note || "دين").join("، ");
+      actAdd("d", gk(touched[0]), "تسديد دين", F(t) + " د.ع — " + names, { t: "dpay", items: undoItems });
+      LOG("تسديد دين " + name + " (كل الديون: " + names + "): " + F(t), lgDebtG(gk(touched[0]), touched[0].name));
+      save();
+      m.remove();
+      render();
+      const f0 = L[0], totAll = L.reduce((s, x) => s + x.amount, 0), rem = Math.max(0, tot - t), c = S.cust.find((q) => q.id === f0.cust), nm = c ? c.name : f0.name, ph = c ? c.phone : f0.phone, no = "D" + String(S.debts.indexOf(f0) + 1).padStart(3, "0") + "-ALL", ps = { date: d.date, amt: t }, ax = { type: f0.type, amount: totAll, prod: L.map((x) => x.prod || x.note || "دين").join("، ") }, cfg = () => debtRcptCfg(ax, nm, ps, before, rem, no);
+      setTimeout(() => rcptDlg({ title: "تم تسديد الدين", sub: E(nm || "") + " · المتبقي " + F(rem) + " د.ع", label: "إرسال وصل تسديد", alt: "وصل تسديد دين", fn: "debt-receipt-" + no + ".png", pl: "وصل تسديد دين", ph: normPh(ph), msg: rcptTxt(cfg()), msgL: rcptLinkMsg(cfg()), draw: (pl) => rcptRender(cfg(), pl) }), 50);
+      return;
+    }
+    const x = cur2(), t = Math.min(+d.amount, x.amount - x.paid);
     if (!(t > 0)) {
       toast("أدخل مبلغاً صحيحاً");
       return;
     }
     x.paid += t;
     (x.pl = x.pl || []).push({ date: d.date, amt: t, note: d.note });
-    actAdd("d", gk(x), "تسديد دين", F(t) + " د.ع" + (x.prod ? " — " + x.prod : ""));
+    actAdd("d", gk(x), "تسديد دين", F(t) + " د.ع" + (x.prod ? " — " + x.prod : ""), { t: "dpay", items: [{ id: x.id, amt: t, date: d.date }] });
     LOG("تسديد دين " + name + " (" + (x.prod || x.note || "دين") + "): " + F(t) + (d.note ? " - " + d.note : ""), lgDebtG(gk(x), x.name));
     save();
     m.remove();
@@ -4330,7 +4618,7 @@ function waInst(i) {
 }
 function msgDebt(a0) {
   const a = grp(gk(a0)).filter((x) => x.type === "in"), c = S.cust.find((k) => k.id === a0.cust), t = sum(a, "amount"), p = sum(a, "paid");
-  return "السلام عليكم\n\nتحية طيبة *" + (c ? c.name : a0.name) + "*\nتذكير بخصوص الدين\n\n▫️ المبلغ الإجمالي: " + F(t) + " د.ع\n▫️ المبلغ المدفوع: " + F(p) + " د.ع\n▫️ المبلغ المتبقي: " + F(t - p) + " د.ع\n\n⏰ نرجو منكم التكرم بتسديد المبلغ";
+  return "السلام عليكم\n\nتحية طيبة  " + (c ? c.name : a0.name) + "\n\nالمبلغ المتبقي: " + F(t - p) + " د.ع\n\n⏰ نرجو منكم التكرم بتسديد الدين";
 }
 function waDebt(id, tb) {
   const a0 = S.debts.find((x) => x.id === id), c = S.cust.find((k) => k.id === a0.cust), ph = normPh(c ? c.phone : a0.phone), txt = tb ? WA : WA + " تذكير";
@@ -4802,8 +5090,9 @@ function payInstDlg(id) {
       toast("أدخل مبلغاً صحيحاً");
       return;
     }
-    S.pays.push({ id: uid(), inst: id, amt, date: today(), note: "قسط" });
-    actAdd("i", i.cust || "n:" + i.id, "تسديد قسط", F(amt) + " د.ع — " + i.desc);
+    const pid = uid();
+    S.pays.push({ id: pid, inst: id, amt, date: today(), note: "قسط" });
+    actAdd("i", i.cust || "n:" + i.id, "تسديد قسط", F(amt) + " د.ع — " + i.desc, { t: "ipay", id: pid });
     LOG("تسديد " + F(amt) + " - " + i.desc, lgInst(i));
     save();
     m.remove();
@@ -4929,7 +5218,7 @@ V.settings = function() {
 V.home = function() {
   const L = lateList(), d = /* @__PURE__ */ new Date(), ds = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear(), rec = S.inst.reduce((a, i) => a + late(i).rem, 0), dc = new Set(S.debts.map(gk)).size, dRem = S.debts.reduce((a, x) => a + (x.type === "in" ? x.amount - x.paid : 0), 0);
   const big = (k, ic, t, l1, l2, c, b) => '<div class="bigc" style="--c:' + c + `" onclick="go('` + k + `')">` + (b ? '<em class="bg">' + b + "</em>" : "") + ico(k, "l") + "<div><b>" + t + "</b><div>" + l1 + "</div><small>" + l2 + "</small></div></div>";
-  return adBar() + '<div class="db"><div class="dh"><div style="display:flex;gap:10px;align-items:center"><span class="hlogo' + (window.__hlp ? "" : " f") + '" style="--d:' + (document.getElementById("spl") ? "4.4s" : "0s") + '">' + HLOGO + "</span><div><b>" + E(S.office || "اكتب اسم مكتبك من الإعدادات") + '</b><div style="font-size:12px;opacity:.85">' + ds + ' 📅</div></div></div><span style="display:flex;gap:8px;align-items:center"><button class="nfh nfhh" onclick="go(\'notif\')" aria-label="الإشعارات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg><em class="nfb" hidden></em></button><span class="live" dir="ltr">v' + APP_VER + '</span></span></div><div id="subc" class="subc" hidden></div><div class="tg1">' + big("inst", "👥", "الأقساط", S.inst.length + " قسط", "المتبقي " + F(rec) + " د.ع", "#0284c7", L.length ? "متأخر " + L.length : "") + big("debts", "🤝", "الديون", dc + " عميل", "المتبقي لك " + F(dRem) + " د.ع", "#0e7490", "") + big("log", "📜", "سجل العمليات", S.log.length + " عملية", lgHomeLine(), "#d97706", lgTodayCount() ? "اليوم " + lgTodayCount() : "") + "</div></div>";
+  return adBar() + '<div class="db"><div class="dh"><div style="display:flex;gap:10px;align-items:center"><span class="hlogo' + (window.__hlp ? "" : " f") + '" style="--d:' + (document.getElementById("spl") ? "4.4s" : "0s") + '">' + HLOGO + "</span><div><b>" + E(S.office || "اكتب اسم مكتبك من الإعدادات") + '</b><div style="font-size:12px;opacity:.85">' + ds + ' 📅</div></div></div><span style="display:flex;gap:8px;align-items:center"><button class="nfh nfhh" onclick="go(\'notif\')" aria-label="الإشعارات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg><em class="nfb" hidden></em></button><span class="live" dir="ltr">v' + APP_VER + '</span></span></div><div id="subc" class="subc" hidden></div><div class="tg1">' + big("inst", "👥", "الأقساط", S.inst.length + " قسط", "المتبقي " + F(rec) + " د.ع", "#0284c7", L.length ? "متأخر " + L.length : "") + big("debts", "🤝", "الديون", dc + " عميل", "المتبقي لك " + F(dRem) + " د.ع", "#0e7490", "") + big("stats", "📊", "الإحصائيات", srData().pct + "% نسبة الإنجاز", "المستحق " + F(srData().target) + " د.ع", "#2563eb", "") + "</div></div>";
 };
 let qI = "", qD = "";
 const oldInst = () => '<h2 class="hx"></h2>' + instList(), oldDebts = V.debts;
@@ -5093,7 +5382,7 @@ function lgDelInfo(c, id) {
   if (c === "exps") return { x: "حذف مصروف: " + o.title + " " + F(o.amt), d: [D("البند", o.title), D("المبلغ", money(o.amt)), D("التاريخ", fd(o.date))] };
   if (c === "items") return { x: "حذف صنف: " + o.name, d: [D("الكمية", o.qty), D("سعر الشراء", money(o.cost)), D("سعر البيع", money(o.price))] };
   if (c === "emp") return { x: "حذف موظف: " + o.name, d: [D("الوظيفة", o.role), D("الراتب", money(o.sal))] };
-  if (c === "cust") return { x: "حذف عميل: " + o.name, d: [D("الهاتف", o.phone)] };
+  if (c === "cust") return { x: "حذف عميل: " + o.name, d: [D("الهاتف", o.phone ? "\u2066" + fmtPh(o.phone) + "\u2069" : o.phone)] };
   return null;
 }
 // للسجلات القديمة (بلا لقطة): استنتاج العميل من النص والقيم الحالية
@@ -5236,6 +5525,7 @@ function fmtPh(p) {
   d = d.slice(0, 15);
   return d.length <= 4 ? d : d.slice(0, 4) + " " + d.slice(4, 7) + (d.length > 7 ? " " + d.slice(7) : "");
 }
+const phH = (p) => { const v = fmtPh(p); return v ? '<bdi dir="ltr" style="unicode-bidi:isolate;white-space:nowrap">' + E(v) + "</bdi>" : ""; };
 const PH_SEL = "input[name=phone],input[name=cphone]";
 function phSetup(x) {
   if (x._ph) return;
@@ -5371,7 +5661,7 @@ function addInst(ex, pre) {
   const cdraw = () => {
     const q = nrm(cq.value), sc = (x) => String(x.inf.no) === q ? 0 : nrm(x.c.name).startsWith(q) ? 1 : 2;
     const a = S.cust.map((c) => ({ c, inf: cinfo(c.id) })).filter((x) => !q || nrm([x.c.name, x.c.phone, x.inf.gu, x.inf.no].join(" ")).includes(q)).sort((x, y) => sc(x) - sc(y)).slice(0, 40);
-    cr.innerHTML = a.length ? a.map((x) => "<button type='button' data-id='" + x.c.id + "'><span class='ca'>" + E((x.c.name || "?").trim().charAt(0)) + "</span><span style='flex:1;min-width:0'><div class='cn'>" + E(x.c.name) + "</div><div class='cs'>" + [x.c.phone ? "📞 " + E(x.c.phone) : "", x.inf.no ? "رقم السجل " + x.inf.no : "", x.inf.gu ? "الكفيل " + E(x.inf.gu) : ""].filter(Boolean).join(" · ") + "</div></span></button>").join("") : "<div class='ce'>لا يوجد عميل مطابق</div>";
+    cr.innerHTML = a.length ? a.map((x) => "<button type='button' data-id='" + x.c.id + "'><span class='ca'>" + E((x.c.name || "?").trim().charAt(0)) + "</span><span style='flex:1;min-width:0'><div class='cn'>" + E(x.c.name) + "</div><div class='cs'>" + [x.c.phone ? "📞 " + phH(x.c.phone) : "", x.inf.no ? "رقم السجل " + x.inf.no : "", x.inf.gu ? "الكفيل " + E(x.inf.gu) : ""].filter(Boolean).join(" · ") + "</div></span></button>").join("") : "<div class='ce'>لا يوجد عميل مطابق</div>";
     cr.style.display = "";
   };
   const cpick = (id, quiet) => {
@@ -5541,6 +5831,7 @@ function addInst(ex, pre) {
     if (it && !ex) it.qty -= qty;
     const rem = total - down, i = { id: uid(), no: noV, qty, created: today(), cust: cid, desc, total, cost, down, mon, months: cash || mon <= 0 || rem <= 0 ? 1 : Math.max(1, Math.ceil(rem / mon)), start: d.date, freq: fr, guar: (d.guar || "").trim() };
     if (ex) {
+      const oldI = JSON.parse(JSON.stringify(ex)), oldP = JSON.parse(JSON.stringify(S.pays.filter((p) => p.inst === ex.id))), oldQ = it ? { id: it.id, qty: it.qty } : null;
       Object.assign(ex, { no: i.no, qty, cust: cid, desc, total, cost, down, mon, months: i.months, start: d.date, freq: fr, guar: i.guar });
       const dp = S.pays.find((p) => p.inst === ex.id && (p.note === "دفعة أولى" || p.note === "بيع نقدي")), nt = cash ? "بيع نقدي" : "دفعة أولى";
       if (down > 0) {
@@ -5550,7 +5841,7 @@ function addInst(ex, pre) {
           dp.note = nt;
         } else S.pays.push({ id: uid(), inst: ex.id, amt: down, date: d.date, note: nt });
       } else if (dp) S.pays = S.pays.filter((p) => p !== dp);
-      actAdd("i", ex.cust || "n:" + ex.id, "تعديل قسط", desc);
+      actAdd("i", ex.cust || "n:" + ex.id, "تعديل قسط", desc, { t: "iedit", id: ex.id, old: oldI, pays: oldP, item: null });
       LOG("تعديل القسط: " + desc, lgInst(ex));
       save();
       o.remove();
@@ -5559,7 +5850,7 @@ function addInst(ex, pre) {
     }
     S.inst.push(i);
     if (down > 0) S.pays.push({ id: uid(), inst: i.id, amt: down, date: d.date, note: cash ? "بيع نقدي" : "دفعة أولى" });
-    actAdd("i", i.cust || "n:" + i.id, "قسط جديد", desc + " · " + F(total) + " د.ع");
+    actAdd("i", i.cust || "n:" + i.id, "قسط جديد", desc + " · " + F(total) + " د.ع", { t: "inew", id: i.id, item: it ? { id: it.id, qty } : null });
     LOG("قسط جديد: " + desc + " للعميل " + nm(S.cust, cid), lgInst(i));
     save();
     o.remove();
@@ -5711,7 +6002,7 @@ addEventListener("appinstalled", () => {
   window.__bip = null;
   refreshInstall();
 });
-const APP_URL = "https://A-makls.github.io/aksat/", APP_MSG = "جرّب تطبيق «أقساطي وديوني» لإدارة الأقساط والديون والعملاء بسهولة، ويعمل بدون إنترنت.";
+const APP_URL = "https://aqsat.makls.workers.dev/", APP_MSG = "جرّب تطبيق «أقساطي وديوني» لإدارة الأقساط والديون والعملاء بسهولة، ويعمل بدون إنترنت.";
 function shareCard() {
   SI.share = SI.share || '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/>';
   SHC.share = SHC.share || ["#f472b6", "#db2777"];
@@ -5801,7 +6092,7 @@ function debtForm(pre) {
   const cdraw = () => {
     const q = nrm(cq.value);
     const a = S.cust.filter((c) => !q || nrm(c.name + " " + (c.phone || "")).includes(q)).sort((x, y) => (nrm(x.name).startsWith(q) ? 0 : 1) - (nrm(y.name).startsWith(q) ? 0 : 1)).slice(0, 40);
-    cr.innerHTML = a.length ? a.map((c) => "<button type='button' data-id='" + c.id + "'><span class='ca'>" + E((c.name || "?").trim().charAt(0)) + "</span><span style='flex:1;min-width:0'><div class='cn'>" + E(c.name) + "</div><div class='cs'>" + (c.phone ? "📞 " + E(c.phone) : "") + "</div></span></button>").join("") : "<div class='ce'>لا يوجد عميل مطابق</div>";
+    cr.innerHTML = a.length ? a.map((c) => "<button type='button' data-id='" + c.id + "'><span class='ca'>" + E((c.name || "?").trim().charAt(0)) + "</span><span style='flex:1;min-width:0'><div class='cn'>" + E(c.name) + "</div><div class='cs'>" + (c.phone ? "📞 " + phH(c.phone) : "") + "</div></span></button>").join("") : "<div class='ce'>لا يوجد عميل مطابق</div>";
     cr.style.display = "";
   };
   const cunset = () => {
@@ -5908,7 +6199,7 @@ function debtForm(pre) {
     const x = { id: uid(), cust: cid, type: fr, name, phone, amount, paid, date: d.date, note: (d.note || "").trim(), prod: (d.prod || "").trim(), qty, ts: d.date === today() ? Date.now() : new Date(d.date).getTime() };
     if (paid > 0) x.pl = [{ date: d.date, amt: paid, note: "دفعة مسبقة" }];
     S.debts.push(x);
-    actAdd("d", gk(x), "دين جديد", name + " · " + F(amount) + " د.ع");
+    actAdd("d", gk(x), "دين جديد", name + " · " + F(amount) + " د.ع", { t: "dnew", id: x.id });
     LOG("دين جديد: " + name + " " + F(amount), lgDebtG(gk(x), name));
     save();
     o.remove();
@@ -6107,8 +6398,8 @@ function gStat(a) {
   return { t: sum(a, "total"), p: ls.reduce((s, x) => s + x.p, 0), r: ls.reduce((s, x) => s + x.rem, 0), L: ls.reduce((s, x) => s + (x.rem > 0 ? x.L : 0), 0), n: ls.filter((x) => x.L > 0 && x.rem > 0).length, no: [...new Set(a.map((i) => i.no).filter(Boolean))] };
 }
 function msgGrp(id) {
-  const c = S.cust.find((k) => k.id === id) || {}, a = gInsts(id), s = gStat(a);
-  return "السلام عليكم\n\nتحية طيبة *" + (c.name || "") + (s.no.length === 1 ? " (" + s.no[0] + ")" : "") + "*\n\n" + a.map((i) => ({ i, ...late(i) })).filter((x) => x.rem > 0).map((x) => "(" + x.i.desc + ")\n▫️ المبلغ الإجمالي: " + F(x.i.total) + " د.ع\n▫️ المبلغ المدفوع: " + F(x.p) + " د.ع\n▫️ المبلغ المتبقي: " + F(x.rem) + " د.ع").join("\n\n") + "\n\n⏰ نرجو منكم التكرم بتسديد القسط";
+  const c = S.cust.find((k) => k.id === id) || {}, s = gStat(gInsts(id));
+  return "السلام عليكم\n\nتحية طيبة  " + (c.name || "") + "\n\nالمبلغ المتبقي: " + F(s.r) + " د.ع\n\n⏰ نرجو منكم التكرم بتسديد القسط";
 }
 function copyGrp(id) {
   copyText(msgGrp(id));
@@ -6126,7 +6417,7 @@ function backInst() {
 }
 function gCard(a) {
   const id = a[0].cust, c = S.cust.find((k) => k.id === id) || {}, ph = normPh(c.phone), s = gStat(a), done = s.r <= 0, lt = s.n > 0 && !done, pc = s.t ? Math.max(0, Math.min(100, s.p / s.t * 100)) : 0, wa = ph ? "https://wa.me/" + ph + "?text=" + encodeURIComponent(msgGrp(id)) : "", acts = '<div class="ia" onclick="event.stopPropagation()">' + (done ? "" : `<button class="ab pay" onclick="payGrp('` + id + `')">💳 تسديد</button>` + (ph ? '<a class="ab wa" target="_blank" rel="noopener" href="' + wa + '">' + WA + " تذكير</a>" : `<button class="ab wa" onclick="toast('أضف رقم هاتف العميل')">` + WA + " تذكير</button>")) + (ph ? `<button class="ab cl" onclick="callPh('` + ph + `')">📞 اتصال</button>` : `<button class="ab cl" onclick="toast('أضف رقم هاتف العميل')">📞 اتصال</button>`) + "</div>", bell = lt ? ph ? '<a class="bl" target="_blank" rel="noopener" href="' + wa + '" onclick="event.stopPropagation()">' + IC_BELL + "</a>" : `<button class="bl" onclick="event.stopPropagation();toast('أضف رقم هاتف العميل')">` + IC_BELL + "</button>" : "";
-  return '<div class="iw gp' + (lt ? " lt2" : "") + (done ? " dn2" : "") + `" onclick="openG('` + id + `')">` + (lt ? '<div class="al"><span class="ex">!</span>تنبيه: الزبون تجاوز اليوم المستحق لتسديد' + (s.n > 1 ? " (" + s.n + " أقساط)" : "") + "</div>" : "") + '<div class="ic2"><div class="ih"><div class="av2">' + IC_P + '</div><div class="it2"><b>' + E(c.name || "—") + (s.no.length === 1 ? " (" + s.no[0] + ")" : "") + "</b><span>" + IC_B + a.length + " أقساط</span></div>" + bell + '<span class="pl">' + (done ? "مكتمل ✓" : "نشط") + '</span></div><div class="ib"><div class="bx"><small>المبلغ الكلي</small><b>' + F(s.t) + ' د.ع</b></div><div class="bx"><small>المتبقي</small><b>' + F(s.r) + ' د.ع</b></div></div><div class="ip"><span>نسبة السداد</span><b>' + pc.toFixed(1) + '%</b></div><div class="pb"><i style="width:' + pc + "%;background-size:" + (pc > 0 ? 1e4 / pc : 100) + '% 100%"></i></div>' + acts + '</div><div class="gstk"></div></div>';
+  return '<div class="iw gp' + (lt ? " lt2" : "") + (done ? " dn2" : "") + `" onclick="openG('` + id + `')">` + (lt ? '<div class="al"><span class="ex">!</span>تنبيه: الزبون تجاوز اليوم المستحق لتسديد' + (s.n > 1 ? " (" + s.n + " أقساط)" : "") + "</div>" : "") + '<div class="ic2"><div class="ih"><div class="av2">' + IC_P + '</div><div class="it2"><b>' + E(c.name || "—") + (s.no.length === 1 ? " (" + s.no[0] + ")" : "") + "</b><span class=\"pnl\">" + a.map((i, n) => '<em class="pn' + (late(i).rem <= 0 ? " fin" : "") + '">🛍️ ' + (n + 1) + "-" + E(i.desc || "—") + "</em>").join("") + "</span></div>" + bell + '<span class="pl">' + (done ? "مكتمل ✓" : "نشط") + '</span></div><div class="ib"><div class="bx"><small>المبلغ الكلي</small><b>' + F(s.t) + ' د.ع</b></div><div class="bx"><small>المتبقي</small><b>' + F(s.r) + ' د.ع</b></div></div><div class="ip"><span>نسبة السداد</span><b>' + pc.toFixed(1) + '%</b></div><div class="pb"><i style="width:' + pc + "%;background-size:" + (pc > 0 ? 1e4 / pc : 100) + '% 100%"></i></div>' + acts + '</div><div class="gstk"></div></div>';
 }
 V.gdetail = function() {
   const a = gInsts(curG);
@@ -6135,7 +6426,7 @@ V.gdetail = function() {
     return V.inst();
   }
   const id = curG, c = S.cust.find((k) => k.id === id) || {}, ph = normPh(c.phone), name = c.name || "—", s = gStat(a), gu = [...new Set(a.map((i) => i.guar).filter(Boolean))], old = a.map((i) => i.start).filter(Boolean).sort()[0] || "", bn = s.r > 0 ? '<div class="dbn" style="background:' + (s.n ? "#ef4444" : "#4285dd") + '">المتبقي: ' + F(s.r) + " د.ع</div>" : '<div class="dbn" style="background:#5cb85c">مسدد بالكامل ✓</div>', list = a.map((i) => [i, S.inst.indexOf(i)]).sort((x, y) => (late(x[0]).rem <= 0) - (late(y[0]).rem <= 0) || y[1] - x[1]).map((x) => iCard(x[0], 1)).join(""), waB = ph ? '<a style="width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#25d366;text-decoration:none;font-size:19px;color:#fff" target="_blank" rel="noopener" href="https://wa.me/' + ph + "?text=" + encodeURIComponent(msgGrp(id)) + '">' + WA + "</a>" : `<button onclick="toast('أضف رقم هاتف العميل')">` + WA + "</button>";
-  return `<div class="tb" style="align-items:center"><button onclick="navBack('inst')">➡️</button><b style="flex:1;padding:0 8px">` + E(name) + `</b><button onclick="editCust('` + id + `')" aria-label="تعديل">✏️</button><button onclick="print()">🖨️</button>` + (s.r > 0 ? waB : "") + `<button onclick="copyGrp('` + id + `')">📋</button></div>` + bn + '<div class="sm3"><div class="c"><span>👛</span><div class="mut">المبلغ الكلي</div><b style="color:#2563eb">' + F(s.t) + '</b></div><div class="c"><span>💵</span><div class="mut">المدفوع</div><b class="ok">' + F(s.p) + '</b></div><div class="c"><span>💲</span><div class="mut">المتبقي</div><b style="color:#f59e0b">' + F(s.r) + '</b></div></div><div class="dcard">' + kv("الاسم", E(name)) + kv("رقم الهاتف", c.phone ? `<a onclick="callPh('` + ph + `')" style="cursor:pointer">` + E(c.phone) + " 📞</a>" : "—") + kv("رقم السجل", s.no.length ? E(s.no.join("، ")) : "—") + (gu.length ? kv("الكفيل", E(gu.join("، "))) : "") + kv("عدد الأقساط", a.length) + kv("المتأخر", F(s.L) + " د.ع", s.L ? "bad" : "") + kv("تاريخ أقدم قسط", old.split("-").reverse().join("/")) + '</div><h2 style="margin-top:16px">قائمة أقساط ' + E(name) + '</h2><div class="ilist">' + list + `</div><div class="bt"><button style="background:#4285dd" onclick="addInst(null,'` + id + `')">➕<br>إضافة قسط</button><button style="background:#5cb85c" onclick="payGrp('` + id + `')">🧾<br>تسديد</button></div>`;
+  return `<div class="tb" style="align-items:center"><button onclick="navBack('inst')">➡️</button><b style="flex:1;padding:0 8px">` + E(name) + `</b><button onclick="editCust('` + id + `')" aria-label="تعديل">✏️</button><button onclick="print()">🖨️</button>` + (s.r > 0 ? waB : "") + `<button onclick="copyGrp('` + id + `')">📋</button></div>` + bn + '<div class="sm3"><div class="c"><span>👛</span><div class="mut">المبلغ الكلي</div><b style="color:#2563eb">' + F(s.t) + '</b></div><div class="c"><span>💵</span><div class="mut">المدفوع</div><b class="ok">' + F(s.p) + '</b></div><div class="c"><span>💲</span><div class="mut">المتبقي</div><b style="color:#f59e0b">' + F(s.r) + '</b></div></div><div class="dcard">' + kv("الاسم", E(name)) + kv("رقم الهاتف", c.phone ? `<a onclick="callPh('` + ph + `')" style="cursor:pointer">` + phH(c.phone) + " 📞</a>" : "—") + kv("رقم السجل", s.no.length ? E(s.no.join("، ")) : "—") + (gu.length ? kv("الكفيل", E(gu.join("، "))) : "") + kv("عدد الأقساط", a.length) + kv("المتأخر", F(s.L) + " د.ع", s.L ? "bad" : "") + kv("تاريخ أقدم قسط", old.split("-").reverse().join("/")) + '</div><h2 style="margin-top:16px">قائمة أقساط ' + E(name) + '</h2><div class="ilist">' + list + `</div><div class="bt"><button style="background:#4285dd" onclick="addInst(null,'` + id + `')">➕<br>إضافة قسط</button><button style="background:#5cb85c" onclick="payGrp('` + id + `')">🧾<br>تسديد</button></div>`;
 };
 function payGrp(id) {
   const a = gInsts(id).filter((i) => late(i).rem > 0);
@@ -6174,8 +6465,9 @@ function payGrp(id) {
     e.preventDefault();
     const d = Object.fromEntries(new FormData(f)), i = cur(), amt = Math.min(+d.amount, late(i).rem);
     if (!(amt > 0)) return;
-    S.pays.push({ id: uid(), inst: i.id, amt, date: today(), note: "قسط" });
-    actAdd("i", i.cust || "n:" + i.id, "تسديد قسط", F(amt) + " د.ع — " + i.desc);
+    const pid = uid();
+    S.pays.push({ id: pid, inst: i.id, amt, date: today(), note: "قسط" });
+    actAdd("i", i.cust || "n:" + i.id, "تسديد قسط", F(amt) + " د.ع — " + i.desc, { t: "ipay", id: pid });
     LOG("تسديد " + F(amt) + " - " + i.desc, lgInst(i));
     save();
     m.remove();
@@ -6209,7 +6501,7 @@ function msgPurchase(x) {
   const c = S.cust.find((k) => k.id === x.i.cust) || {};
   return "السلام عليكم\n\nتحية طيبة  " + (c.name || "") + "\nتذكير بخصوص القسط\n\n▫️ المبلغ الإجمالي: " + F(x.i.total) + " د.ع\n▫️ المبلغ المدفوع: " + F(x.p) + " د.ع\n▫️ المبلغ المتبقي: " + F(x.rem) + " د.ع\n\nوصل شراء (" + x.i.desc + ") (" + (x.i.start || "").replace(/-/g, "/") + ")";
 }
-const APP_VER = "1.1";
+const APP_VER = "1.2";
 function officeCard() {
   const v = S.office || "", ic = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + SI.office + "</svg>";
   return scd("office", 0) + shd2("office", "اسم المكتب", "يظهر في الواجهة الرئيسية، وإذا تركته فارغاً تظهر عبارة «اكتب اسم مكتبك من الإعدادات»", v ? "اسم مخصّص" : "اسم افتراضي", "ofb") + '<div class="ofrow"><label class="ofin">' + ic + '<input id="ofn" placeholder="مثال: مكتب النور للأقساط" value="' + E(v) + '" oninput="ofPrev(this.value)"></label><button class="btn sbtn" onclick="saveOffice()">حفظ</button></div><div class="ofp"><small>معاينة</small><b id="ofp">' + E(v || "اكتب اسم مكتبك من الإعدادات") + "</b></div></div>";
@@ -6695,6 +6987,7 @@ function postRender() {
   const m = document.querySelector(".fm");
   if (m) m.remove();
   if (tab === "settings") setTimeout(setupReveal, 30);
+  if (tab === "stats") statsAnim();
 }
 
 </script>
@@ -6969,6 +7262,23 @@ const EN_RAW = {
   "＋ إضافة": "＋ Add",
   "التحصيل مقابل المصروفات (آخر 6 أشهر)": "Collections vs Expenses (last 6 months)",
   "تحصيل": "Collections",
+  "ملخص الشهر": "This month",
+  "📅 فترة الأيام المستحقة": "📅 Due-days range",
+  "اختر الأيام من الشهر، مثلاً من 20 إلى 10 يعرض المستحقين بين هذين اليومين": "Pick days of the month, e.g. 20 to 10 shows who is due between those days",
+  "من يوم": "From day",
+  "إلى يوم": "To day",
+  "لا تحسب المتأخرين سابقاً": "Ignore earlier late payers",
+  "عند التفعيل يُعتبر من تأخر قبل بداية الفترة متلكئاً ولا يدخل في المستحق، ليظهر لك وارد هذه الفترة فقط": "When on, anyone late before the range starts is treated as lagging and excluded, so you see only this range's income",
+  "↺ الشهر الكامل": "↺ Full month",
+  "نسبة الإنجاز": "Achievement",
+  "سُدّد": "Paid",
+  "مستحق": "Due",
+  "المتبقي من الأقساط": "Installments remaining",
+  "المتبقي من الديون": "Debts remaining",
+  "تسديدات الأقساط هذا الشهر": "Installment payments this month",
+  "الأقساط المستحقة هذا الشهر": "Installments due this month",
+  "المتبقي تحصيله هذا الشهر": "Still to collect this month",
+  "تسديدات الديون هذا الشهر": "Debt payments this month",
   "إحصائيات المخزن": "Inventory stats",
   "عدد الأصناف": "Items count",
   "إجمالي القطع": "Total pieces",
@@ -7161,7 +7471,7 @@ function resetAll() {
  * لا يُخزَّن أي رمز دخول في الجهاز؛ يبقى في الذاكرة فقط طوال الجلسة.
  */
 // اختياري: ضع هنا معرّف عميل Google (OAuth Client ID) ليظهر الربط جاهزاً لكل المستخدمين دون إدخاله يدوياً.
-const CLOUD_GOOGLE_CLIENT_ID = "50206985580-6v4qbhfb84up1fqsvlitn006tl8142eu.apps.googleusercontent.com";
+const CLOUD_GOOGLE_CLIENT_ID = "1005635542159-h4usgf0klesua11c8rlhjg2n01q3db0g.apps.googleusercontent.com";
 const GLOGO = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
 const CB = { tok: null, exp: 0, busy: false, list: null, pass: null, gis: null, warned: false };
 const cbCfg = () => {
@@ -7967,9 +8277,15 @@ function alPick(v) {
 }
 function timerInner() {
   const on = S.actOn !== false, C = ACT_C.toFixed(1);
-  return scd("timer", 5) + shd2("timer", "العداد الموقت", "عدّاد دائري يظهر على بطاقة القسط أو الدين بعد أي حركة عليها", on ? "مفعّل" : "متوقف") + '<div class="tr2" style="margin:0"><div><b style="font-size:15px">تفعيل العداد الموقت</b><div class="mut" style="margin-top:4px;font-size:13px">ترتفع البطاقة لأعلى القائمة 60 دقيقة مع عدّاد يعرض آخر نشاط</div></div><input type="checkbox" class="sw" ' + (on ? "checked " : "") + 'onchange="setTimerOn(this.checked)"></div><div class="tmprev' + (on ? "" : " off") + '"><span class="actb demo"><svg viewBox="0 0 44 44"><circle class="tr" cx="22" cy="22" r="17"/><circle class="pg" cx="22" cy="22" r="17" stroke-dasharray="' + C + '" stroke-dashoffset="' + (ACT_C * 0.2).toFixed(1) + '"/></svg><b>48</b></span><span>مثال: «تسديد قسط» · قبل 12 دقيقة</span></div></div>';
+  return scd("timer", 5) + shd2("timer", "العداد الموقت", "عدّاد دائري يظهر على بطاقة القسط أو الدين بعد أي حركة عليها", on ? "مفعّل" : "متوقف") + '<div class="tr2" style="margin:0"><div><b style="font-size:15px">تفعيل العداد الموقت</b><div class="mut" style="margin-top:4px;font-size:13px">ترتفع البطاقة لأعلى القائمة 60 دقيقة مع عدّاد يعرض آخر نشاط</div></div><input type="checkbox" class="sw" ' + (on ? "checked " : "") + 'onchange="setTimerOn(this.checked)"></div><div class="tr2" style="margin:12px 0 0' + (on ? "" : ";opacity:.5") + '"><div><b style="font-size:15px">خيار التراجع</b><div class="mut" style="margin-top:4px;font-size:13px">زر أحمر «تراجع» داخل نافذة آخر نشاط، ويطلب رمز الحماية إن كان مفعّلاً</div></div><input type="checkbox" class="sw" ' + (S.actUndo !== false ? "checked " : "") + (on ? "" : "disabled ") + 'onchange="setUndoOn(this.checked)"></div><div class="tmprev' + (on ? "" : " off") + '"><span class="actb demo"><svg viewBox="0 0 44 44"><circle class="tr" cx="22" cy="22" r="17"/><circle class="pg" cx="22" cy="22" r="17" stroke-dasharray="' + C + '" stroke-dashoffset="' + (ACT_C * 0.2).toFixed(1) + '"/></svg><b>48</b></span><span>مثال: «تسديد قسط» · قبل 12 دقيقة</span></div></div>';
 }
 const timerCard = () => wrapC("tmW", timerInner());
+function setUndoOn(v) {
+  S.actUndo = !!v;
+  save();
+  refreshC("tmW", timerInner());
+  toast(v ? "تم تفعيل خيار التراجع" : "تم إيقاف خيار التراجع");
+}
 function setTimerOn(v) {
   S.actOn = !!v;
   save();

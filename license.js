@@ -13,6 +13,7 @@
       + '.sc-g>div{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);border-radius:12px;padding:8px 2px}'
       + '.sc-g .n{display:block;font-size:21px;font-weight:800;line-height:1.25;font-variant-numeric:tabular-nums}.sc-g small{display:block;font-size:11.5px;opacity:.85}'
       + '.sc-f{margin-top:9px;font-size:12.5px;opacity:.92}.sc-l{font-size:20px;font-weight:800;padding:6px 0}'
+      + '.sc-a{display:inline-block;margin-top:10px;border:0;border-radius:99px;padding:8px 22px;background:linear-gradient(135deg,#f7d56b,#d9a02e);color:#3b2a05;font:800 14px Cairo,system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 14px rgba(217,160,46,.4)}.sc-a:active{transform:scale(.97)}'
       + '@keyframes scp{0%{box-shadow:0 0 0 0 rgba(74,222,128,.6)}70%,100%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}'
       + '.sc-g .n.tk{animation:sctk .35s ease}@keyframes sctk{from{opacity:.25;transform:translateY(-40%) scale(.9)}}'
       + '@media(prefers-reduced-motion:reduce){.sc-p i,.sc-g .n.tk{animation:none}}';
@@ -22,11 +23,13 @@
     if (/sub-demo/.test(location.hash) && !window.AQSATI_SUB) { var dd0 = new Date(); dd0.setDate(dd0.getDate() + 27); window.AQSATI_SUB = { exp: ymd0(dd0) }; }
     function build(el, S) {
       var life = S.exp === '0';
-      el.innerHTML = '<div class="sc-h"><span class="sc-t">حالة الاشتراك</span><span class="sc-p"><i></i><span data-k="p">نشط</span></span></div>'
+      el.innerHTML = '<div class="sc-h"><span class="sc-t">' + (S.trial ? 'الفترة التجريبية' : 'حالة الاشتراك') + '</span><span class="sc-p"><i></i><span data-k="p">' + (S.trial ? 'تجريبي' : 'نشط') + '</span></span></div>'
         + (life ? '<div class="sc-l">اشتراك دائم</div>'
           : '<div class="sc-g"><div><span class="n" data-k="d">00</span><small>يوم</small></div><div><span class="n" data-k="h">00</span><small>ساعة</small></div><div><span class="n" data-k="m">00</span><small>دقيقة</small></div><div><span class="n" data-k="s">00</span><small>ثانية</small></div></div>'
-            + '<div class="sc-f">ينتهي: <span dir="ltr" data-k="e"></span></div>');
+            + '<div class="sc-f">' + (S.trial ? 'تنتهي التجربة: ' : 'ينتهي: ') + '<span dir="ltr" data-k="e"></span></div>')
+        + (S.trial ? '<button type="button" class="sc-a" data-k="a">🔓 تفعيل التطبيق</button>' : '');
       var e = el.querySelector('[data-k="e"]'); if (e) e.textContent = S.exp.split('-').reverse().join('/');
+      var ab = el.querySelector('[data-k="a"]'); if (ab) ab.onclick = function () { if (window.__lkOpen) window.__lkOpen(); };
       el.setAttribute('data-b', '1');
     }
     function put(el, k, v) {
@@ -48,14 +51,14 @@
       el.hidden = false;
       if (!el.getAttribute('data-b')) build(el, S);
       if (S.exp === '0') return;
-      var t = new Date(S.exp + 'T23:59:59') - Date.now();
+      var t = (S.ts ? S.ts : new Date(S.exp + 'T23:59:59')) - Date.now();
       if (t <= 0) { if (!window.__subr) { window.__subr = 1; location.reload(); } return; }
       var s = Math.floor(t / 1e3), d = Math.floor(s / 86400);
       var v = { d: d, h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
       if (!el._cu) { el._cu = 1; if (Date.now() - (window.__cuT || 0) > 30000) { window.__cuT = Date.now(); el._lock = Date.now() + 900; countUp(el, v); } }
       if (el._lock && Date.now() < el._lock) return;
       put(el, 'd', p2(v.d)); put(el, 'h', p2(v.h)); put(el, 'm', p2(v.m)); put(el, 's', p2(v.s));
-      var w = d < 7; el.classList.toggle('sc-w', w); put(el, 'p', w ? 'ينتهي قريباً' : 'نشط');
+      var w = d < 7; el.classList.toggle('sc-w', w); put(el, 'p', w ? 'ينتهي قريباً' : (S.trial ? 'تجريبي' : 'نشط'));
     }
     window.__subTick = tick;
     setInterval(tick, 1000);
@@ -64,7 +67,8 @@
   var C = window.AQSATI_LICENSE, demo = /lock-demo/.test(location.hash);
   if ((!C || !C.publicKey) && !demo) return;
   C = C || {};
-  var K = { id: 'aqsati_device_id', code: 'aqsati_license_code', seen: 'aqsati_license_seen' };
+  var K = { id: 'aqsati_device_id', code: 'aqsati_license_code', seen: 'aqsati_license_seen', trial: 'aqsati_trial_start', used: 'aqsati_license_used' };
+  var TD = C.trialDays === undefined ? 30 : (+C.trialDays || 0); // مدة الفترة التجريبية بالأيام (0 = بلا تجربة)
   var A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   function g(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function s(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -110,6 +114,7 @@
     + '.lk-b{display:block;width:100%;margin-top:10px;border:0;border-radius:14px;padding:13px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:transform .15s;text-align:center;text-decoration:none}.lk-b:active{transform:scale(.98)}'
     + '.lk-go{background:linear-gradient(135deg,#f7d56b,#d9a02e);color:#3b2a05;box-shadow:0 8px 18px rgba(217,160,46,.42)}.lk-wa{background:#16a34a;color:#fff;margin-top:12px}'
     + '.lk-m{min-height:22px;margin-top:10px;color:#dc2626;font-size:13.5px;font-weight:700}.lk-f{margin-top:14px;color:rgba(255,255,255,.62);font-size:12px}'
+    + '.lk-x{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.35)}'
     + '@keyframes lkup{from{opacity:0;transform:translateY(18px)}}@keyframes lkpl{50%{transform:scale(1.06);opacity:.85}}'
     + '.lk-lg{width:66px;height:119px;margin:0 auto 12px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}.lk-lg svg{width:100%;height:100%;overflow:visible}'
     + '.lkd{stroke-dasharray:1;stroke-dashoffset:1;animation:lkdr 1.1s cubic-bezier(.5,0,.2,1) forwards}@keyframes lkdr{to{stroke-dashoffset:0}}'
@@ -125,6 +130,8 @@
 
   function done(r) {
     window.AQSATI_SUB = { exp: r.exp };
+    s(K.used, '1');
+    var sc = document.getElementById('subc'); if (sc) { sc.removeAttribute('data-b'); sc._cu = 0; }
     window.__subTick();
     ov.style.transition = 'opacity .3s';
     ov.style.opacity = '0';
@@ -138,7 +145,9 @@
     }
   }
 
-  function lock(msg) {
+  function lock(msg, closable) {
+    if (!ov.parentNode) document.documentElement.appendChild(ov);
+    ov.style.opacity = '1';
     var id = dev(), f = id.slice(0, 4) + '-' + id.slice(4);
     ov.innerHTML = '<div class="lk-w"><div class="lk-lg">' + LOGO_SVG + '</div>'
       + '<h1 class="lk-n">أقساطي وديوني</h1><div class="lk-s">إدارة الأقساط والديون والعملاء</div>'
@@ -148,20 +157,56 @@
       + (C.whatsapp ? '<a class="lk-b lk-wa" id="lwa" target="_blank" rel="noopener">💬 طلب التفعيل عبر واتساب</a>' : '')
       + '<textarea class="lk-t" id="lcode" rows="3" placeholder="الصق رمز التفعيل هنا" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></textarea>'
       + '<button class="lk-b lk-go" id="lgo">تفعيل التطبيق</button><div class="lk-m" id="lmsg"></div></div>'
+      + (closable ? '<button class="lk-b lk-x" id="lx">رجوع للتجربة</button>' : '')
       + '<div class="lk-f">أقساطي وديوني • جميع الحقوق محفوظة</div><div class="lk-f" style="direction:ltr;font-size:11px;opacity:.5;margin-top:4px">key ' + ((C.publicKey && C.publicKey.x) ? C.publicKey.x.slice(0, 6) : '-') + '</div></div>';
     var q = function (x) { return ov.querySelector(x); };
     q('#lid').textContent = f;
     q('#lmsg').textContent = msg || '';
     q('#lcp').onclick = function () { try { navigator.clipboard.writeText(f); } catch (e) {} this.textContent = 'تم النسخ ✓'; };
     if (C.whatsapp) q('#lwa').href = 'https://wa.me/' + C.whatsapp + '?text=' + encodeURIComponent('أرغب بتفعيل تطبيق الأقساط. رقم جهازي: ' + f);
+    var lx = q('#lx'); if (lx) lx.onclick = function () { ov.remove(); };
     q('#lgo').onclick = async function () {
       var c = q('#lcode').value, r = await check(c);
       if (r.ok) { s(K.code, r.tok); done(r); } else q('#lmsg').textContent = r.msg;
     };
   }
 
+  window.__lkOpen = function () { lock('', true); };
+
+  function banner(text) {
+    var b = document.createElement('div');
+    b.textContent = text;
+    b.style.cssText = 'position:fixed;top:8px;left:50%;transform:translateX(-50%);background:#d97706;color:#fff;padding:8px 16px;border-radius:99px;z-index:2147483646;font:14px Cairo,system-ui,sans-serif';
+    document.documentElement.appendChild(b);
+    setTimeout(function () { b.remove(); }, 6000);
+  }
+
+  function trialDone(end) {
+    window.AQSATI_SUB = { exp: ymd(new Date(end)), ts: end, trial: true };
+    window.__subTick();
+    ov.style.transition = 'opacity .3s';
+    ov.style.opacity = '0';
+    setTimeout(function () { ov.remove(); }, 300);
+    var left = Math.ceil((end - Date.now()) / 864e5);
+    if (left <= 7) banner(left <= 1 ? 'تنتهي الفترة التجريبية اليوم' : 'تنتهي الفترة التجريبية بعد ' + left + ' يوم');
+  }
+
+  // فترة تجريبية تبدأ عند أول فتح للتطبيق، وبعد انتهائها يظهر طلب التفعيل
+  function trialFlow() {
+    if (!TD || g(K.used)) return lock('');
+    var t = ymd(new Date()), seen = g(K.seen) || t, now = Date.now();
+    if (days(seen, t) > 1) return lock('تاريخ الجهاز غير صحيح، صحّحه ثم أعد المحاولة');
+    if (t > seen) s(K.seen, t);
+    var t0 = +g(K.trial);
+    if (!t0 || !isFinite(t0)) { t0 = now; s(K.trial, String(t0)); }
+    if (t0 > now + 864e5) return lock('تاريخ الجهاز غير صحيح، صحّحه ثم أعد المحاولة');
+    var end = t0 + TD * 864e5;
+    if (end <= now) return lock('انتهت الفترة التجريبية (' + TD + ' يوم). أرسل رقم جهازك للمسؤول وفعّل التطبيق للمتابعة.');
+    trialDone(end);
+  }
+
   var saved = g(K.code);
   if (demo) lock('');
-  else if (!saved) lock('');
-  else check(saved).then(function (r) { r.ok ? done(r) : lock(r.msg); });
+  else if (!saved) trialFlow();
+  else { s(K.used, '1'); check(saved).then(function (r) { r.ok ? done(r) : lock(r.msg); }); }
 })();

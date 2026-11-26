@@ -2,14 +2,29 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script>
+/* منع التكبير والتصغير (iOS يتجاهل user-scalable لذا تُمنع الإيماءات برمجياً) */
+(function () {
+  var stop = function (e) { e.preventDefault(); };
+  ["gesturestart", "gesturechange", "gestureend"].forEach(function (t) { document.addEventListener(t, stop, { passive: false }); });
+  document.addEventListener("touchmove", function (e) { if ((e.scale && e.scale !== 1) || (e.touches && e.touches.length > 1)) e.preventDefault(); }, { passive: false });
+  var last = 0;
+  document.addEventListener("touchend", function (e) {
+    var n = Date.now();
+    if (n - last <= 300 && !/^(INPUT|TEXTAREA|SELECT)$/.test((e.target && e.target.tagName) || "")) e.preventDefault();
+    last = n;
+  }, { passive: false });
+  document.addEventListener("wheel", function (e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+})();
+</script>
 <title>وصل — أقساطي وديوني</title>
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#d9dde3">
 <meta property="og:type" content="website">
 <meta property="og:title" content="وصل — أقساطي وديوني">
 <meta property="og:description" content="اضغط لعرض الوصل كاملاً">
-<meta property="og:image" content="https://a-makls.github.io/aksat/icon-512.png">
+<meta property="og:image" content="https://aqsat.makls.workers.dev/icon-512.png">
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
